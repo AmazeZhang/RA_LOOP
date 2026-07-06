@@ -1,0 +1,45 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# ---- IDE / OS ----
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# ---- Experiment outputs ----
+outputs/
+logs/*.log
+logs/*.txt
+logs/pip_freeze.txt
+logs/key_versions.txt
+logs/repo_commits.txt
+wandb/
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+
+# ---- Data / model artifacts (should never be committed) ----
+data/
+checkpoints/
+assets.zip
+
+# ---- Hydra runtime ----
+.hydra/
+multirun/
+
+# ---- Paths file: local absolute paths, don't leak ----
+config/paths.yaml

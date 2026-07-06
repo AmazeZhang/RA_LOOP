@@ -1,0 +1,23 @@
+# =====================================================================
+# RA-LOOP 的 reward function 定义
+# ---------------------------------------------------------------------
+# Hydra 会把该文件通过 _target_ 反射地实例化。真正的实现放在
+# code/ra_optimizer.py 里的 RobustnessAwareReward 类中——但由于 RIPT-VLA
+# 原生的 reward_function 只提供逐条 rollout 的 R_success,
+# 我们的 R_consistency 和 R_recovery 需要跨 rollout 的均值/mask,
+# 因此实际计算发生在 RAOptimizer 内部, 这个类只承担"占位 + 传递 config"
+# 的责任, compute_reward 依旧只输出 R_success（跟 SuccessReward 完全兼容）,
+# 保证与原生 RolloutGenerator 组合不出错。
+# =====================================================================
+
+_target_: code.ra_optimizer.RobustnessAwareReward
+
+# 下面这些字段会被 code.ra_optimizer.RAOptimizer 读走。
+# 之所以放在 reward_function 而不是 algo, 是因为将来单独调 lambda
+# 做消融时 Hydra override 更短:
+#   reward_function.lambda_consistency=0.0 …
+lambda_consistency: ${algo.robustness.lambda_consistency}
+lambda_recovery:    ${algo.robustness.lambda_recovery}
+consistency_metric: ${algo.robustness.consistency_metric}
+consistency_horizon: ${algo.robustness.consistency_horizon}
+recovery_bonus:     ${algo.robustness.recovery_bonus}
