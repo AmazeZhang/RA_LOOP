@@ -37,8 +37,9 @@ NPROC=$1
 
 # ----- 项目根 & repo 根 -----
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-REPO_ROOT="${PROJECT_ROOT}/../repos/ript-vla"   # step02_repos.sh 里 clone 到这里
+REPO_ROOT="${RIPT_REPO:-${CODE_DIR:-$HOME/code}/ript-vla}"
 CFG_ROOT="${PROJECT_ROOT}/config"
+export LIBERO_CONFIG_PATH="${LIBERO_CONFIG_PATH:-$PROJECT_ROOT/.libero}"
 
 # ----- 读取 paths.yaml 里的 checkpoint 路径 -----
 # 用 python 解析避免 grep 出错; 若没装 yaml, 就 fallback 到硬编码约定
@@ -46,19 +47,19 @@ CHECKPOINT_PATH=$(python -c "
 import yaml, pathlib
 p = pathlib.Path('${CFG_ROOT}/paths.yaml')
 d = yaml.safe_load(p.read_text())
-print(d['models']['openvla_oft_libero_long_sft'])
+print(d['openvla_oft']['long'])
 ")
 HEADER_CHECKPOINT=$(python -c "
 import yaml, pathlib
 p = pathlib.Path('${CFG_ROOT}/paths.yaml')
 d = yaml.safe_load(p.read_text())
-print(d['models']['ript_vla_scale_header_long'])
+print(d['ript_vla']['scale_headers']['long'])
 ")
 LORA_ADAPTOR=$(python -c "
 import yaml, pathlib
 p = pathlib.Path('${CFG_ROOT}/paths.yaml')
 d = yaml.safe_load(p.read_text())
-print(d['models']['ript_vla_lora_long'])
+print(d['ript_vla']['lora_adaptors']['long'])
 ")
 
 echo "==================== vanilla_loop.sh ===================="

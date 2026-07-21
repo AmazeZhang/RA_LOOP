@@ -10,9 +10,8 @@
 #     3. LIBERO-plus         — 鲁棒性 benchmark (sylvestf/LIBERO-plus)
 #
 # 注意:
-#   * 我们**不 clone** 官方 LIBERO (Lifelong-Robot-Learning/LIBERO)
-#     因为 LIBERO-plus 是它的完全替代品 (作者原话:
-#     "You can simply replace the original libero with a pip install -e .")
+#   * 官方 LIBERO 与 LIBERO-plus 都保留：前者用于原版性能 gate，后者用于
+#     robustness 评测。二者同名 Python package，运行时由评测脚本显式切换。
 #   * clone 到 ~/code/ 而不是项目目录, 避免 IDE 卡顿
 #
 # 运行方式:
@@ -75,7 +74,20 @@ fi
 echo "  ript-vla commit: $(cat /tmp/ript-vla-commit.txt)"
 
 # ---------------------------------------------------------------------------
-# 3. Clone LIBERO-plus (sylvestf / Fudan)
+# 3. Clone official LIBERO (original-performance baseline)
+# ---------------------------------------------------------------------------
+if [[ ! -d LIBERO-official ]]; then
+  git clone https://github.com/Lifelong-Robot-Learning/LIBERO.git LIBERO-official
+else
+  echo "  LIBERO-official already cloned, pulling latest..."
+  (cd LIBERO-official && git pull --ff-only) || echo "  (pull skipped: might be diverged)"
+fi
+
+(cd LIBERO-official && git rev-parse HEAD > /tmp/LIBERO-official-commit.txt)
+echo "  LIBERO-official commit: $(cat /tmp/LIBERO-official-commit.txt)"
+
+# ---------------------------------------------------------------------------
+# 4. Clone LIBERO-plus (sylvestf / Fudan)
 # ---------------------------------------------------------------------------
 # 鲁棒性 benchmark. 用 pip install -e . 覆盖官方 LIBERO.
 # 关键点:
@@ -93,14 +105,16 @@ fi
 echo "  LIBERO-plus commit: $(cat /tmp/LIBERO-plus-commit.txt)"
 
 # ---------------------------------------------------------------------------
-# 4. 记录三个 commit 到项目日志 (可复现关键)
+# 5. 记录 repo commits 到项目日志 (可复现关键)
 # ---------------------------------------------------------------------------
-PROJ_DIR="${PROJ_DIR:-$HOME/Desktop/essay/RA-LOOP}"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJ_DIR="${PROJ_DIR:-$PROJECT_ROOT}"
 mkdir -p "$PROJ_DIR/logs"
 {
   echo "# Repo commits pinned at $(date -Iseconds)"
   echo "openvla-oft  $(cat /tmp/openvla-oft-commit.txt)"
   echo "ript-vla     $(cat /tmp/ript-vla-commit.txt)"
+  echo "LIBERO-official $(cat /tmp/LIBERO-official-commit.txt)"
   echo "LIBERO-plus  $(cat /tmp/LIBERO-plus-commit.txt)"
 } > "$PROJ_DIR/logs/repo_commits.txt"
 

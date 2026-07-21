@@ -20,11 +20,8 @@ env/
 
 # ---- Experiment outputs ----
 outputs/
-logs/*.log
-logs/*.txt
-logs/pip_freeze.txt
-logs/key_versions.txt
-logs/repo_commits.txt
+logs/*
+!logs/.gitkeep
 wandb/
 *.pt
 *.pth
@@ -36,6 +33,8 @@ wandb/
 data/
 checkpoints/
 assets.zip
+runtime/
+.libero*/
 
 # ---- Hydra runtime ----
 .hydra/

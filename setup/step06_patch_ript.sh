@@ -16,7 +16,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-REPO="${PROJECT_ROOT}/../repos/ript-vla"
+REPO="${RIPT_REPO:-${CODE_DIR:-$HOME/code}/ript-vla}"
 TARGET="${REPO}/train_ript_openvla_oft.py"
 
 if [[ ! -f "${TARGET}" ]]; then
@@ -39,9 +39,7 @@ import re
 import pathlib
 import os
 
-target = pathlib.Path(os.environ.get('TARGET_FILE',
-    pathlib.Path(__file__).parent.parent.parent + '/repos/ript-vla/train_ript_openvla_oft.py'
-))
+target = pathlib.Path(os.environ.get('TARGET_FILE', 'train_ript_openvla_oft.py'))
 
 # 找不到 TARGET_FILE 环境变量时按传统路径推断
 if 'TARGET_FILE' not in os.environ:

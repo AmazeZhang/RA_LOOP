@@ -48,7 +48,19 @@ conda activate ript_vla_openvla_oft
 
 CODE_DIR="${CODE_DIR:-$HOME/code}"
 MODEL_DIR="${MODEL_DIR:-$HOME/models/ra-loop}"
-PROJ_DIR="${PROJ_DIR:-$HOME/Desktop/essay/RA-LOOP}"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJ_DIR="${PROJ_DIR:-$PROJECT_ROOT}"
+OFFICIAL_LIBERO_DIR="${OFFICIAL_LIBERO_DIR:-$CODE_DIR/LIBERO-official}"
+
+# LIBERO-plus intentionally replaces the `libero` package for robustness
+# evaluation.  Prepend the official checkout here so original LIBERO results
+# are never silently evaluated on the expanded Plus task set.
+if [[ ! -d "$OFFICIAL_LIBERO_DIR/libero/libero" ]]; then
+  echo "  ERROR: official LIBERO not found at $OFFICIAL_LIBERO_DIR"
+  exit 1
+fi
+export PYTHONPATH="$OFFICIAL_LIBERO_DIR:${PYTHONPATH:-}"
+export LIBERO_CONFIG_PATH="${LIBERO_CONFIG_PATH:-$PROJECT_ROOT/.libero-official}"
 
 cd "$CODE_DIR/openvla-oft"
 

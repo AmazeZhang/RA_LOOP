@@ -43,7 +43,9 @@ conda activate ript_vla_openvla_oft
 
 CODE_DIR="${CODE_DIR:-$HOME/code}"
 MODEL_DIR="${MODEL_DIR:-$HOME/models/ra-loop}"
-PROJ_DIR="${PROJ_DIR:-$HOME/Desktop/essay/RA-LOOP}"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJ_DIR="${PROJ_DIR:-$PROJECT_ROOT}"
+export LIBERO_CONFIG_PATH="${LIBERO_CONFIG_PATH:-$PROJECT_ROOT/.libero}"
 
 # ---------------------------------------------------------------------------
 # 参数

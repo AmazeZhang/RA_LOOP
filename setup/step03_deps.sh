@@ -26,6 +26,8 @@
 set -euo pipefail
 
 CODE_DIR="${CODE_DIR:-$HOME/code}"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export LIBERO_CONFIG_PATH="${LIBERO_CONFIG_PATH:-$PROJECT_ROOT/.libero}"
 ENV_MAIN="ript_vla_openvla_oft"
 
 # ---------------------------------------------------------------------------
@@ -159,7 +161,11 @@ if [[ ${#MISSING_PKGS[@]} -gt 0 ]]; then
 fi
 
 cd "$CODE_DIR/LIBERO-plus"
-pip install -e .
+# LIBERO-plus uses a namespace-package layout (`libero/` has no __init__.py).
+# The default PEP 660 editable finder loses that namespace on recent setuptools;
+# compat mode writes the source root to sys.path and keeps `import libero.libero`
+# working.
+pip install -e . --config-settings editable_mode=compat
 
 # LIBERO-plus 的额外依赖 (wand, scikit-image, 见 extra_requirements.txt)
 pip install -r extra_requirements.txt
@@ -167,6 +173,14 @@ pip install -r extra_requirements.txt
 # 关键: LIBERO 需要 mujoco 3.3.2 (RIPT-VLA 官方指定)
 # 之前 pip install -e . 可能装了默认版本 (2.x), 强制升级到 3.3.2
 pip install "mujoco==3.3.2"
+
+# tensorflow==2.15 requires protobuf<5 and wandb==0.18 requires protobuf<6.
+# Without this pin pip can select protobuf 7.x, breaking both imports at runtime.
+pip install "protobuf==4.25.3"
+# Newer tensorflow-metadata generates protobuf 5+/6+ runtime checks, while
+# tensorflow==2.15 is pinned to protobuf<5. Keep the TFDS metadata layer on
+# the last compatible release as well.
+pip install "tensorflow-metadata==1.15.0"
 
 # ---------------------------------------------------------------------------
 # 5. openvla-oft 的 LIBERO 特定依赖
@@ -183,7 +197,7 @@ fi
 # ---------------------------------------------------------------------------
 # 6. 最终版本 pin (记录到日志, 便于 debug)
 # ---------------------------------------------------------------------------
-PROJ_DIR="${PROJ_DIR:-$HOME/Desktop/essay/RA-LOOP}"
+PROJ_DIR="${PROJ_DIR:-$PROJECT_ROOT}"
 mkdir -p "$PROJ_DIR/logs"
 
 echo "[STEP 03.6] Dumping final environment to logs/pip_freeze.txt..."

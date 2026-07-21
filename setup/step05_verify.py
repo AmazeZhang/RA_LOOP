@@ -23,11 +23,16 @@ from __future__ import annotations
 
 import importlib
 import os
+import json
 import subprocess
 import sys
 import time
 import traceback
 from pathlib import Path
+
+# Avoid inheriting a stale ~/.libero/config.yaml from another checkout.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+os.environ.setdefault("LIBERO_CONFIG_PATH", str(PROJECT_ROOT / ".libero"))
 
 # ---------------------------------------------------------------------------
 # ANSI 颜色输出, 便于快速识别失败点
@@ -116,6 +121,7 @@ PACKAGES = [
     ("mujoco", "3.3", True),
     ("hydra", "1.3", False),
     ("wandb", "0.18", False),
+    ("google.protobuf", "4.25", True),
     ("bddl", None, True),
     ("libero", None, True),
 ]
@@ -216,7 +222,7 @@ try:
     # LIBERO-plus 关键: 应该能找到 7 维度的 task_classification.json
     from libero.libero import get_libero_path
 
-    task_cls_file = Path(get_libero_path("benchmark_root")) / "task_classification.json"
+    task_cls_file = Path(get_libero_path("benchmark_root")) / "benchmark" / "task_classification.json"
     if task_cls_file.exists():
         ok(f"LIBERO-plus task_classification.json found: {task_cls_file}")
     else:
@@ -265,10 +271,20 @@ section("7. OpenVLA-OFT weights on disk")
 
 MODEL_DIR = Path(os.environ.get("MODEL_DIR", f"{os.environ['HOME']}/models/ra-loop"))
 for suite in ["long", "spatial", "object", "goal"]:
-    ckpt = MODEL_DIR / f"openvla-oft-{suite}" / "config.json"
-    if ckpt.exists():
+    ckpt_dir = MODEL_DIR / f"openvla-oft-{suite}"
+    ckpt = ckpt_dir / "config.json"
+    index = ckpt_dir / "model.safetensors.index.json"
+    if ckpt.exists() and index.exists():
+        try:
+            shards = set(json.loads(index.read_text())["weight_map"].values())
+            missing_shards = sorted(shard for shard in shards if not (ckpt_dir / shard).is_file())
+        except (OSError, KeyError, json.JSONDecodeError) as exc:
+            missing_shards = [f"invalid index: {exc}"]
+        if missing_shards:
+            warn(f"openvla-oft-{suite}: incomplete checkpoint; missing {', '.join(missing_shards)}")
+            continue
         # 显示模型大小
-        size_gb = sum(f.stat().st_size for f in ckpt.parent.rglob("*") if f.is_file()) / (1024**3)
+        size_gb = sum(f.stat().st_size for f in ckpt_dir.rglob("*") if f.is_file()) / (1024**3)
         ok(f"openvla-oft-{suite}: {size_gb:.1f} GB")
     else:
         warn(f"openvla-oft-{suite}: not downloaded (run step04_data.sh)")

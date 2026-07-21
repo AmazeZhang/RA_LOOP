@@ -153,9 +153,19 @@ if [[ ! -d "$LIBERO_ASSETS_DIR/assets/articulated_objects" ]]; then
     --local-dir "$DATA_DIR/libero-plus-assets" \
     --local-dir-use-symlinks False
 
-  echo "  [LIBERO-plus] Extracting assets.zip to $LIBERO_ASSETS_DIR ..."
-  # -o 覆盖已有文件, -q 静默
-  unzip -oq "$DATA_DIR/libero-plus-assets/assets.zip" -d "$LIBERO_ASSETS_DIR"
+  # The release archive preserves its upstream build path, ending in
+  # `.../LIBERO-plus-0/assets/`.  Extract to staging, then move that exact
+  # assets directory into the runtime location expected by LIBERO.
+  ASSET_STAGING="$DATA_DIR/libero-plus-assets/extracted"
+  mkdir -p "$ASSET_STAGING"
+  echo "  [LIBERO-plus] Extracting assets.zip to staging ..."
+  unzip -oq "$DATA_DIR/libero-plus-assets/assets.zip" -d "$ASSET_STAGING"
+  ARCHIVED_ASSETS=$(find "$ASSET_STAGING" -type d -path '*/assets' | head -n 1)
+  if [[ -z "$ARCHIVED_ASSETS" ]]; then
+    echo "  ERROR: assets.zip extracted but no assets/ directory was found"
+    exit 1
+  fi
+  mv "$ARCHIVED_ASSETS" "$LIBERO_ASSETS_DIR/assets"
 else
   echo "  [LIBERO-plus] assets already extracted, skipping"
 fi
@@ -200,7 +210,8 @@ fi
 # ---------------------------------------------------------------------------
 # 7. 记录数据路径到 paths.yaml (供 RIPT-VLA config 读取)
 # ---------------------------------------------------------------------------
-PROJ_DIR="${PROJ_DIR:-$HOME/Desktop/essay/RA-LOOP}"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJ_DIR="${PROJ_DIR:-$PROJECT_ROOT}"
 
 cat > "$PROJ_DIR/config/paths.yaml" <<EOF
 # ============================================================================
