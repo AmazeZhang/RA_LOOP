@@ -98,6 +98,8 @@ def main() -> None:
             raise AssertionError("wrong in-process environment runner target")
         if not rollout.enable_rollout_stats_tracking:
             raise AssertionError("misrouted rollout stats flag was not forwarded")
+        if optimizer.advantage_mode != "mode_stratified":
+            raise AssertionError("mode-stratified advantage was not configured")
 
         print(
             json.dumps(
@@ -115,6 +117,7 @@ def main() -> None:
                     "robot_init_sampling_mode": str(rollout.robot_init_sampling_mode),
                     "perturb_seed": int(rollout.perturb_seed),
                     "lambda_recovery": float(reward.lambda_recovery),
+                    "advantage_mode": str(optimizer.advantage_mode),
                     "rollout_stats_tracking": bool(
                         rollout.enable_rollout_stats_tracking
                     ),

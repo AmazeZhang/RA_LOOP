@@ -18,6 +18,7 @@ from ript.algos.rl_optimizers.rollout_generator import RolloutGenerator
 from ra_loop.robustness import (
     NamedJointLayout,
     build_robot_init_rollout_plan,
+    compute_mode_stratified_rloo_advantages,
     compute_recovery_rewards,
     materialize_rollout_plan,
     resolve_named_joint_layout,
@@ -235,12 +236,13 @@ class RobotInitRecoveryReward(BaseRewardFunction):
 
 
 class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
-    """Run upstream PPO once and correct augmented-reward metric semantics."""
+    """Run upstream PPO once with optional mode-stratified RLOO advantages."""
 
     def __init__(
         self,
         *args: Any,
         enable_rollout_stats_tracking: bool = False,
+        advantage_mode: str = "mode_stratified",
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
@@ -248,6 +250,13 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
             raise TypeError(
                 "RobotInitRecoveryOptimizer requires RobotInitRecoveryReward"
             )
+        if advantage_mode not in {"mode_stratified", "upstream"}:
+            raise ValueError("unsupported recovery advantage_mode")
+        if advantage_mode == "mode_stratified" and self.rloo_over_all_rollouts:
+            raise ValueError(
+                "mode-stratified RLOO requires per-rollout-group upstream RLOO"
+            )
+        self.advantage_mode = advantage_mode
         self.rollout_generator.enable_rollout_stats_tracking = bool(
             enable_rollout_stats_tracking
         )
@@ -270,23 +279,97 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
             raise ValueError(
                 "recovery metric correction is currently gated to one GPU"
             )
+        if self.advantage_mode == "mode_stratified" and getattr(
+            self, "rloo_over_all_rollouts", False
+        ):
+            raise ValueError(
+                "mode-stratified RLOO requires per-rollout-group upstream RLOO"
+            )
 
         generator = self.rollout_generator
         had_instance_override = "generate_rollouts" in vars(generator)
         previous_instance_value = vars(generator).get("generate_rollouts")
         original_generate = generator.generate_rollouts
         captured: list[tuple[Any, Any, Any, Any]] = []
+        stratified_advantages: np.ndarray | None = None
+        surrogate_rewards: np.ndarray | None = None
 
         def capture_once(*args, **kwargs):
+            nonlocal stratified_advantages, surrogate_rewards
             if captured:
                 raise RuntimeError("upstream PPO requested rollouts more than once")
             result = original_generate(*args, **kwargs)
             if not isinstance(result, tuple) or len(result) != 4:
                 raise RuntimeError("rollout generator returned an invalid result")
             captured.append(result)
+            if self.advantage_mode == "mode_stratified":
+                episodes, _, valid_mask, _ = result
+                rloo_batch_size = int(generator.rloo_batch_size)
+                if rloo_batch_size < 4 or rloo_batch_size % 2 != 0:
+                    raise RuntimeError(
+                        "mode-stratified RLOO requires an even batch size >= 4"
+                    )
+                if len(episodes) == 0 or len(episodes) % rloo_batch_size != 0:
+                    raise RuntimeError(
+                        "rollout count must be a positive multiple of RLOO batch size"
+                    )
+                valid = self._as_numpy(valid_mask).astype(bool, copy=False)
+                if valid.shape != (len(episodes),):
+                    raise RuntimeError("rollout valid_mask shape mismatch")
+                base_scores = [
+                    float(bool(episode.get("success", False)))
+                    for episode in episodes
+                ]
+                reward_result = compute_recovery_rewards(
+                    episodes,
+                    base_scores,
+                    lambda_recovery=self.reward_function.lambda_recovery,
+                    valid_mask=valid,
+                )
+                perturbed = np.asarray(
+                    [bool(episode.get("is_perturbed", False)) for episode in episodes],
+                    dtype=bool,
+                )
+                rollout_group_ids = (
+                    np.arange(len(episodes), dtype=np.int64) // rloo_batch_size
+                )
+                stratified_advantages = compute_mode_stratified_rloo_advantages(
+                    reward_result.total,
+                    perturbed,
+                    rollout_group_ids=rollout_group_ids,
+                    valid_mask=valid,
+                )
+                # Upstream maps rewards q to K/(K-1) * (q - mean(q)). Each
+                # stratified group sums to zero, as do its invalid zero pads,
+                # so this inverse makes upstream recover the exact target.
+                surrogate_rewards = (
+                    (rloo_batch_size - 1)
+                    / rloo_batch_size
+                    * stratified_advantages
+                )
             return result
 
+        reward_function = self.reward_function
+        had_reward_override = "compute_reward" in vars(reward_function)
+        previous_reward_value = vars(reward_function).get("compute_reward")
+
+        def reward_for_upstream(rollout_idx, rollout_episode, ground_truth_batch):
+            if surrogate_rewards is None or not captured:
+                raise RuntimeError("upstream requested reward before generating rollouts")
+            if (
+                isinstance(rollout_idx, bool)
+                or not isinstance(rollout_idx, int)
+                or rollout_idx < 0
+                or rollout_idx >= len(surrogate_rewards)
+            ):
+                raise RuntimeError("upstream requested an invalid rollout reward index")
+            if rollout_episode is not captured[0][0][rollout_idx]:
+                raise RuntimeError("upstream reward episode order changed")
+            return float(surrogate_rewards[rollout_idx])
+
         generator.generate_rollouts = capture_once
+        if self.advantage_mode == "mode_stratified":
+            reward_function.compute_reward = reward_for_upstream
         try:
             metrics = super().optimize(
                 model,
@@ -300,6 +383,11 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
                 generator.generate_rollouts = previous_instance_value
             else:
                 delattr(generator, "generate_rollouts")
+            if self.advantage_mode == "mode_stratified":
+                if had_reward_override:
+                    reward_function.compute_reward = previous_reward_value
+                else:
+                    delattr(reward_function, "compute_reward")
 
         if len(captured) != 1:
             raise RuntimeError("upstream PPO did not request exactly one rollout batch")
@@ -325,6 +413,22 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
         # Preserve upstream names while fixing their semantics after reward shaping.
         metrics["mean_scores"] = reward_result.stats["mean_R_success"]
         metrics["mean_rlhf_reward"] = metrics["mean_R_total"]
+        metrics["advantage_mode_stratified"] = float(
+            self.advantage_mode == "mode_stratified"
+        )
+        if stratified_advantages is not None:
+            perturbed = np.asarray(
+                [bool(episode.get("is_perturbed", False)) for episode in episodes],
+                dtype=bool,
+            )
+            anchor_valid = valid & ~perturbed
+            perturbed_valid = valid & perturbed
+            metrics["mean_anchor_advantage"] = float(
+                stratified_advantages[anchor_valid].mean()
+            )
+            metrics["mean_perturbed_advantage"] = float(
+                stratified_advantages[perturbed_valid].mean()
+            )
 
         successes = np.asarray(base_scores, dtype=np.float64)
         for task_id in np.unique(ids[valid]):

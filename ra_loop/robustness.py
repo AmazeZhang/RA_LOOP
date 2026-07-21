@@ -55,6 +55,90 @@ class RecoveryRewardResult:
     stats: dict[str, float]
 
 
+def compute_mode_stratified_rloo_advantages(
+    rewards: Sequence[float],
+    perturbed_mask: Sequence[bool],
+    *,
+    rollout_group_ids: Sequence[int] | None = None,
+    valid_mask: Sequence[bool] | None = None,
+) -> np.ndarray:
+    """Compute leave-one-out advantages independently by rollout mode.
+
+    Each ``(rollout_group_id, is_perturbed)`` stratum receives its own RLOO
+    baseline. This prevents rewards from perturbed episodes from changing an
+    anchor episode's advantage (and vice versa). Invalid padding receives zero
+    advantage and is excluded from every baseline.
+
+    At least two valid members are required in every represented stratum. The
+    function fails closed instead of silently falling back to a cross-mode or
+    self-referential baseline.
+    """
+
+    reward_array = np.asarray(rewards)
+    if reward_array.ndim != 1 or reward_array.size == 0:
+        raise ValueError("rewards must be a non-empty one-dimensional sequence")
+    if np.issubdtype(reward_array.dtype, np.bool_) or not np.issubdtype(
+        reward_array.dtype, np.number
+    ):
+        raise ValueError("rewards must be numeric and not boolean")
+    reward_array = reward_array.astype(np.float64, copy=False)
+    if not np.isfinite(reward_array).all():
+        raise ValueError("rewards must be finite")
+
+    count = reward_array.size
+
+    def strict_bool_mask(values: Sequence[bool], name: str) -> np.ndarray:
+        raw = np.asarray(values)
+        if raw.shape != (count,) or not np.issubdtype(raw.dtype, np.bool_):
+            raise ValueError(f"{name} must contain one boolean per reward")
+        return raw.astype(bool, copy=False)
+
+    perturbed = strict_bool_mask(perturbed_mask, "perturbed_mask")
+    valid = (
+        np.ones(count, dtype=bool)
+        if valid_mask is None
+        else strict_bool_mask(valid_mask, "valid_mask")
+    )
+    if not valid.any():
+        raise ValueError("valid_mask must select at least one reward")
+
+    if rollout_group_ids is None:
+        group_ids = np.zeros(count, dtype=np.int64)
+    else:
+        raw_groups = np.asarray(rollout_group_ids)
+        if (
+            raw_groups.shape != (count,)
+            or np.issubdtype(raw_groups.dtype, np.bool_)
+            or not np.issubdtype(raw_groups.dtype, np.integer)
+        ):
+            raise ValueError(
+                "rollout_group_ids must contain one integer per reward"
+            )
+        group_ids = raw_groups.astype(np.int64, copy=False)
+        if (group_ids < 0).any():
+            raise ValueError("rollout_group_ids must be non-negative")
+
+    advantages = np.zeros(count, dtype=np.float64)
+    for group_id in np.unique(group_ids[valid]):
+        group = valid & (group_ids == group_id)
+        for is_perturbed in (False, True):
+            stratum = group & (perturbed == is_perturbed)
+            stratum_count = int(stratum.sum())
+            if stratum_count < 2:
+                mode = "perturbed" if is_perturbed else "anchor"
+                raise ValueError(
+                    f"rollout group {group_id} requires at least two valid "
+                    f"{mode} rewards"
+                )
+            stratum_rewards = reward_array[stratum]
+            baseline = (
+                stratum_rewards.sum() - stratum_rewards
+            ) / (stratum_count - 1)
+            advantages[stratum] = stratum_rewards - baseline
+
+    return advantages
+
+
 def build_robot_init_rollout_plan(
     *,
     num_pairs: int,

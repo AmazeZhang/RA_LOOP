@@ -8,6 +8,7 @@ from ra_loop.robustness import (
     apply_robot_init_perturbation,
     build_robot_init_rollout_plan,
     compute_recovery_rewards,
+    compute_mode_stratified_rloo_advantages,
     materialize_rollout_plan,
     resolve_named_joint_layout,
 )
@@ -153,6 +154,92 @@ def test_materialization_rejects_unsupported_perturbation(layout) -> None:
     plan = [RolloutPlanEntry(0, 0, "camera", 0.1, 1, True)]
     with pytest.raises(ValueError, match="unsupported"):
         materialize_rollout_plan(np.zeros(12), plan=plan, layout=layout)
+
+
+def test_stratified_rloo_all_success_is_zero_in_both_modes() -> None:
+    advantages = compute_mode_stratified_rloo_advantages(
+        [1.0, 1.5] * 4,
+        [False, True] * 4,
+    )
+
+    np.testing.assert_array_equal(advantages, np.zeros(8))
+
+
+def test_stratified_rloo_modes_do_not_change_each_others_advantages() -> None:
+    modes = [False, True] * 4
+    first = compute_mode_stratified_rloo_advantages(
+        [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        modes,
+    )
+    second = compute_mode_stratified_rloo_advantages(
+        [1.0, 1.5, 0.0, 0.0, 1.0, 1.5, 0.0, 0.0],
+        modes,
+    )
+
+    np.testing.assert_allclose(first[::2], [2 / 3, -2 / 3, 2 / 3, -2 / 3])
+    np.testing.assert_array_equal(first[::2], second[::2])
+    assert first[1::2].sum() == pytest.approx(0.0)
+    assert second[1::2].sum() == pytest.approx(0.0)
+
+
+def test_stratified_rloo_separates_rollout_groups_and_excludes_padding() -> None:
+    rewards = [
+        1.0, 1.5, 1.0, 0.0, 0.0, 1.5, 0.0, 0.0,
+        0.0, 1.5, 0.0, 1.5, 0.0, 1.5, 0.0, 1.5,
+        99.0, 99.0,
+    ]
+    modes = [False, True] * 9
+    groups = [0] * 8 + [1] * 8 + [1] * 2
+    valid = [True] * 16 + [False, False]
+
+    advantages = compute_mode_stratified_rloo_advantages(
+        rewards,
+        modes,
+        rollout_group_ids=groups,
+        valid_mask=valid,
+    )
+
+    for group_id in (0, 1):
+        group = np.asarray(groups) == group_id
+        for mode in (False, True):
+            stratum = group & (np.asarray(modes) == mode) & np.asarray(valid)
+            assert advantages[stratum].sum() == pytest.approx(0.0)
+    np.testing.assert_array_equal(advantages[-2:], [0.0, 0.0])
+    # Group 1's all-failed anchors and all-successful perturbations are both
+    # already mode-optimal and therefore receive zero update.
+    np.testing.assert_array_equal(advantages[8:16], np.zeros(8))
+
+
+@pytest.mark.parametrize(
+    ("rewards", "modes", "kwargs", "message"),
+    [
+        ([1.0, np.nan, 0.0, 0.0], [False, True, False, True], {}, "finite"),
+        ([1.0, 1.5, 0.0, 0.0], [0, 1, 0, 1], {}, "boolean"),
+        (
+            [1.0, 1.5, 0.0, 0.0],
+            [False, True, False, True],
+            {"rollout_group_ids": [False, False, False, False]},
+            "integer",
+        ),
+        (
+            [1.0, 1.5, 0.0, 0.0],
+            [False, True, False, True],
+            {"valid_mask": [False, False, False, False]},
+            "at least one",
+        ),
+        (
+            [1.0, 1.5, 0.0, 0.0],
+            [False, True, True, True],
+            {},
+            "at least two valid anchor",
+        ),
+    ],
+)
+def test_stratified_rloo_rejects_unsafe_inputs(
+    rewards, modes, kwargs, message
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        compute_mode_stratified_rloo_advantages(rewards, modes, **kwargs)
 
 
 def test_recovery_reward_and_valid_mask_statistics() -> None:

@@ -10,7 +10,11 @@ from ra_loop.ript_recovery import (
     RobotInitRecoveryReward,
     RobotInitRecoveryRolloutGenerator,
 )
-from ra_loop.robustness import NamedJointLayout
+from ra_loop.robustness import (
+    NamedJointLayout,
+    compute_mode_stratified_rloo_advantages,
+    compute_recovery_rewards,
+)
 
 
 def fake_layout(_created_env) -> NamedJointLayout:
@@ -208,13 +212,14 @@ def test_adapter_detects_too_many_environment_episodes(monkeypatch) -> None:
 
 
 class FakeRolloutGenerator:
-    def __init__(self, episodes, task_ids, valid_mask):
+    def __init__(self, episodes, task_ids, valid_mask, rloo_batch_size=4):
         self.episodes = episodes
         self.task_ids = torch.tensor(task_ids)
         self.valid_mask = torch.tensor(valid_mask, dtype=torch.bool)
         self.calls = 0
         self.task_names_to_use = ["spatial-task"]
         self.enable_rollout_stats_tracking = False
+        self.rloo_batch_size = rloo_batch_size
 
     def generate_rollouts(self, model, batch, data_iterator, dataloader):
         self.calls += 1
@@ -230,10 +235,12 @@ def recovery_episode(*, perturbed: bool, success: bool):
     }
 
 
-def make_optimizer(generator, lambda_recovery=0.5):
+def make_optimizer(generator, lambda_recovery=0.5, advantage_mode="mode_stratified"):
     optimizer = RobotInitRecoveryOptimizer.__new__(RobotInitRecoveryOptimizer)
     optimizer.rollout_generator = generator
     optimizer.reward_function = RobotInitRecoveryReward(lambda_recovery)
+    optimizer.advantage_mode = advantage_mode
+    optimizer.rloo_over_all_rollouts = False
     return optimizer
 
 
@@ -268,6 +275,36 @@ def install_fake_parent_optimizer(monkeypatch, parent_calls, *, call_twice=False
     )
 
 
+def install_advantage_observing_parent(monkeypatch, observed):
+    def fake_optimize(
+        self, model, batch, optimizers, data_iterator=None, dataloader=None
+    ):
+        episodes, _, valid_mask, _ = self.rollout_generator.generate_rollouts(
+            model, batch, data_iterator, dataloader
+        )
+        rewards = np.asarray(
+            [
+                self.reward_function.compute_reward(i, episode, batch)
+                for i, episode in enumerate(episodes)
+            ],
+            dtype=np.float64,
+        )
+        size = self.rollout_generator.rloo_batch_size
+        grouped = rewards.reshape(-1, size)
+        baseline = (grouped.sum(axis=1, keepdims=True) - grouped) / (size - 1)
+        advantage = (grouped - baseline).reshape(-1)
+        observed.append((rewards, advantage, np.asarray(valid_mask)))
+        return {
+            "mean_scores": float(rewards.mean()),
+            "mean_rlhf_reward": float(rewards.mean()),
+            "mean_advantage": float(advantage.mean()),
+        }
+
+    monkeypatch.setattr(
+        adapter_module.RLOptimizerOpenVLAOFT, "optimize", fake_optimize
+    )
+
+
 def test_recovery_reward_requires_actual_successful_perturbation() -> None:
     reward = RobotInitRecoveryReward(lambda_recovery=0.5)
 
@@ -285,7 +322,7 @@ def test_optimizer_calls_upstream_once_excludes_padding_and_corrects_metrics(mon
         recovery_episode(perturbed=True, success=True),
     ]
     generator = FakeRolloutGenerator(episodes, [0, 0, 0, 0], [True, True, True, False])
-    optimizer = make_optimizer(generator)
+    optimizer = make_optimizer(generator, advantage_mode="upstream")
     original_bound_method = generator.generate_rollouts
     parent_calls = []
     install_fake_parent_optimizer(monkeypatch, parent_calls)
@@ -305,14 +342,84 @@ def test_optimizer_calls_upstream_once_excludes_padding_and_corrects_metrics(mon
     assert metrics["valid_anchor_count"] == 2.0
     assert metrics["valid_perturbed_count"] == 1.0
     assert metrics["rl_train_succeess_rate/spatial-task"] == pytest.approx(2 / 3)
+    assert metrics["advantage_mode_stratified"] == 0.0
+
+
+def test_optimizer_makes_upstream_use_exact_stratified_advantages(monkeypatch) -> None:
+    episodes = [
+        recovery_episode(perturbed=False, success=True),
+        recovery_episode(perturbed=True, success=True),
+        recovery_episode(perturbed=False, success=True),
+        recovery_episode(perturbed=True, success=False),
+        recovery_episode(perturbed=False, success=False),
+        recovery_episode(perturbed=True, success=True),
+        recovery_episode(perturbed=False, success=False),
+        recovery_episode(perturbed=True, success=False),
+    ]
+    generator = FakeRolloutGenerator(
+        episodes, [0] * 8, [True] * 8, rloo_batch_size=8
+    )
+    optimizer = make_optimizer(generator)
+    original_generate = generator.generate_rollouts
+    original_compute_reward = optimizer.reward_function.compute_reward
+    observed = []
+    install_advantage_observing_parent(monkeypatch, observed)
+
+    metrics = optimizer.optimize(SimpleNamespace(), {}, [])
+
+    actual_rewards = compute_recovery_rewards(
+        episodes,
+        [float(episode["success"]) for episode in episodes],
+        lambda_recovery=0.5,
+    ).total
+    expected = compute_mode_stratified_rloo_advantages(
+        actual_rewards,
+        [episode["is_perturbed"] for episode in episodes],
+    )
+    assert len(observed) == 1
+    np.testing.assert_allclose(observed[0][1], expected, atol=1e-15)
+    # Parent receives inverse-encoded rewards, not misleading augmented rewards.
+    assert not np.array_equal(observed[0][0], actual_rewards)
+    assert generator.calls == 1
+    assert generator.generate_rollouts == original_generate
+    assert optimizer.reward_function.compute_reward == original_compute_reward
+    assert metrics["advantage_mode_stratified"] == 1.0
+    assert metrics["mean_anchor_advantage"] == pytest.approx(0.0)
+    assert metrics["mean_perturbed_advantage"] == pytest.approx(0.0)
+
+
+def test_stratified_optimizer_restores_hooks_when_group_validation_fails(
+    monkeypatch,
+) -> None:
+    episodes = [
+        recovery_episode(perturbed=False, success=True),
+        recovery_episode(perturbed=True, success=True),
+        recovery_episode(perturbed=True, success=False),
+        recovery_episode(perturbed=True, success=False),
+    ]
+    generator = FakeRolloutGenerator(episodes, [0] * 4, [True] * 4)
+    optimizer = make_optimizer(generator)
+    original_generate = generator.generate_rollouts
+    original_compute_reward = optimizer.reward_function.compute_reward
+    parent_calls = []
+    install_fake_parent_optimizer(monkeypatch, parent_calls)
+
+    with pytest.raises(ValueError, match="at least two valid anchor"):
+        optimizer.optimize(SimpleNamespace(), {}, [])
+
+    assert len(parent_calls) == 1
+    assert generator.calls == 1
+    assert generator.generate_rollouts == original_generate
+    assert optimizer.reward_function.compute_reward == original_compute_reward
 
 
 def test_optimizer_restores_generator_after_parent_failure(monkeypatch) -> None:
     generator = FakeRolloutGenerator(
         [recovery_episode(perturbed=False, success=False)], [0], [True]
     )
-    optimizer = make_optimizer(generator)
+    optimizer = make_optimizer(generator, advantage_mode="upstream")
     original_bound_method = generator.generate_rollouts
+    original_reward_method = optimizer.reward_function.compute_reward
     parent_calls = []
     install_fake_parent_optimizer(monkeypatch, parent_calls, fail=True)
 
@@ -321,14 +428,16 @@ def test_optimizer_restores_generator_after_parent_failure(monkeypatch) -> None:
 
     assert generator.calls == 1
     assert generator.generate_rollouts == original_bound_method
+    assert optimizer.reward_function.compute_reward == original_reward_method
 
 
 def test_optimizer_rejects_second_rollout_request_and_restores(monkeypatch) -> None:
     generator = FakeRolloutGenerator(
         [recovery_episode(perturbed=False, success=False)], [0], [True]
     )
-    optimizer = make_optimizer(generator)
+    optimizer = make_optimizer(generator, advantage_mode="upstream")
     original_bound_method = generator.generate_rollouts
+    original_reward_method = optimizer.reward_function.compute_reward
     parent_calls = []
     install_fake_parent_optimizer(monkeypatch, parent_calls, call_twice=True)
 
@@ -337,3 +446,4 @@ def test_optimizer_rejects_second_rollout_request_and_restores(monkeypatch) -> N
 
     assert generator.calls == 1
     assert generator.generate_rollouts == original_bound_method
+    assert optimizer.reward_function.compute_reward == original_reward_method

@@ -14,6 +14,7 @@ MODEL_PATH=/home/imc/yzy/RA_LOOP/runtime/openvla-oft-spatial-smoke
 HEADER_PATH=/home/imc/models/ra-loop/ript-vla/openvla_oft/scale_header/LIBERO_SPATIAL_scale_header.pth
 DATA_PATH=/home/imc/data/ra-loop/libero-datasets
 TASK_NAME=pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate
+PILOT_STEP5_CKPT="${PROJECT_ROOT}/outputs/ra_loop_spatial_overnight_pilot/libero_spatial/LIBERO_SPATIAL/openvla/RA-LOOP_spatial_robot_init_overnight_pilot/one_task_21step_k8_h220_fixed_l2_0p1_recovery_lr1e5/run_000/openvla_lora_step_000005"
 RUN_PROFILE="${RA_LOOP_TRAIN_PROFILE:-learning_probe}"
 TASK_NAMES_OVERRIDE="[${TASK_NAME}]"
 LORA_ADAPTOR_CKPT=null
@@ -40,6 +41,30 @@ case "${RUN_PROFILE}" in
     HEADER_LR=1e-5
     REQUIRE_FRESH_OUTPUT=true
     ;;
+  stratified_smoke)
+    EXP_NAME=RA-LOOP_spatial_stratified_connectivity_smoke
+    VARIANT_NAME=one_task_one_step_k8_h220_fixed_l2_0p1_stratified_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_stratified_connectivity_smoke"
+    N_STEPS=1
+    SAVE_INTERVAL=9999
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    ;;
+  stratified_multitask)
+    EXP_NAME=RA-LOOP_spatial_stratified_multitask
+    VARIANT_NAME=four_task_35step_k8_h220_fixed_l2_0p1_stratified_lr1e5_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_stratified_multitask"
+    N_STEPS=35
+    SAVE_INTERVAL=5
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    TRAIN_SHUFFLE=true
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate]'
+    ;;
   afternoon_multitask)
     EXP_NAME=RA-LOOP_spatial_robot_init_afternoon_multitask
     VARIANT_NAME=four_task_35step_k8_h220_fixed_l2_0p1_recovery_lr1e5_step5_warmstart
@@ -50,7 +75,7 @@ case "${RUN_PROFILE}" in
     HEADER_LR=1e-5
     REQUIRE_FRESH_OUTPUT=true
     TRAIN_SHUFFLE=true
-    LORA_ADAPTOR_CKPT="${PROJECT_ROOT}/outputs/ra_loop_spatial_overnight_pilot/libero_spatial/LIBERO_SPATIAL/openvla/RA-LOOP_spatial_robot_init_overnight_pilot/one_task_21step_k8_h220_fixed_l2_0p1_recovery_lr1e5/run_000/openvla_lora_step_000005"
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
     TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate]'
     ;;
   *)
@@ -89,6 +114,7 @@ OVERRIDES=(
   +algo.rollout_generator_factory.robot_init_sampling_mode=fixed_l2
   +algo.rollout_generator_factory.perturb_seed=20260720
   algo.rl_optimizer_factory._target_=ra_loop.ript_recovery.RobotInitRecoveryOptimizer
+  +algo.rl_optimizer_factory.advantage_mode=mode_stratified
   reward_function._target_=ra_loop.ript_recovery.RobotInitRecoveryReward
   +reward_function.lambda_recovery=0.5
   algo.rloo_batch_size=8
@@ -182,7 +208,7 @@ fi
 GPU_ID=$2
 
 if [[ "${REQUIRE_FRESH_OUTPUT}" == true && -e "${OUTPUT_PATH}" ]]; then
-  echo "Refusing to reuse overnight pilot output: ${OUTPUT_PATH}" >&2
+  echo "Refusing to reuse training output: ${OUTPUT_PATH}" >&2
   exit 5
 fi
 
