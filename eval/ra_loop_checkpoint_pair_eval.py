@@ -34,6 +34,12 @@ AFTERNOON_ROOT = PROJECT_ROOT / (
     "openvla/RA-LOOP_spatial_robot_init_afternoon_multitask/"
     "four_task_35step_k8_h220_fixed_l2_0p1_recovery_lr1e5_step5_warmstart/run_000"
 )
+STRATIFIED_ROOT = PROJECT_ROOT / (
+    "outputs/ra_loop_spatial_stratified_multitask/libero_spatial/LIBERO_SPATIAL/"
+    "openvla/RA-LOOP_spatial_stratified_multitask/"
+    "four_task_35step_k8_h220_fixed_l2_0p1_stratified_lr1e5_step5_warmstart/"
+    "run_000"
+)
 DEFAULT_TASK_NAME = "pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate"
 VALID_TASKS = (
     "pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate",
@@ -50,6 +56,7 @@ VALID_TASKS = (
 VALID_SOURCE_STEPS = {
     "pilot": (0, 5, 10, 15, 20),
     "afternoon": (5, 10, 15, 20, 25, 30),
+    "stratified": (5, 10, 15, 20, 25, 30),
 }
 VALID_STEPS = tuple(sorted({step for steps in VALID_SOURCE_STEPS.values() for step in steps}))
 
@@ -57,7 +64,12 @@ VALID_STEPS = tuple(sorted({step for steps in VALID_SOURCE_STEPS.values() for st
 def adapter_dir(source: str, step: int) -> Path | None:
     if step == 0:
         return None
-    root = PILOT_ROOT if source == "pilot" else AFTERNOON_ROOT
+    roots = {
+        "pilot": PILOT_ROOT,
+        "afternoon": AFTERNOON_ROOT,
+        "stratified": STRATIFIED_ROOT,
+    }
+    root = roots[source]
     return root / f"openvla_lora_step_{step:06d}"
 
 

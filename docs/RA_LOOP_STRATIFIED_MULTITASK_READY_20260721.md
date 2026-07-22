@@ -1,5 +1,10 @@
 # RA-LOOP mode-stratified 四任务长训准备 — 20260721
 
+> 启动：2026-07-21 22:32 CST
+> 完成：2026-07-22 04:28 CST
+> 状态：35/35 updates、exit 0、六份 checkpoint 验收通过；详见
+> `docs/RA_LOOP_STRATIFIED_MULTITASK_RESULT_20260722.md`。
+
 ## 目的
 
 对下午已完成的旧 objective 35-step run 做单变量受控重复。除 advantage 计算从
@@ -45,3 +50,14 @@ upstream mixed RLOO 改为 mode-stratified RLOO 外，warm-start、四任务、r
 完成后不按在线成功率选型。必须对保存的 checkpoint 使用与 baseline 和旧 objective
 完全相同的四任务 paired evaluator，再比较 anchor retention、fixed-L2 recovery 和逐
 pair gain/loss。
+
+## 启动验收
+
+- 冻结提交：`1275e15`，已推送至 `origin/main`
+- 全项目 40/40 tests、35-step 四任务 CPU factory preflight passed
+- 启动前 GPU 7：18/24564 MiB、0%、41°C
+- 启动时磁盘可用约 239 GiB
+- base model、pilot step5 LoRA、action/scale headers 均加载成功
+- 四任务各 4 demos、四个 in-process environments 创建成功
+- 已进入 step 1/35，第 3/8 rollout；前两条均 success
+- 启动后 GPU 7：约 17861/24564 MiB、47°C
