@@ -20,6 +20,10 @@ TASK_NAMES_OVERRIDE="[${TASK_NAME}]"
 LORA_ADAPTOR_CKPT=null
 TRAIN_SHUFFLE=false
 RECOVERY_LAMBDA=0.5
+DEMOS_PER_ENV=4
+TASK_ROLLOUTS_PER_ENV=4
+TRAIN_SEED=10000
+PERTURB_SEED=20260720
 
 case "${RUN_PROFILE}" in
   learning_probe)
@@ -94,6 +98,42 @@ case "${RUN_PROFILE}" in
     LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
     TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate]'
     ;;
+  fulltask_seed10000)
+    EXP_NAME=RA-LOOP_spatial_fulltask_seed10000
+    VARIANT_NAME=ten_task_100step_k8_h220_fixed_l2_0p1_stratified_lambda0p5_lr1e5_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_fulltask_seed10000"
+    N_STEPS=100
+    SAVE_INTERVAL=10
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    TRAIN_SHUFFLE=true
+    RECOVERY_LAMBDA=0.5
+    DEMOS_PER_ENV=50
+    TASK_ROLLOUTS_PER_ENV=50
+    TRAIN_SEED=10000
+    PERTURB_SEED=20260720
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_from_table_center_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_wooden_cabinet_and_place_it_on_the_plate]'
+    ;;
+  fulltask_seed20000)
+    EXP_NAME=RA-LOOP_spatial_fulltask_seed20000
+    VARIANT_NAME=ten_task_100step_k8_h220_fixed_l2_0p1_stratified_lambda0p5_lr1e5_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_fulltask_seed20000"
+    N_STEPS=100
+    SAVE_INTERVAL=10
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    TRAIN_SHUFFLE=true
+    RECOVERY_LAMBDA=0.5
+    DEMOS_PER_ENV=50
+    TASK_ROLLOUTS_PER_ENV=50
+    TRAIN_SEED=20000
+    PERTURB_SEED=20270720
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_from_table_center_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_wooden_cabinet_and_place_it_on_the_plate]'
+    ;;
   afternoon_multitask)
     EXP_NAME=RA-LOOP_spatial_robot_init_afternoon_multitask
     VARIANT_NAME=four_task_35step_k8_h220_fixed_l2_0p1_recovery_lr1e5_step5_warmstart
@@ -116,14 +156,15 @@ esac
 OVERRIDES=(
   exp_name="${EXP_NAME}"
   variant_name="${VARIANT_NAME}"
+  seed="${TRAIN_SEED}"
   make_unique_experiment_dir=true
   paths.data_prefix="${DATA_PATH}"
   paths.output_prefix="${OUTPUT_PATH}"
   task.suite_name=libero_spatial
   task.dataset.suite_name=.
   task.task_names_to_use="${TASK_NAMES_OVERRIDE}"
-  task.demos_per_env=4
-  task.rollouts_per_env=4
+  task.demos_per_env="${DEMOS_PER_ENV}"
+  task.rollouts_per_env="${TASK_ROLLOUTS_PER_ENV}"
   train_dataloader.batch_size=1
   train_dataloader.shuffle="${TRAIN_SHUFFLE}"
   train_dataloader.num_workers=0
@@ -141,7 +182,7 @@ OVERRIDES=(
   algo.rollout_generator_factory._target_=ra_loop.ript_recovery.RobotInitRecoveryRolloutGenerator
   +algo.rollout_generator_factory.robot_init_strength=0.1
   +algo.rollout_generator_factory.robot_init_sampling_mode=fixed_l2
-  +algo.rollout_generator_factory.perturb_seed=20260720
+  +algo.rollout_generator_factory.perturb_seed="${PERTURB_SEED}"
   algo.rl_optimizer_factory._target_=ra_loop.ript_recovery.RobotInitRecoveryOptimizer
   +algo.rl_optimizer_factory.advantage_mode=mode_stratified
   reward_function._target_=ra_loop.ript_recovery.RobotInitRecoveryReward
@@ -269,7 +310,8 @@ export NCCL_TIMEOUT=108000
 
 echo "Starting bounded RA-LOOP ${RUN_PROFILE} on physical GPU ${GPU_ID}"
 echo "GPU before start: used=${GPU_USED}/${GPU_TOTAL} MiB util=${GPU_UTIL}% temp=${GPU_TEMP}C"
-echo "tasks=${TASK_NAMES_OVERRIDE} steps=${N_STEPS} K=8 pairs=4 horizon=220 fixed_l2=0.1rad lambda_r=${RECOVERY_LAMBDA} scale=5"
+echo "tasks=${TASK_NAMES_OVERRIDE} demos_per_env=${DEMOS_PER_ENV} task_rollouts_per_env=${TASK_ROLLOUTS_PER_ENV}"
+echo "steps=${N_STEPS} K=8 pairs=4 horizon=220 fixed_l2=0.1rad lambda_r=${RECOVERY_LAMBDA} scale=5 train_seed=${TRAIN_SEED} perturb_seed=${PERTURB_SEED}"
 echo "lora_adaptor_ckpt=${LORA_ADAPTOR_CKPT}"
 echo "lr=${MODEL_LR} header_lr=${HEADER_LR} save_interval=${SAVE_INTERVAL} available_bytes=${AVAILABLE_BYTES}"
 echo "W&B=disabled periodic_eval=disabled"
