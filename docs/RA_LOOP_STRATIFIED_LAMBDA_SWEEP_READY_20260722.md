@@ -1,6 +1,11 @@
 # RA-LOOP mode-stratified 恢复权重消融 — 20260722
 
-> 状态：训练前准备；尚未启动。
+> 状态：2026-07-22 12:46 CST 已启动；两组均完成模型/LoRA/header/环境加载并进入
+> step 1/35 的首个 rollout。
+
+tmux 会话为 `ra_loop_stratified_lambda_sweep`，窗口分别为 `lambda0_gpu7` 和
+`lambda025_gpu6`。启动后只读检查显示 GPU 7 约占用 18.3 GiB、43°C，GPU 6 约占用
+18.0 GiB、45°C；GPU 0 未用于训练。
 
 ## 动机
 
