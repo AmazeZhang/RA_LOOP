@@ -134,6 +134,42 @@ case "${RUN_PROFILE}" in
     LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
     TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_from_table_center_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_wooden_cabinet_and_place_it_on_the_plate]'
     ;;
+  fulltask_lambda0_seed10000)
+    EXP_NAME=RA-LOOP_spatial_fulltask_lambda0_seed10000
+    VARIANT_NAME=ten_task_100step_k8_h220_fixed_l2_0p1_stratified_lambda0_lr1e5_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_fulltask_lambda0_seed10000"
+    N_STEPS=100
+    SAVE_INTERVAL=10
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    TRAIN_SHUFFLE=true
+    RECOVERY_LAMBDA=0.0
+    DEMOS_PER_ENV=50
+    TASK_ROLLOUTS_PER_ENV=50
+    TRAIN_SEED=10000
+    PERTURB_SEED=20260720
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_from_table_center_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_wooden_cabinet_and_place_it_on_the_plate]'
+    ;;
+  fulltask_lambda0_seed20000)
+    EXP_NAME=RA-LOOP_spatial_fulltask_lambda0_seed20000
+    VARIANT_NAME=ten_task_100step_k8_h220_fixed_l2_0p1_stratified_lambda0_lr1e5_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_fulltask_lambda0_seed20000"
+    N_STEPS=100
+    SAVE_INTERVAL=10
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    TRAIN_SHUFFLE=true
+    RECOVERY_LAMBDA=0.0
+    DEMOS_PER_ENV=50
+    TASK_ROLLOUTS_PER_ENV=50
+    TRAIN_SEED=20000
+    PERTURB_SEED=20270720
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_from_table_center_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_next_to_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_cookie_box_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_wooden_cabinet_and_place_it_on_the_plate]'
+    ;;
   afternoon_multitask)
     EXP_NAME=RA-LOOP_spatial_robot_init_afternoon_multitask
     VARIANT_NAME=four_task_35step_k8_h220_fixed_l2_0p1_recovery_lr1e5_step5_warmstart
