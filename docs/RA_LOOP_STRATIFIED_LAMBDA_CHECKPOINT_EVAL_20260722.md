@@ -1,7 +1,8 @@
 # RA-LOOP stratified lambda checkpoint 独立评测 — 20260722
 
-> 状态：2026-07-22 20:49 CST 已启动。六个首轮 worker 均已加载 LoRA/header 并
-> 进入 episode；GPU 2--7 各约 16.7 GiB、45--46°C。
+> 状态：2026-07-22 22:21 CST 已完成。12/12 exit 0、48 summaries、576/576 rows、
+> 无 incomplete，GPU 2--7 已释放。结果见
+> `docs/RA_LOOP_STRATIFIED_LAMBDA_CHECKPOINT_EVAL_RESULT_20260722.md`。
 
 tmux 会话：`ra_loop_stratified_lambda_checkpoint_eval`。六个窗口分别绑定 GPU 2--7，
 首份成功结束后会在同一卡上自动启动第二份。
