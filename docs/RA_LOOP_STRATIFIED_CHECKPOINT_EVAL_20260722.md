@@ -1,5 +1,10 @@
 # RA-LOOP mode-stratified checkpoint 独立评测 — 20260722
 
+> 启动：2026-07-22 09:13 CST
+> 完成：2026-07-22 10:00 CST
+> 状态：六份 exit 0、288/288 完整；结果见
+> `docs/RA_LOOP_STRATIFIED_CHECKPOINT_EVAL_RESULT_20260722.md`。
+
 ## 设计
 
 - checkpoint：stratified 四任务训练 step 5/10/15/20/25/30
@@ -24,3 +29,13 @@ gain/loss。中间 task 结果不作为有效结论，必须等 288/288 原子�
 
 完成后验收 24 summaries、288 rows、无 `.incomplete`、六个 exit 0 与 GPU 释放，再做
 paired checkpoint 选择。
+
+## 启动验收
+
+- 冻结提交：`14b77a1`，已推送至 `origin/main`
+- 24/24 CPU plans、Python/shell syntax、全项目 40/40 tests passed
+- 启动前 GPU 1--6：各 18 MiB、0%、41--43°C
+- 六个 tmux windows 与六个 evaluator 进程完整
+- step 5/10/15/20/25/30 的 LoRA 和 headers 均确认加载
+- 六份均进入首个 episode
+- 启动后 GPU 1--6：各约 16655 MiB、46--48°C

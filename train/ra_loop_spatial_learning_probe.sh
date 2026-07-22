@@ -19,6 +19,7 @@ RUN_PROFILE="${RA_LOOP_TRAIN_PROFILE:-learning_probe}"
 TASK_NAMES_OVERRIDE="[${TASK_NAME}]"
 LORA_ADAPTOR_CKPT=null
 TRAIN_SHUFFLE=false
+RECOVERY_LAMBDA=0.5
 
 case "${RUN_PROFILE}" in
   learning_probe)
@@ -62,6 +63,34 @@ case "${RUN_PROFILE}" in
     HEADER_LR=1e-5
     REQUIRE_FRESH_OUTPUT=true
     TRAIN_SHUFFLE=true
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate]'
+    ;;
+  stratified_lambda0_multitask)
+    EXP_NAME=RA-LOOP_spatial_stratified_lambda0_multitask
+    VARIANT_NAME=four_task_35step_k8_h220_fixed_l2_0p1_stratified_lambda0_lr1e5_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_stratified_lambda0_multitask"
+    N_STEPS=35
+    SAVE_INTERVAL=5
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    TRAIN_SHUFFLE=true
+    RECOVERY_LAMBDA=0.0
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate]'
+    ;;
+  stratified_lambda025_multitask)
+    EXP_NAME=RA-LOOP_spatial_stratified_lambda025_multitask
+    VARIANT_NAME=four_task_35step_k8_h220_fixed_l2_0p1_stratified_lambda0p25_lr1e5_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_stratified_lambda025_multitask"
+    N_STEPS=35
+    SAVE_INTERVAL=5
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    TRAIN_SHUFFLE=true
+    RECOVERY_LAMBDA=0.25
     LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
     TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate]'
     ;;
@@ -116,7 +145,7 @@ OVERRIDES=(
   algo.rl_optimizer_factory._target_=ra_loop.ript_recovery.RobotInitRecoveryOptimizer
   +algo.rl_optimizer_factory.advantage_mode=mode_stratified
   reward_function._target_=ra_loop.ript_recovery.RobotInitRecoveryReward
-  +reward_function.lambda_recovery=0.5
+  +reward_function.lambda_recovery="${RECOVERY_LAMBDA}"
   algo.rloo_batch_size=8
   algo.rollouts_per_env=8
   algo.num_parallel_envs=1
@@ -240,7 +269,7 @@ export NCCL_TIMEOUT=108000
 
 echo "Starting bounded RA-LOOP ${RUN_PROFILE} on physical GPU ${GPU_ID}"
 echo "GPU before start: used=${GPU_USED}/${GPU_TOTAL} MiB util=${GPU_UTIL}% temp=${GPU_TEMP}C"
-echo "tasks=${TASK_NAMES_OVERRIDE} steps=${N_STEPS} K=8 pairs=4 horizon=220 fixed_l2=0.1rad lambda_r=0.5 scale=5"
+echo "tasks=${TASK_NAMES_OVERRIDE} steps=${N_STEPS} K=8 pairs=4 horizon=220 fixed_l2=0.1rad lambda_r=${RECOVERY_LAMBDA} scale=5"
 echo "lora_adaptor_ckpt=${LORA_ADAPTOR_CKPT}"
 echo "lr=${MODEL_LR} header_lr=${HEADER_LR} save_interval=${SAVE_INTERVAL} available_bytes=${AVAILABLE_BYTES}"
 echo "W&B=disabled periodic_eval=disabled"
