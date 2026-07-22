@@ -1,6 +1,11 @@
 # RA-LOOP Spatial 全任务 lambda 2×2 消融 — 20260722
 
-> 状态：训练前准备，尚未启动。
+> 状态：2026-07-22 23:39 CST 已启动。四组均完成 OpenVLA/LoRA/header、10×50
+> demo dataset 和 10 个环境加载，并进入 step 1/100 首个 rollout。
+
+tmux 会话为 `ra_loop_fulltask_lambda_ablation`；窗口分别为
+`lambda05_seed10000_gpu7`、`lambda05_seed20000_gpu6`、`lambda0_seed10000_gpu5`、
+`lambda0_seed20000_gpu4`。启动前可用磁盘 212 GB，GPU 4--7 均为空闲状态。
 
 ## 设计
 
