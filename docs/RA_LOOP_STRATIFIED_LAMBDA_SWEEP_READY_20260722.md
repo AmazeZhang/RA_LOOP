@@ -13,7 +13,7 @@ stove 的一条 fixed-L2 失败换成 original 的一条失败，总分仍为训
 | 实验 | GPU | lambda recovery | 预计时长 |
 |---|---:|---:|---:|
 | stratified lambda0 | 7 | 0.0 | 约 6 小时 |
-| stratified lambda025 | 0 | 0.25 | 约 6 小时 |
+| stratified lambda025 | 6 | 0.25 | 约 6 小时 |
 
 两组并行，其余条件与已完成的 lambda=0.5 实验一致：同一 step-5 warm-start、4 个
 spatial tasks、35 steps、K=8、horizon=220、fixed-L2=0.1 rad、学习率 1e-5、固定
@@ -29,6 +29,6 @@ guard，而不是继续增加相同步数。
 ## 安全措施
 
 - 两组使用独立输出目录、日志和 tmux 窗口；
-- 启动器先同时检查 GPU 7 和 GPU 0，任一不满足阈值便在创建会话前拒绝；
+- 启动器先同时检查 GPU 7 和 GPU 6，任一不满足阈值便在创建会话前拒绝；
 - 单组训练器还会再次检查目标 GPU、磁盘空间和输出目录新鲜度；
 - 默认只打印计划，必须显式 `--run` 才会创建 CUDA 训练。
