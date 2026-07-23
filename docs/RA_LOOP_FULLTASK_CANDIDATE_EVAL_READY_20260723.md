@@ -1,6 +1,10 @@
 # RA-LOOP Spatial 全任务候选独立评测 — 20260723
 
-> 状态：评测前准备，尚未启动。
+> 状态：2026-07-23 22:05 CST 已启动。六个首轮 worker 均已加载对应
+> checkpoint 并进入 episode。
+
+tmux 会话为 `ra_loop_fulltask_candidate_eval`，窗口 `gpu2` 到 `gpu7`；每张卡仅在
+当前候选 exit 0 后串行进入下一候选。
 
 固定评测集为 10 tasks ×（6 anchor + 6 fixed-L2）= 每候选 120 episodes。候选包括
 pilot step-5 warm-start baseline，以及 lambda=0/0.5 × seed10000/20000 四组训练的
