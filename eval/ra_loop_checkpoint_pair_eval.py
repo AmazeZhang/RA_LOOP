@@ -52,6 +52,30 @@ STRATIFIED_LAMBDA025_ROOT = PROJECT_ROOT / (
     "four_task_35step_k8_h220_fixed_l2_0p1_stratified_lambda0p25_lr1e5_"
     "step5_warmstart/run_000"
 )
+FULLTASK_LAMBDA05_SEED10000_ROOT = PROJECT_ROOT / (
+    "outputs/ra_loop_spatial_fulltask_seed10000/libero_spatial/LIBERO_SPATIAL/"
+    "openvla/RA-LOOP_spatial_fulltask_seed10000/"
+    "ten_task_100step_k8_h220_fixed_l2_0p1_stratified_lambda0p5_lr1e5_"
+    "step5_warmstart/run_000"
+)
+FULLTASK_LAMBDA05_SEED20000_ROOT = PROJECT_ROOT / (
+    "outputs/ra_loop_spatial_fulltask_seed20000/libero_spatial/LIBERO_SPATIAL/"
+    "openvla/RA-LOOP_spatial_fulltask_seed20000/"
+    "ten_task_100step_k8_h220_fixed_l2_0p1_stratified_lambda0p5_lr1e5_"
+    "step5_warmstart/20000/run_000"
+)
+FULLTASK_LAMBDA0_SEED10000_ROOT = PROJECT_ROOT / (
+    "outputs/ra_loop_spatial_fulltask_lambda0_seed10000/libero_spatial/"
+    "LIBERO_SPATIAL/openvla/RA-LOOP_spatial_fulltask_lambda0_seed10000/"
+    "ten_task_100step_k8_h220_fixed_l2_0p1_stratified_lambda0_lr1e5_"
+    "step5_warmstart/run_000"
+)
+FULLTASK_LAMBDA0_SEED20000_ROOT = PROJECT_ROOT / (
+    "outputs/ra_loop_spatial_fulltask_lambda0_seed20000/libero_spatial/"
+    "LIBERO_SPATIAL/openvla/RA-LOOP_spatial_fulltask_lambda0_seed20000/"
+    "ten_task_100step_k8_h220_fixed_l2_0p1_stratified_lambda0_lr1e5_"
+    "step5_warmstart/20000/run_000"
+)
 DEFAULT_TASK_NAME = "pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate"
 VALID_TASKS = (
     "pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate",
@@ -71,6 +95,10 @@ VALID_SOURCE_STEPS = {
     "stratified": (5, 10, 15, 20, 25, 30),
     "stratified_lambda0": (5, 10, 15, 20, 25, 30),
     "stratified_lambda025": (5, 10, 15, 20, 25, 30),
+    "fulltask_lambda05_seed10000": (10, 20, 30, 40, 50, 60, 70, 80, 90),
+    "fulltask_lambda05_seed20000": (10, 20, 30, 40, 50, 60, 70, 80, 90),
+    "fulltask_lambda0_seed10000": (10, 20, 30, 40, 50, 60, 70, 80, 90),
+    "fulltask_lambda0_seed20000": (10, 20, 30, 40, 50, 60, 70, 80, 90),
 }
 VALID_STEPS = tuple(sorted({step for steps in VALID_SOURCE_STEPS.values() for step in steps}))
 
@@ -84,6 +112,10 @@ def adapter_dir(source: str, step: int) -> Path | None:
         "stratified": STRATIFIED_ROOT,
         "stratified_lambda0": STRATIFIED_LAMBDA0_ROOT,
         "stratified_lambda025": STRATIFIED_LAMBDA025_ROOT,
+        "fulltask_lambda05_seed10000": FULLTASK_LAMBDA05_SEED10000_ROOT,
+        "fulltask_lambda05_seed20000": FULLTASK_LAMBDA05_SEED20000_ROOT,
+        "fulltask_lambda0_seed10000": FULLTASK_LAMBDA0_SEED10000_ROOT,
+        "fulltask_lambda0_seed20000": FULLTASK_LAMBDA0_SEED20000_ROOT,
     }
     root = roots[source]
     return root / f"openvla_lora_step_{step:06d}"
