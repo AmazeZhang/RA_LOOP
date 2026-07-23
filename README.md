@@ -1,10 +1,10 @@
 # RA-LOOP: Robustness-Aware LOOP for VLA Post-Training
 
-> **状态**: 项目启动前（Week 0）
+> **状态**: 实验阶段；旧 fixed-recovery-bonus 作为诊断基线，ICLR 方法已重定向
 > **硬件**: 7×RTX4090 (24GB, 无NVLink, PCIe Gen4)
 > **主库**: RIPT-VLA + OpenVLA-OFT + LIBERO-Plus
 > **验证过的软件栈**: Python 3.10.14, PyTorch 2.2.0, CUDA 12.1, flash-attn 2.7.4.post1
-> **最后一次联网核对时间**: 2026-07-06
+> **最后一次方法/文献核对时间**: 2026-07-23
 
 ## 关键版本清单（联网核对后）
 
@@ -109,6 +109,12 @@ RA-LOOP/
 
 ## 快速导航
 
+- 当前 ICLR 方法重定向 → 看 `docs/RA_LOOP_ICLR_METHOD_REDIRECT_20260723.md`
+- 当前全任务训练结果 → 看 `docs/RA_LOOP_FULLTASK_LAMBDA_ABLATION_RESULT_20260723.md`
+- 正在运行的独立评测 → 看 `docs/RA_LOOP_FULLTASK_CANDIDATE_EVAL_READY_20260723.md`
 - 想立刻开始 → 看 `setup/step01_env.sh`
 - 想了解算法 → 看 `code/ra_optimizer.py` (Week 3-4 写)
 - 想了解 gate 判断 → 看 `PLAN.md` §4
+
+> `PLAN.md` 保留项目启动时的原始假设，包含已经过时的 action-consistency /
+> fixed-reward 设计；后续方法决策以 2026-07-23 的 ICLR 重定向文档为准。
