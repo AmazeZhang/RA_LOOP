@@ -120,6 +120,24 @@ case "${RUN_PROFILE}" in
     LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
     TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate]'
     ;;
+  counterfactual_cra_smoke)
+    EXP_NAME=RA-LOOP_spatial_counterfactual_cra_smoke
+    VARIANT_NAME=one_task_3step_k8_h220_fixed_l2_0p1_cra_npc_cal1_seed20000_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_counterfactual_cra_smoke"
+    N_STEPS=3
+    SAVE_INTERVAL=9999
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    TRAIN_SHUFFLE=true
+    RECOVERY_LAMBDA=0.0
+    ADVANTAGE_MODE=counterfactual_constrained
+    NOMINAL_CALIBRATION_BATCHES=1
+    TRAIN_SEED=20000
+    PERTURB_SEED=20270720
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate]'
+    ;;
   counterfactual_gate)
     EXP_NAME=RA-LOOP_spatial_counterfactual_gate
     VARIANT_NAME=four_task_50step_k8_h220_fixed_l2_0p1_cra_npc_cal3_step5_warmstart
