@@ -84,6 +84,113 @@ class CounterfactualRecoveryAdvantageResult:
     groups_without_baseline: int
 
 
+@dataclass(frozen=True)
+class NominalConstraintUpdate:
+    """One auditable primal-dual update for nominal performance retention."""
+
+    multiplier: float
+    anchor_success_ema: float
+    target_success_rate: float
+    violation: float
+    constraint_active: bool
+
+
+def update_nominal_performance_constraint(
+    *,
+    observed_anchor_success_rate: float,
+    reference_anchor_success_rate: float,
+    allowed_drop: float,
+    previous_multiplier: float,
+    previous_anchor_success_ema: float | None = None,
+    ema_decay: float = 0.9,
+    dual_learning_rate: float = 0.1,
+    max_multiplier: float = 10.0,
+) -> NominalConstraintUpdate:
+    """Update the dual multiplier for a lower bound on nominal success.
+
+    The constrained objective is
+
+    ``max_theta min_mu>=0 J_recovery + mu * (J_anchor - target)``.
+
+    ``target`` is the warm-start reference success rate minus an allowed drop.
+    The reference and observations must use the same task and stochastic
+    rollout protocol; a deterministic evaluation rate is not a valid reference
+    for stochastic training batches. A positive violation increases ``mu`` and
+    puts more weight on the nominal objective; surplus nominal performance
+    decreases it. An EMA avoids reacting directly to one sparse binary-success
+    batch. Multi-task callers should keep one state per task.
+    """
+
+    def unit_interval(value: float, name: str) -> float:
+        if isinstance(value, bool) or not np.isscalar(value):
+            raise ValueError(f"{name} must be a finite scalar in [0, 1]")
+        result = float(value)
+        if not np.isfinite(result) or not 0.0 <= result <= 1.0:
+            raise ValueError(f"{name} must be a finite scalar in [0, 1]")
+        return result
+
+    observed = unit_interval(
+        observed_anchor_success_rate,
+        "observed_anchor_success_rate",
+    )
+    reference = unit_interval(
+        reference_anchor_success_rate,
+        "reference_anchor_success_rate",
+    )
+    drop = unit_interval(allowed_drop, "allowed_drop")
+    decay = unit_interval(ema_decay, "ema_decay")
+    if decay == 1.0:
+        raise ValueError("ema_decay must be less than 1")
+
+    if isinstance(previous_multiplier, bool) or not np.isscalar(previous_multiplier):
+        raise ValueError("previous_multiplier must be finite and non-negative")
+    multiplier = float(previous_multiplier)
+    if not np.isfinite(multiplier) or multiplier < 0.0:
+        raise ValueError("previous_multiplier must be finite and non-negative")
+
+    if (
+        isinstance(dual_learning_rate, bool)
+        or not np.isscalar(dual_learning_rate)
+        or not np.isfinite(float(dual_learning_rate))
+        or float(dual_learning_rate) <= 0.0
+    ):
+        raise ValueError("dual_learning_rate must be finite and positive")
+    dual_rate = float(dual_learning_rate)
+
+    if (
+        isinstance(max_multiplier, bool)
+        or not np.isscalar(max_multiplier)
+        or not np.isfinite(float(max_multiplier))
+        or float(max_multiplier) <= 0.0
+    ):
+        raise ValueError("max_multiplier must be finite and positive")
+    multiplier_cap = float(max_multiplier)
+    if multiplier > multiplier_cap:
+        raise ValueError("previous_multiplier must not exceed max_multiplier")
+
+    if previous_anchor_success_ema is None:
+        anchor_ema = observed
+    else:
+        previous_ema = unit_interval(
+            previous_anchor_success_ema,
+            "previous_anchor_success_ema",
+        )
+        anchor_ema = decay * previous_ema + (1.0 - decay) * observed
+
+    target = max(0.0, reference - drop)
+    violation = target - anchor_ema
+    updated_multiplier = float(
+        np.clip(multiplier + dual_rate * violation, 0.0, multiplier_cap)
+    )
+    return NominalConstraintUpdate(
+        multiplier=updated_multiplier,
+        anchor_success_ema=anchor_ema,
+        target_success_rate=target,
+        violation=violation,
+        constraint_active=updated_multiplier > 0.0,
+    )
+
+
 def compute_counterfactual_recovery_advantages(
     successes: Sequence[bool],
     perturbed_mask: Sequence[bool],

@@ -117,12 +117,16 @@ violation = (J_anchor,ref - epsilon) - J_anchor(theta)
 mu <- projection(mu + eta_mu * violation)
 ```
 
-其中 `J_anchor,ref` 来自 warm-start 在固定 nominal calibration set 上的表现。`mu`
-根据约束违反程度自适应，而不是人工扫描 `lambda_recovery`。
+其中 `J_anchor,ref` 来自 warm-start 在固定 nominal calibration set 上的表现。参考值
+必须和训练时 anchor 使用相同的 task、stochastic action 与 rollout protocol；不能把
+deterministic 独立评测成功率直接作为 stochastic training batch 的约束目标。多任务
+训练为每个任务独立维护 EMA 与 `mu`，避免总体均值掩盖单任务退化。`mu` 根据约束违反
+程度自适应，而不是人工扫描 `lambda_recovery`。
 
 为降低二元成功率的小批量噪声，工程上分两阶段：
 
-1. v1：anchor success 的 EMA 约束，验证算法方向；
+1. v1：训练前用同 sampler 校准 warm-start，并使用 per-task anchor-success EMA
+   约束验证算法方向；
 2. v2：在固定 clean observations 上缓存 warm-start action distribution/log-prob，
    加行为 KL trust region，避免训练时额外常驻一份 7B reference model。
 

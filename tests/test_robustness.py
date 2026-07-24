@@ -6,6 +6,7 @@ from ra_loop.robustness import (
     CounterfactualRecoveryAdvantageResult,
     CounterfactualRecoveryMetrics,
     NamedJointLayout,
+    NominalConstraintUpdate,
     RolloutPlanEntry,
     apply_robot_init_perturbation,
     build_robot_init_rollout_plan,
@@ -15,7 +16,107 @@ from ra_loop.robustness import (
     compute_mode_stratified_rloo_advantages,
     materialize_rollout_plan,
     resolve_named_joint_layout,
+    update_nominal_performance_constraint,
 )
+
+
+def test_nominal_constraint_increases_multiplier_below_target() -> None:
+    result = update_nominal_performance_constraint(
+        observed_anchor_success_rate=0.70,
+        reference_anchor_success_rate=0.90,
+        allowed_drop=0.05,
+        previous_multiplier=0.20,
+        dual_learning_rate=2.0,
+    )
+
+    assert result == NominalConstraintUpdate(
+        multiplier=pytest.approx(0.50),
+        anchor_success_ema=0.70,
+        target_success_rate=0.85,
+        violation=pytest.approx(0.15),
+        constraint_active=True,
+    )
+
+
+def test_nominal_constraint_decreases_and_projects_multiplier() -> None:
+    result = update_nominal_performance_constraint(
+        observed_anchor_success_rate=0.95,
+        reference_anchor_success_rate=0.90,
+        allowed_drop=0.05,
+        previous_multiplier=0.05,
+        dual_learning_rate=2.0,
+    )
+
+    assert result.multiplier == 0.0
+    assert result.violation == pytest.approx(-0.10)
+    assert result.constraint_active is False
+
+
+def test_nominal_constraint_uses_ema_and_caps_multiplier() -> None:
+    smoothed = update_nominal_performance_constraint(
+        observed_anchor_success_rate=1.0,
+        reference_anchor_success_rate=0.90,
+        allowed_drop=0.05,
+        previous_multiplier=0.20,
+        previous_anchor_success_ema=0.80,
+        ema_decay=0.90,
+        dual_learning_rate=1.0,
+    )
+    capped = update_nominal_performance_constraint(
+        observed_anchor_success_rate=0.0,
+        reference_anchor_success_rate=1.0,
+        allowed_drop=0.0,
+        previous_multiplier=0.95,
+        dual_learning_rate=1.0,
+        max_multiplier=1.0,
+    )
+
+    assert smoothed.anchor_success_ema == pytest.approx(0.82)
+    assert smoothed.violation == pytest.approx(0.03)
+    assert smoothed.multiplier == pytest.approx(0.23)
+    assert capped.multiplier == 1.0
+
+
+def test_nominal_constraint_target_has_zero_floor() -> None:
+    result = update_nominal_performance_constraint(
+        observed_anchor_success_rate=0.0,
+        reference_anchor_success_rate=0.10,
+        allowed_drop=0.20,
+        previous_multiplier=0.0,
+    )
+
+    assert result.target_success_rate == 0.0
+    assert result.violation == 0.0
+    assert result.multiplier == 0.0
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "message"),
+    [
+        ({"observed_anchor_success_rate": np.nan}, "observed_anchor"),
+        ({"reference_anchor_success_rate": 1.1}, "reference_anchor"),
+        ({"allowed_drop": -0.1}, "allowed_drop"),
+        ({"previous_multiplier": -0.1}, "previous_multiplier"),
+        ({"previous_anchor_success_ema": 2.0}, "previous_anchor"),
+        ({"ema_decay": 1.0}, "less than 1"),
+        ({"dual_learning_rate": 0.0}, "dual_learning_rate"),
+        ({"max_multiplier": 0.0}, "max_multiplier"),
+        (
+            {"previous_multiplier": 2.0, "max_multiplier": 1.0},
+            "must not exceed",
+        ),
+    ],
+)
+def test_nominal_constraint_rejects_unsafe_inputs(kwargs, message) -> None:
+    defaults = dict(
+        observed_anchor_success_rate=0.8,
+        reference_anchor_success_rate=0.9,
+        allowed_drop=0.05,
+        previous_multiplier=0.1,
+    )
+    defaults.update(kwargs)
+    with pytest.raises(ValueError, match=message):
+        update_nominal_performance_constraint(**defaults)
 
 
 def test_counterfactual_advantage_uses_only_successful_anchor_pairs() -> None:
