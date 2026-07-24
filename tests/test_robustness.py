@@ -3,15 +3,122 @@ import pytest
 
 from ra_loop.robustness import (
     PANDA_ARM_JOINT_NAMES,
+    CounterfactualRecoveryMetrics,
     NamedJointLayout,
     RolloutPlanEntry,
     apply_robot_init_perturbation,
     build_robot_init_rollout_plan,
+    compute_counterfactual_recovery_metrics,
     compute_recovery_rewards,
     compute_mode_stratified_rloo_advantages,
     materialize_rollout_plan,
     resolve_named_joint_layout,
 )
+
+
+def test_counterfactual_metrics_cover_all_pair_outcomes() -> None:
+    result = compute_counterfactual_recovery_metrics(
+        [True, True, True, False, False, True, False, False],
+        [False, True] * 4,
+        [0, 0, 1, 1, 2, 2, 3, 3],
+    )
+
+    assert result == CounterfactualRecoveryMetrics(
+        both_success=1,
+        anchor_only_success=1,
+        perturbed_only_success=1,
+        both_failure=1,
+        complete_pairs=4,
+        dropped_incomplete_pairs=0,
+        anchor_success_rate=0.5,
+        perturbed_success_rate=0.5,
+        counterfactual_recovery_rate=0.5,
+        recoverability_gap=0.5,
+    )
+
+
+def test_counterfactual_metrics_condition_only_on_anchor_success() -> None:
+    result = compute_counterfactual_recovery_metrics(
+        [True, True, True, False, False, True, False, False],
+        [False, True] * 4,
+        [0, 0, 1, 1, 2, 2, 3, 3],
+    )
+
+    # The perturbed-only success and both-failure pairs do not enter the CRR
+    # denominator: they show base-policy uncertainty, not recoverability.
+    assert result.counterfactual_recovery_rate == 1 / 2
+    assert result.recoverability_gap == 1 / 2
+
+
+def test_counterfactual_metrics_report_incomplete_valid_pair() -> None:
+    result = compute_counterfactual_recovery_metrics(
+        [True, False, True, True],
+        [False, True, False, True],
+        [0, 0, 1, 1],
+        valid_mask=[True, True, True, False],
+    )
+
+    assert result.complete_pairs == 1
+    assert result.dropped_incomplete_pairs == 1
+    assert result.anchor_only_success == 1
+
+
+def test_counterfactual_metrics_disambiguate_reused_pair_ids_by_group() -> None:
+    result = compute_counterfactual_recovery_metrics(
+        [True, True, True, False],
+        [False, True, False, True],
+        [0, 0, 0, 0],
+        rollout_group_ids=[0, 0, 1, 1],
+    )
+
+    assert result.complete_pairs == 2
+    assert result.both_success == 1
+    assert result.anchor_only_success == 1
+
+
+def test_counterfactual_metrics_mark_crr_undefined_without_anchor_success() -> None:
+    result = compute_counterfactual_recovery_metrics(
+        [False, True, False, False],
+        [False, True, False, True],
+        [0, 0, 1, 1],
+    )
+
+    assert np.isnan(result.counterfactual_recovery_rate)
+    assert np.isnan(result.recoverability_gap)
+
+
+@pytest.mark.parametrize(
+    ("successes", "modes", "pair_ids", "kwargs", "message"),
+    [
+        ([1, 0], [False, True], [0, 0], {}, "boolean"),
+        ([True, False], [0, 1], [0, 0], {}, "boolean"),
+        ([True, False], [False, True], [False, False], {}, "integer"),
+        (
+            [True, False, True],
+            [False, True, False],
+            [0, 0, 0],
+            {},
+            "exactly one valid anchor",
+        ),
+        (
+            [True, False],
+            [False, True],
+            [0, 0],
+            {"valid_mask": [False, False]},
+            "at least one",
+        ),
+    ],
+)
+def test_counterfactual_metrics_reject_unsafe_inputs(
+    successes, modes, pair_ids, kwargs, message
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        compute_counterfactual_recovery_metrics(
+            successes,
+            modes,
+            pair_ids,
+            **kwargs,
+        )
 
 
 class FakeMujocoModel:

@@ -55,6 +55,142 @@ class RecoveryRewardResult:
     stats: dict[str, float]
 
 
+@dataclass(frozen=True)
+class CounterfactualRecoveryMetrics:
+    """Outcome counts and rates from complete anchor/perturbation pairs."""
+
+    both_success: int
+    anchor_only_success: int
+    perturbed_only_success: int
+    both_failure: int
+    complete_pairs: int
+    dropped_incomplete_pairs: int
+    anchor_success_rate: float
+    perturbed_success_rate: float
+    counterfactual_recovery_rate: float
+    recoverability_gap: float
+
+
+def compute_counterfactual_recovery_metrics(
+    successes: Sequence[bool],
+    perturbed_mask: Sequence[bool],
+    pair_ids: Sequence[int],
+    *,
+    rollout_group_ids: Sequence[int] | None = None,
+    valid_mask: Sequence[bool] | None = None,
+) -> CounterfactualRecoveryMetrics:
+    """Measure recovery only on complete, identity-matched rollout pairs.
+
+    ``counterfactual_recovery_rate`` is ``P(S_p=1 | S_a=1)`` over complete
+    pairs. Consequently, pairs whose anchor fails do not become evidence for
+    or against recovery. A pair with exactly one valid member is reported as
+    dropped instead of being silently treated as a failure.
+    """
+
+    success_array = np.asarray(successes)
+    if (
+        success_array.ndim != 1
+        or success_array.size == 0
+        or not np.issubdtype(success_array.dtype, np.bool_)
+    ):
+        raise ValueError("successes must be a non-empty boolean sequence")
+    count = success_array.size
+    success_array = success_array.astype(bool, copy=False)
+
+    def strict_bool_mask(values: Sequence[bool], name: str) -> np.ndarray:
+        raw = np.asarray(values)
+        if raw.shape != (count,) or not np.issubdtype(raw.dtype, np.bool_):
+            raise ValueError(f"{name} must contain one boolean per success")
+        return raw.astype(bool, copy=False)
+
+    def strict_id_array(values: Sequence[int], name: str) -> np.ndarray:
+        raw = np.asarray(values)
+        if (
+            raw.shape != (count,)
+            or np.issubdtype(raw.dtype, np.bool_)
+            or not np.issubdtype(raw.dtype, np.integer)
+        ):
+            raise ValueError(f"{name} must contain one integer per success")
+        result = raw.astype(np.int64, copy=False)
+        if (result < 0).any():
+            raise ValueError(f"{name} must be non-negative")
+        return result
+
+    perturbed = strict_bool_mask(perturbed_mask, "perturbed_mask")
+    pairs = strict_id_array(pair_ids, "pair_ids")
+    valid = (
+        np.ones(count, dtype=bool)
+        if valid_mask is None
+        else strict_bool_mask(valid_mask, "valid_mask")
+    )
+    if not valid.any():
+        raise ValueError("valid_mask must select at least one rollout")
+    groups = (
+        np.zeros(count, dtype=np.int64)
+        if rollout_group_ids is None
+        else strict_id_array(rollout_group_ids, "rollout_group_ids")
+    )
+
+    outcomes = np.zeros(4, dtype=np.int64)
+    dropped = 0
+    keys = sorted(set(zip(groups.tolist(), pairs.tolist())))
+    for group_id, pair_id in keys:
+        member_indices = np.flatnonzero(
+            valid & (groups == group_id) & (pairs == pair_id)
+        )
+        if member_indices.size == 0:
+            continue
+        if member_indices.size != 2:
+            if member_indices.size == 1:
+                dropped += 1
+                continue
+            raise ValueError(
+                f"rollout group {group_id} pair {pair_id} must contain "
+                "exactly one valid anchor and one valid perturbed rollout"
+            )
+        member_modes = perturbed[member_indices]
+        if int(member_modes.sum()) != 1:
+            raise ValueError(
+                f"rollout group {group_id} pair {pair_id} must contain "
+                "exactly one valid anchor and one valid perturbed rollout"
+            )
+        anchor_success = bool(success_array[member_indices[~member_modes][0]])
+        perturbed_success = bool(success_array[member_indices[member_modes][0]])
+        outcome_index = {
+            (True, True): 0,
+            (True, False): 1,
+            (False, True): 2,
+            (False, False): 3,
+        }[(anchor_success, perturbed_success)]
+        outcomes[outcome_index] += 1
+
+    complete = int(outcomes.sum())
+    if complete == 0:
+        raise ValueError("no complete valid anchor/perturbed pairs")
+    both_success, anchor_only, perturbed_only, both_failure = map(int, outcomes)
+    anchor_successes = both_success + anchor_only
+    perturbed_successes = both_success + perturbed_only
+    if anchor_successes:
+        recovery_rate = both_success / anchor_successes
+        recovery_gap = anchor_only / anchor_successes
+    else:
+        recovery_rate = float("nan")
+        recovery_gap = float("nan")
+
+    return CounterfactualRecoveryMetrics(
+        both_success=both_success,
+        anchor_only_success=anchor_only,
+        perturbed_only_success=perturbed_only,
+        both_failure=both_failure,
+        complete_pairs=complete,
+        dropped_incomplete_pairs=dropped,
+        anchor_success_rate=anchor_successes / complete,
+        perturbed_success_rate=perturbed_successes / complete,
+        counterfactual_recovery_rate=recovery_rate,
+        recoverability_gap=recovery_gap,
+    )
+
+
 def compute_mode_stratified_rloo_advantages(
     rewards: Sequence[float],
     perturbed_mask: Sequence[bool],
