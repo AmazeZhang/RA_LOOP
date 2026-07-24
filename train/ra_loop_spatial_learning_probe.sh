@@ -20,6 +20,13 @@ TASK_NAMES_OVERRIDE="[${TASK_NAME}]"
 LORA_ADAPTOR_CKPT=null
 TRAIN_SHUFFLE=false
 RECOVERY_LAMBDA=0.5
+ADVANTAGE_MODE=mode_stratified
+NOMINAL_ALLOWED_DROP=0.02
+NOMINAL_EMA_DECAY=0.9
+NOMINAL_DUAL_LR=0.1
+NOMINAL_INITIAL_MULTIPLIER=1.0
+NOMINAL_MAX_MULTIPLIER=10.0
+NOMINAL_CALIBRATION_BATCHES=3
 DEMOS_PER_ENV=4
 TASK_ROLLOUTS_PER_ENV=4
 TRAIN_SEED=10000
@@ -95,6 +102,37 @@ case "${RUN_PROFILE}" in
     REQUIRE_FRESH_OUTPUT=true
     TRAIN_SHUFFLE=true
     RECOVERY_LAMBDA=0.25
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate]'
+    ;;
+  counterfactual_smoke)
+    EXP_NAME=RA-LOOP_spatial_counterfactual_smoke
+    VARIANT_NAME=one_task_2step_k8_h220_fixed_l2_0p1_cra_npc_cal1_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_counterfactual_smoke"
+    N_STEPS=2
+    SAVE_INTERVAL=9999
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    RECOVERY_LAMBDA=0.0
+    ADVANTAGE_MODE=counterfactual_constrained
+    NOMINAL_CALIBRATION_BATCHES=1
+    LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
+    TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate]'
+    ;;
+  counterfactual_gate)
+    EXP_NAME=RA-LOOP_spatial_counterfactual_gate
+    VARIANT_NAME=four_task_50step_k8_h220_fixed_l2_0p1_cra_npc_cal3_step5_warmstart
+    OUTPUT_PATH="${PROJECT_ROOT}/outputs/ra_loop_spatial_counterfactual_gate"
+    N_STEPS=50
+    SAVE_INTERVAL=10
+    MODEL_LR=1e-5
+    HEADER_LR=1e-5
+    REQUIRE_FRESH_OUTPUT=true
+    TRAIN_SHUFFLE=true
+    RECOVERY_LAMBDA=0.0
+    ADVANTAGE_MODE=counterfactual_constrained
+    NOMINAL_CALIBRATION_BATCHES=3
     LORA_ADAPTOR_CKPT="${PILOT_STEP5_CKPT}"
     TASK_NAMES_OVERRIDE='[pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate,pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate,pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate,pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate]'
     ;;
@@ -220,7 +258,13 @@ OVERRIDES=(
   +algo.rollout_generator_factory.robot_init_sampling_mode=fixed_l2
   +algo.rollout_generator_factory.perturb_seed="${PERTURB_SEED}"
   algo.rl_optimizer_factory._target_=ra_loop.ript_recovery.RobotInitRecoveryOptimizer
-  +algo.rl_optimizer_factory.advantage_mode=mode_stratified
+  +algo.rl_optimizer_factory.advantage_mode="${ADVANTAGE_MODE}"
+  +algo.rl_optimizer_factory.nominal_allowed_drop="${NOMINAL_ALLOWED_DROP}"
+  +algo.rl_optimizer_factory.nominal_ema_decay="${NOMINAL_EMA_DECAY}"
+  +algo.rl_optimizer_factory.nominal_dual_learning_rate="${NOMINAL_DUAL_LR}"
+  +algo.rl_optimizer_factory.nominal_initial_multiplier="${NOMINAL_INITIAL_MULTIPLIER}"
+  +algo.rl_optimizer_factory.nominal_max_multiplier="${NOMINAL_MAX_MULTIPLIER}"
+  +algo.rl_optimizer_factory.nominal_calibration_batches="${NOMINAL_CALIBRATION_BATCHES}"
   reward_function._target_=ra_loop.ript_recovery.RobotInitRecoveryReward
   +reward_function.lambda_recovery="${RECOVERY_LAMBDA}"
   algo.rloo_batch_size=8
@@ -347,7 +391,8 @@ export NCCL_TIMEOUT=108000
 echo "Starting bounded RA-LOOP ${RUN_PROFILE} on physical GPU ${GPU_ID}"
 echo "GPU before start: used=${GPU_USED}/${GPU_TOTAL} MiB util=${GPU_UTIL}% temp=${GPU_TEMP}C"
 echo "tasks=${TASK_NAMES_OVERRIDE} demos_per_env=${DEMOS_PER_ENV} task_rollouts_per_env=${TASK_ROLLOUTS_PER_ENV}"
-echo "steps=${N_STEPS} K=8 pairs=4 horizon=220 fixed_l2=0.1rad lambda_r=${RECOVERY_LAMBDA} scale=5 train_seed=${TRAIN_SEED} perturb_seed=${PERTURB_SEED}"
+echo "steps=${N_STEPS} K=8 pairs=4 horizon=220 fixed_l2=0.1rad lambda_r=${RECOVERY_LAMBDA} advantage_mode=${ADVANTAGE_MODE} scale=5 train_seed=${TRAIN_SEED} perturb_seed=${PERTURB_SEED}"
+echo "nominal_allowed_drop=${NOMINAL_ALLOWED_DROP} ema_decay=${NOMINAL_EMA_DECAY} dual_lr=${NOMINAL_DUAL_LR} initial_mu=${NOMINAL_INITIAL_MULTIPLIER} max_mu=${NOMINAL_MAX_MULTIPLIER} calibration_batches_per_task=${NOMINAL_CALIBRATION_BATCHES}"
 echo "lora_adaptor_ckpt=${LORA_ADAPTOR_CKPT}"
 echo "lr=${MODEL_LR} header_lr=${HEADER_LR} save_interval=${SAVE_INTERVAL} available_bytes=${AVAILABLE_BYTES}"
 echo "W&B=disabled periodic_eval=disabled"

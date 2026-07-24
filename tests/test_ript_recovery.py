@@ -226,21 +226,40 @@ class FakeRolloutGenerator:
         return self.episodes, self.task_ids, self.valid_mask, 1
 
 
-def recovery_episode(*, perturbed: bool, success: bool):
-    return {
+def recovery_episode(*, perturbed: bool, success: bool, pair_id=None):
+    episode = {
         "perturb_type": "robot_init" if perturbed else "none",
         "is_perturbed": perturbed,
         "perturb_applied": perturbed,
         "success": success,
     }
+    if pair_id is not None:
+        episode["pair_id"] = pair_id
+    return episode
 
 
-def make_optimizer(generator, lambda_recovery=0.5, advantage_mode="mode_stratified"):
+def make_optimizer(
+    generator,
+    lambda_recovery=0.5,
+    advantage_mode="mode_stratified",
+    nominal_calibration_batches=1,
+):
     optimizer = RobotInitRecoveryOptimizer.__new__(RobotInitRecoveryOptimizer)
     optimizer.rollout_generator = generator
     optimizer.reward_function = RobotInitRecoveryReward(lambda_recovery)
     optimizer.advantage_mode = advantage_mode
     optimizer.rloo_over_all_rollouts = False
+    optimizer.nominal_allowed_drop = 0.02
+    optimizer.nominal_ema_decay = 0.9
+    optimizer.nominal_dual_learning_rate = 0.1
+    optimizer.nominal_initial_multiplier = 1.0
+    optimizer.nominal_max_multiplier = 10.0
+    optimizer.nominal_calibration_batches = nominal_calibration_batches
+    optimizer._nominal_calibration_success_sums = {}
+    optimizer._nominal_calibration_batch_counts = {}
+    optimizer._nominal_reference_by_task = {}
+    optimizer._nominal_multiplier_by_task = {}
+    optimizer._nominal_ema_by_task = {}
     return optimizer
 
 
@@ -275,7 +294,12 @@ def install_fake_parent_optimizer(monkeypatch, parent_calls, *, call_twice=False
     )
 
 
-def install_advantage_observing_parent(monkeypatch, observed):
+def install_advantage_observing_parent(
+    monkeypatch,
+    observed,
+    *,
+    exercise_optimizers=False,
+):
     def fake_optimize(
         self, model, batch, optimizers, data_iterator=None, dataloader=None
     ):
@@ -294,6 +318,10 @@ def install_advantage_observing_parent(monkeypatch, observed):
         baseline = (grouped.sum(axis=1, keepdims=True) - grouped) / (size - 1)
         advantage = (grouped - baseline).reshape(-1)
         observed.append((rewards, advantage, np.asarray(valid_mask)))
+        if exercise_optimizers:
+            for optimizer in optimizers:
+                optimizer.step()
+                optimizer.zero_grad()
         return {
             "mean_scores": float(rewards.mean()),
             "mean_rlhf_reward": float(rewards.mean()),
@@ -303,6 +331,18 @@ def install_advantage_observing_parent(monkeypatch, observed):
     monkeypatch.setattr(
         adapter_module.RLOptimizerOpenVLAOFT, "optimize", fake_optimize
     )
+
+
+class CountingOptimizer:
+    def __init__(self):
+        self.step_calls = 0
+        self.zero_grad_calls = 0
+
+    def step(self):
+        self.step_calls += 1
+
+    def zero_grad(self):
+        self.zero_grad_calls += 1
 
 
 def test_recovery_reward_requires_actual_successful_perturbation() -> None:
@@ -386,6 +426,176 @@ def test_optimizer_makes_upstream_use_exact_stratified_advantages(monkeypatch) -
     assert metrics["advantage_mode_stratified"] == 1.0
     assert metrics["mean_anchor_advantage"] == pytest.approx(0.0)
     assert metrics["mean_perturbed_advantage"] == pytest.approx(0.0)
+
+
+def test_counterfactual_optimizer_calibrates_then_uses_exact_combined_advantage(
+    monkeypatch,
+) -> None:
+    episodes = [
+        recovery_episode(perturbed=False, success=True, pair_id=0),
+        recovery_episode(perturbed=True, success=True, pair_id=0),
+        recovery_episode(perturbed=False, success=True, pair_id=1),
+        recovery_episode(perturbed=True, success=False, pair_id=1),
+        recovery_episode(perturbed=False, success=False, pair_id=2),
+        recovery_episode(perturbed=True, success=True, pair_id=2),
+        recovery_episode(perturbed=False, success=False, pair_id=3),
+        recovery_episode(perturbed=True, success=False, pair_id=3),
+    ]
+    generator = FakeRolloutGenerator(
+        episodes,
+        [0] * 8,
+        [True] * 8,
+        rloo_batch_size=8,
+    )
+    optimizer = make_optimizer(
+        generator,
+        lambda_recovery=0.0,
+        advantage_mode="counterfactual_constrained",
+    )
+    observed = []
+    counting_optimizer = CountingOptimizer()
+    install_advantage_observing_parent(
+        monkeypatch,
+        observed,
+        exercise_optimizers=True,
+    )
+
+    calibration_metrics = optimizer.optimize(
+        SimpleNamespace(),
+        {},
+        [counting_optimizer],
+    )
+    training_metrics = optimizer.optimize(
+        SimpleNamespace(),
+        {},
+        [counting_optimizer],
+    )
+
+    assert len(observed) == 2
+    np.testing.assert_array_equal(observed[0][1], np.zeros(8))
+    multiplier = 1.0 + 0.1 * ((0.5 - 0.02) - 0.5)
+    expected = np.asarray(
+        [
+            multiplier * 2 / 3,
+            1.0,
+            multiplier * 2 / 3,
+            -1.0,
+            -multiplier * 2 / 3,
+            0.0,
+            -multiplier * 2 / 3,
+            0.0,
+        ]
+    )
+    np.testing.assert_allclose(observed[1][1], expected, atol=1e-15)
+    assert calibration_metrics["nominal_calibrating_tasks"] == 1.0
+    assert calibration_metrics["parameter_update_applied"] == 0.0
+    assert calibration_metrics["nominal_reference/spatial-task"] == 0.5
+    assert training_metrics[
+        "advantage_mode_counterfactual_constrained"
+    ] == 1.0
+    assert training_metrics["cra_eligible_pairs"] == 2.0
+    assert training_metrics["parameter_update_applied"] == 1.0
+    assert training_metrics["cra_excluded_anchor_failure_pairs"] == 2.0
+    assert training_metrics["nominal_multiplier/spatial-task"] == pytest.approx(
+        multiplier
+    )
+    assert training_metrics["nominal_violation/spatial-task"] == pytest.approx(
+        -0.02
+    )
+    assert counting_optimizer.step_calls == 1
+    assert counting_optimizer.zero_grad_calls == 2
+
+
+def test_counterfactual_optimizer_does_not_commit_state_after_parent_failure(
+    monkeypatch,
+) -> None:
+    episodes = [
+        recovery_episode(perturbed=False, success=True, pair_id=0),
+        recovery_episode(perturbed=True, success=True, pair_id=0),
+        recovery_episode(perturbed=False, success=True, pair_id=1),
+        recovery_episode(perturbed=True, success=False, pair_id=1),
+    ]
+    generator = FakeRolloutGenerator(episodes, [0] * 4, [True] * 4)
+    optimizer = make_optimizer(
+        generator,
+        lambda_recovery=0.0,
+        advantage_mode="counterfactual_constrained",
+    )
+    parent_calls = []
+    install_fake_parent_optimizer(monkeypatch, parent_calls, fail=True)
+
+    with pytest.raises(RuntimeError, match="PPO failure"):
+        optimizer.optimize(SimpleNamespace(), {}, [])
+
+    assert optimizer._nominal_calibration_success_sums == {}
+    assert optimizer._nominal_calibration_batch_counts == {}
+    assert optimizer._nominal_reference_by_task == {}
+    assert optimizer._nominal_multiplier_by_task == {}
+    assert optimizer._nominal_ema_by_task == {}
+
+
+def test_counterfactual_optimizer_waits_for_all_task_calibrations(
+    monkeypatch,
+) -> None:
+    episodes = [
+        recovery_episode(perturbed=False, success=True, pair_id=0),
+        recovery_episode(perturbed=True, success=True, pair_id=0),
+        recovery_episode(perturbed=False, success=True, pair_id=1),
+        recovery_episode(perturbed=True, success=False, pair_id=1),
+    ]
+    generator = FakeRolloutGenerator(episodes, [0] * 4, [True] * 4)
+    generator.task_names_to_use = ["task-zero", "task-one"]
+    optimizer = make_optimizer(
+        generator,
+        lambda_recovery=0.0,
+        advantage_mode="counterfactual_constrained",
+    )
+    observed = []
+    counting_optimizer = CountingOptimizer()
+    install_advantage_observing_parent(
+        monkeypatch,
+        observed,
+        exercise_optimizers=True,
+    )
+
+    first = optimizer.optimize(SimpleNamespace(), {}, [counting_optimizer])
+    second = optimizer.optimize(SimpleNamespace(), {}, [counting_optimizer])
+    generator.task_ids = torch.tensor([1] * 4)
+    third = optimizer.optimize(SimpleNamespace(), {}, [counting_optimizer])
+    generator.task_ids = torch.tensor([0] * 4)
+    fourth = optimizer.optimize(SimpleNamespace(), {}, [counting_optimizer])
+
+    for index in range(3):
+        np.testing.assert_array_equal(observed[index][1], np.zeros(4))
+    assert np.count_nonzero(observed[3][1]) == 2
+    assert first["nominal_global_calibration_complete"] == 0.0
+    assert second["nominal_global_calibration_complete"] == 0.0
+    assert third["nominal_global_calibration_complete"] == 1.0
+    assert fourth["parameter_update_applied"] == 1.0
+    assert counting_optimizer.step_calls == 1
+    assert counting_optimizer.zero_grad_calls == 4
+    assert optimizer._nominal_multiplier_by_task[0] == pytest.approx(0.998)
+    assert optimizer._nominal_multiplier_by_task[1] == 1.0
+
+
+def test_counterfactual_optimizer_requires_pair_metadata(monkeypatch) -> None:
+    episodes = [
+        recovery_episode(perturbed=False, success=True),
+        recovery_episode(perturbed=True, success=True),
+        recovery_episode(perturbed=False, success=True),
+        recovery_episode(perturbed=True, success=False),
+    ]
+    generator = FakeRolloutGenerator(episodes, [0] * 4, [True] * 4)
+    optimizer = make_optimizer(
+        generator,
+        lambda_recovery=0.0,
+        advantage_mode="counterfactual_constrained",
+    )
+    parent_calls = []
+    install_fake_parent_optimizer(monkeypatch, parent_calls)
+
+    with pytest.raises(RuntimeError, match="pair_id"):
+        optimizer.optimize(SimpleNamespace(), {}, [])
 
 
 def test_stratified_optimizer_restores_hooks_when_group_validation_fails(

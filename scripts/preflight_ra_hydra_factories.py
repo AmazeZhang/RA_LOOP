@@ -98,8 +98,18 @@ def main() -> None:
             raise AssertionError("wrong in-process environment runner target")
         if not rollout.enable_rollout_stats_tracking:
             raise AssertionError("misrouted rollout stats flag was not forwarded")
-        if optimizer.advantage_mode != "mode_stratified":
-            raise AssertionError("mode-stratified advantage was not configured")
+        if optimizer.advantage_mode not in {
+            "counterfactual_constrained",
+            "mode_stratified",
+        }:
+            raise AssertionError("custom RA-LOOP advantage was not configured")
+        if optimizer.advantage_mode == "counterfactual_constrained":
+            if reward.lambda_recovery != 0.0:
+                raise AssertionError(
+                    "counterfactual mode requires zero legacy recovery bonus"
+                )
+            if optimizer.nominal_calibration_batches < 1:
+                raise AssertionError("nominal calibration must be enabled")
 
         print(
             json.dumps(
@@ -118,6 +128,22 @@ def main() -> None:
                     "perturb_seed": int(rollout.perturb_seed),
                     "lambda_recovery": float(reward.lambda_recovery),
                     "advantage_mode": str(optimizer.advantage_mode),
+                    "nominal_allowed_drop": float(
+                        optimizer.nominal_allowed_drop
+                    ),
+                    "nominal_ema_decay": float(optimizer.nominal_ema_decay),
+                    "nominal_dual_learning_rate": float(
+                        optimizer.nominal_dual_learning_rate
+                    ),
+                    "nominal_initial_multiplier": float(
+                        optimizer.nominal_initial_multiplier
+                    ),
+                    "nominal_max_multiplier": float(
+                        optimizer.nominal_max_multiplier
+                    ),
+                    "nominal_calibration_batches": int(
+                        optimizer.nominal_calibration_batches
+                    ),
                     "rollout_stats_tracking": bool(
                         rollout.enable_rollout_stats_tracking
                     ),

@@ -130,6 +130,11 @@ deterministic 独立评测成功率直接作为 stochastic training batch 的约
 2. v2：在固定 clean observations 上缓存 warm-start action distribution/log-prob，
    加行为 KL trust region，避免训练时额外常驻一份 7B reference model。
 
+多任务校准必须使用全局 barrier：所有任务 reference 完成前不允许任何 PPO 参数
+更新，否则先完成校准的任务会改变模型，使后完成任务测到的已不再是 warm-start。
+校准/全零 advantage 还必须跳过 AdamW `step()`，避免 decoupled weight decay 在零
+policy-gradient 下改变参数。
+
 成功率约束是论文语义，cached KL 是低方差的执行护栏，两者分别报告。
 
 ### 4.3 Recovery-Frontier Curriculum（RFC）

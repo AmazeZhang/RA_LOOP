@@ -18,11 +18,32 @@ from ript.algos.rl_optimizers.rollout_generator import RolloutGenerator
 from ra_loop.robustness import (
     NamedJointLayout,
     build_robot_init_rollout_plan,
+    compute_counterfactual_recovery_advantages,
     compute_mode_stratified_rloo_advantages,
     compute_recovery_rewards,
     materialize_rollout_plan,
     resolve_named_joint_layout,
+    update_nominal_performance_constraint,
 )
+
+
+class _OptimizerStepGate:
+    """Delegate optimizer APIs while conditionally suppressing parameter steps."""
+
+    def __init__(self, optimizer: Any, should_step: Callable[[], bool]) -> None:
+        self._optimizer = optimizer
+        self._should_step = should_step
+
+    def step(self, *args: Any, **kwargs: Any):
+        if self._should_step():
+            return self._optimizer.step(*args, **kwargs)
+        return None
+
+    def zero_grad(self, *args: Any, **kwargs: Any):
+        return self._optimizer.zero_grad(*args, **kwargs)
+
+    def __getattr__(self, name: str):
+        return getattr(self._optimizer, name)
 
 
 def resolve_in_process_joint_layout(created_env: Any) -> NamedJointLayout:
@@ -236,13 +257,19 @@ class RobotInitRecoveryReward(BaseRewardFunction):
 
 
 class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
-    """Run upstream PPO once with optional mode-stratified RLOO advantages."""
+    """Run upstream PPO once with validated RA-LOOP advantages."""
 
     def __init__(
         self,
         *args: Any,
         enable_rollout_stats_tracking: bool = False,
         advantage_mode: str = "mode_stratified",
+        nominal_allowed_drop: float = 0.02,
+        nominal_ema_decay: float = 0.9,
+        nominal_dual_learning_rate: float = 0.1,
+        nominal_initial_multiplier: float = 1.0,
+        nominal_max_multiplier: float = 10.0,
+        nominal_calibration_batches: int = 3,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
@@ -250,13 +277,56 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
             raise TypeError(
                 "RobotInitRecoveryOptimizer requires RobotInitRecoveryReward"
             )
-        if advantage_mode not in {"mode_stratified", "upstream"}:
+        if advantage_mode not in {
+            "counterfactual_constrained",
+            "mode_stratified",
+            "upstream",
+        }:
             raise ValueError("unsupported recovery advantage_mode")
-        if advantage_mode == "mode_stratified" and self.rloo_over_all_rollouts:
+        if (
+            advantage_mode in {"counterfactual_constrained", "mode_stratified"}
+            and self.rloo_over_all_rollouts
+        ):
             raise ValueError(
-                "mode-stratified RLOO requires per-rollout-group upstream RLOO"
+                "custom RA-LOOP advantages require per-rollout-group upstream RLOO"
             )
+        if (
+            advantage_mode == "counterfactual_constrained"
+            and self.reward_function.lambda_recovery != 0.0
+        ):
+            raise ValueError(
+                "counterfactual-constrained mode requires lambda_recovery=0"
+            )
+        if (
+            isinstance(nominal_calibration_batches, bool)
+            or not isinstance(nominal_calibration_batches, int)
+            or nominal_calibration_batches < 1
+        ):
+            raise ValueError("nominal_calibration_batches must be a positive integer")
+
+        # Validate all scalar constraint settings through the CPU primitive.
+        update_nominal_performance_constraint(
+            observed_anchor_success_rate=1.0,
+            reference_anchor_success_rate=1.0,
+            allowed_drop=nominal_allowed_drop,
+            previous_multiplier=nominal_initial_multiplier,
+            previous_anchor_success_ema=1.0,
+            ema_decay=nominal_ema_decay,
+            dual_learning_rate=nominal_dual_learning_rate,
+            max_multiplier=nominal_max_multiplier,
+        )
         self.advantage_mode = advantage_mode
+        self.nominal_allowed_drop = float(nominal_allowed_drop)
+        self.nominal_ema_decay = float(nominal_ema_decay)
+        self.nominal_dual_learning_rate = float(nominal_dual_learning_rate)
+        self.nominal_initial_multiplier = float(nominal_initial_multiplier)
+        self.nominal_max_multiplier = float(nominal_max_multiplier)
+        self.nominal_calibration_batches = nominal_calibration_batches
+        self._nominal_calibration_success_sums: dict[int, float] = {}
+        self._nominal_calibration_batch_counts: dict[int, int] = {}
+        self._nominal_reference_by_task: dict[int, float] = {}
+        self._nominal_multiplier_by_task: dict[int, float] = {}
+        self._nominal_ema_by_task: dict[int, float] = {}
         self.rollout_generator.enable_rollout_stats_tracking = bool(
             enable_rollout_stats_tracking
         )
@@ -279,11 +349,13 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
             raise ValueError(
                 "recovery metric correction is currently gated to one GPU"
             )
-        if self.advantage_mode == "mode_stratified" and getattr(
-            self, "rloo_over_all_rollouts", False
-        ):
+        custom_advantage = self.advantage_mode in {
+            "counterfactual_constrained",
+            "mode_stratified",
+        }
+        if custom_advantage and getattr(self, "rloo_over_all_rollouts", False):
             raise ValueError(
-                "mode-stratified RLOO requires per-rollout-group upstream RLOO"
+                "custom RA-LOOP advantages require per-rollout-group upstream RLOO"
             )
 
         generator = self.rollout_generator
@@ -293,39 +365,46 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
         captured: list[tuple[Any, Any, Any, Any]] = []
         stratified_advantages: np.ndarray | None = None
         surrogate_rewards: np.ndarray | None = None
+        counterfactual_result = None
+        pending_nominal_state = None
+        constraint_updates: dict[int, Any] = {}
+        calibrating_task_ids: set[int] = set()
+        allow_parameter_update = self.advantage_mode != "counterfactual_constrained"
 
         def capture_once(*args, **kwargs):
-            nonlocal stratified_advantages, surrogate_rewards
+            nonlocal allow_parameter_update
+            nonlocal calibrating_task_ids
+            nonlocal constraint_updates
+            nonlocal counterfactual_result
+            nonlocal pending_nominal_state
+            nonlocal stratified_advantages
+            nonlocal surrogate_rewards
             if captured:
                 raise RuntimeError("upstream PPO requested rollouts more than once")
             result = original_generate(*args, **kwargs)
             if not isinstance(result, tuple) or len(result) != 4:
                 raise RuntimeError("rollout generator returned an invalid result")
             captured.append(result)
-            if self.advantage_mode == "mode_stratified":
-                episodes, _, valid_mask, _ = result
+            if custom_advantage:
+                episodes, task_ids, valid_mask, _ = result
                 rloo_batch_size = int(generator.rloo_batch_size)
                 if rloo_batch_size < 4 or rloo_batch_size % 2 != 0:
                     raise RuntimeError(
-                        "mode-stratified RLOO requires an even batch size >= 4"
+                        "custom RA-LOOP advantages require an even batch size >= 4"
                     )
                 if len(episodes) == 0 or len(episodes) % rloo_batch_size != 0:
                     raise RuntimeError(
                         "rollout count must be a positive multiple of RLOO batch size"
                     )
                 valid = self._as_numpy(valid_mask).astype(bool, copy=False)
-                if valid.shape != (len(episodes),):
-                    raise RuntimeError("rollout valid_mask shape mismatch")
-                base_scores = [
-                    float(bool(episode.get("success", False)))
-                    for episode in episodes
-                ]
-                reward_result = compute_recovery_rewards(
-                    episodes,
-                    base_scores,
-                    lambda_recovery=self.reward_function.lambda_recovery,
-                    valid_mask=valid,
+                ids = self._as_numpy(task_ids).astype(np.int64, copy=False)
+                if valid.shape != (len(episodes),) or ids.shape != (len(episodes),):
+                    raise RuntimeError("rollout task_ids/valid_mask shape mismatch")
+                successes = np.asarray(
+                    [bool(episode.get("success", False)) for episode in episodes],
+                    dtype=bool,
                 )
+                base_scores = successes.astype(np.float64)
                 perturbed = np.asarray(
                     [bool(episode.get("is_perturbed", False)) for episode in episodes],
                     dtype=bool,
@@ -333,15 +412,161 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
                 rollout_group_ids = (
                     np.arange(len(episodes), dtype=np.int64) // rloo_batch_size
                 )
-                stratified_advantages = compute_mode_stratified_rloo_advantages(
-                    reward_result.total,
-                    perturbed,
-                    rollout_group_ids=rollout_group_ids,
-                    valid_mask=valid,
-                )
+
+                if self.advantage_mode == "mode_stratified":
+                    reward_result = compute_recovery_rewards(
+                        episodes,
+                        base_scores,
+                        lambda_recovery=self.reward_function.lambda_recovery,
+                        valid_mask=valid,
+                    )
+                    stratified_advantages = (
+                        compute_mode_stratified_rloo_advantages(
+                            reward_result.total,
+                            perturbed,
+                            rollout_group_ids=rollout_group_ids,
+                            valid_mask=valid,
+                        )
+                    )
+                else:
+                    pair_ids = []
+                    for episode in episodes:
+                        pair_id = episode.get("pair_id")
+                        if (
+                            isinstance(pair_id, bool)
+                            or not isinstance(pair_id, (int, np.integer))
+                            or pair_id < 0
+                        ):
+                            raise RuntimeError(
+                                "counterfactual mode requires non-negative pair_id"
+                            )
+                        pair_ids.append(int(pair_id))
+
+                    anchor_advantages = compute_mode_stratified_rloo_advantages(
+                        base_scores,
+                        perturbed,
+                        rollout_group_ids=rollout_group_ids,
+                        valid_mask=valid,
+                    )
+                    counterfactual_result = (
+                        compute_counterfactual_recovery_advantages(
+                            successes,
+                            perturbed,
+                            pair_ids,
+                            rollout_group_ids=rollout_group_ids,
+                            valid_mask=valid,
+                        )
+                    )
+                    stratified_advantages = (
+                        counterfactual_result.advantages.copy()
+                    )
+
+                    calibration_sums = dict(
+                        self._nominal_calibration_success_sums
+                    )
+                    calibration_counts = dict(
+                        self._nominal_calibration_batch_counts
+                    )
+                    references = dict(self._nominal_reference_by_task)
+                    multipliers = dict(self._nominal_multiplier_by_task)
+                    anchor_emas = dict(self._nominal_ema_by_task)
+                    expected_task_count = len(generator.task_names_to_use)
+                    if expected_task_count < 1:
+                        raise RuntimeError(
+                            "counterfactual mode requires at least one task"
+                        )
+                    global_calibration_ready = (
+                        len(references) == expected_task_count
+                    )
+
+                    for group_id in np.unique(rollout_group_ids):
+                        group = rollout_group_ids == group_id
+                        group_task_ids = np.unique(ids[group])
+                        if group_task_ids.size != 1:
+                            raise RuntimeError(
+                                "one rollout group must contain exactly one task id"
+                            )
+                        task_id = int(group_task_ids[0])
+                        anchor_valid = group & valid & ~perturbed
+                        if not anchor_valid.any():
+                            raise RuntimeError(
+                                "counterfactual group contains no valid anchors"
+                            )
+                        observed_anchor_rate = float(
+                            successes[anchor_valid].mean()
+                        )
+
+                        if task_id not in references:
+                            calibrating_task_ids.add(task_id)
+                            calibration_sums[task_id] = (
+                                calibration_sums.get(task_id, 0.0)
+                                + observed_anchor_rate
+                            )
+                            calibration_counts[task_id] = (
+                                calibration_counts.get(task_id, 0) + 1
+                            )
+                            stratified_advantages[group] = 0.0
+                            if (
+                                calibration_counts[task_id]
+                                == self.nominal_calibration_batches
+                            ):
+                                reference = (
+                                    calibration_sums[task_id]
+                                    / calibration_counts[task_id]
+                                )
+                                references[task_id] = reference
+                                multipliers[task_id] = (
+                                    self.nominal_initial_multiplier
+                                )
+                                anchor_emas[task_id] = reference
+                            continue
+
+                        if not global_calibration_ready:
+                            stratified_advantages[group] = 0.0
+                            continue
+
+                        update = update_nominal_performance_constraint(
+                            observed_anchor_success_rate=observed_anchor_rate,
+                            reference_anchor_success_rate=references[task_id],
+                            allowed_drop=self.nominal_allowed_drop,
+                            previous_multiplier=multipliers[task_id],
+                            previous_anchor_success_ema=anchor_emas[task_id],
+                            ema_decay=self.nominal_ema_decay,
+                            dual_learning_rate=self.nominal_dual_learning_rate,
+                            max_multiplier=self.nominal_max_multiplier,
+                        )
+                        multipliers[task_id] = update.multiplier
+                        anchor_emas[task_id] = update.anchor_success_ema
+                        constraint_updates[task_id] = update
+                        stratified_advantages[anchor_valid] = (
+                            update.multiplier
+                            * anchor_advantages[anchor_valid]
+                        )
+
+                    if (
+                        not global_calibration_ready
+                        or calibrating_task_ids
+                        or len(references) < expected_task_count
+                    ):
+                        # All task references must describe the same untouched
+                        # warm-start policy. Do not let an early-calibrated task
+                        # update parameters while another task is calibrating.
+                        stratified_advantages[:] = 0.0
+
+                    pending_nominal_state = (
+                        calibration_sums,
+                        calibration_counts,
+                        references,
+                        multipliers,
+                        anchor_emas,
+                    )
+                    allow_parameter_update = bool(
+                        np.any(stratified_advantages != 0.0)
+                    )
+
                 # Upstream maps rewards q to K/(K-1) * (q - mean(q)). Each
-                # stratified group sums to zero, as do its invalid zero pads,
-                # so this inverse makes upstream recover the exact target.
+                # custom group sums to zero, as do its invalid zero pads, so
+                # this inverse makes upstream recover the exact target.
                 surrogate_rewards = (
                     (rloo_batch_size - 1)
                     / rloo_batch_size
@@ -368,13 +593,22 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
             return float(surrogate_rewards[rollout_idx])
 
         generator.generate_rollouts = capture_once
-        if self.advantage_mode == "mode_stratified":
+        if custom_advantage:
             reward_function.compute_reward = reward_for_upstream
+        parent_optimizers = optimizers
+        if self.advantage_mode == "counterfactual_constrained":
+            parent_optimizers = [
+                _OptimizerStepGate(
+                    optimizer,
+                    lambda: allow_parameter_update,
+                )
+                for optimizer in optimizers
+            ]
         try:
             metrics = super().optimize(
                 model,
                 batch,
-                optimizers,
+                parent_optimizers,
                 data_iterator=data_iterator,
                 dataloader=dataloader,
             )
@@ -383,11 +617,20 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
                 generator.generate_rollouts = previous_instance_value
             else:
                 delattr(generator, "generate_rollouts")
-            if self.advantage_mode == "mode_stratified":
+            if custom_advantage:
                 if had_reward_override:
                     reward_function.compute_reward = previous_reward_value
                 else:
                     delattr(reward_function, "compute_reward")
+
+        if pending_nominal_state is not None:
+            (
+                self._nominal_calibration_success_sums,
+                self._nominal_calibration_batch_counts,
+                self._nominal_reference_by_task,
+                self._nominal_multiplier_by_task,
+                self._nominal_ema_by_task,
+            ) = pending_nominal_state
 
         if len(captured) != 1:
             raise RuntimeError("upstream PPO did not request exactly one rollout batch")
@@ -416,6 +659,11 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
         metrics["advantage_mode_stratified"] = float(
             self.advantage_mode == "mode_stratified"
         )
+        metrics["advantage_mode_counterfactual_constrained"] = float(
+            self.advantage_mode == "counterfactual_constrained"
+        )
+        if self.advantage_mode == "counterfactual_constrained":
+            metrics["parameter_update_applied"] = float(allow_parameter_update)
         if stratified_advantages is not None:
             perturbed = np.asarray(
                 [bool(episode.get("is_perturbed", False)) for episode in episodes],
@@ -429,6 +677,29 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
             metrics["mean_perturbed_advantage"] = float(
                 stratified_advantages[perturbed_valid].mean()
             )
+        if counterfactual_result is not None:
+            metrics["cra_eligible_pairs"] = float(
+                counterfactual_result.eligible_pairs
+            )
+            metrics["cra_excluded_anchor_failure_pairs"] = float(
+                counterfactual_result.excluded_anchor_failure_pairs
+            )
+            metrics["cra_dropped_invalid_pairs"] = float(
+                counterfactual_result.dropped_invalid_pairs
+            )
+            metrics["cra_groups_with_update"] = float(
+                counterfactual_result.groups_with_update
+            )
+            metrics["cra_groups_without_baseline"] = float(
+                counterfactual_result.groups_without_baseline
+            )
+            metrics["nominal_calibrating_tasks"] = float(
+                len(calibrating_task_ids)
+            )
+            metrics["nominal_global_calibration_complete"] = float(
+                len(self._nominal_reference_by_task)
+                == len(generator.task_names_to_use)
+            )
 
         successes = np.asarray(base_scores, dtype=np.float64)
         for task_id in np.unique(ids[valid]):
@@ -439,6 +710,23 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
                 raise RuntimeError(f"invalid rollout task id {task_id}") from error
             metrics[f"rl_train_succeess_rate/{task_name}"] = float(
                 successes[task_mask].mean()
+            )
+            if int(task_id) in self._nominal_reference_by_task:
+                metrics[f"nominal_reference/{task_name}"] = (
+                    self._nominal_reference_by_task[int(task_id)]
+                )
+                metrics[f"nominal_multiplier/{task_name}"] = (
+                    self._nominal_multiplier_by_task[int(task_id)]
+                )
+                metrics[f"nominal_anchor_ema/{task_name}"] = (
+                    self._nominal_ema_by_task[int(task_id)]
+                )
+            if int(task_id) in constraint_updates:
+                metrics[f"nominal_violation/{task_name}"] = (
+                    constraint_updates[int(task_id)].violation
+                )
+            metrics[f"nominal_calibration_batches/{task_name}"] = float(
+                self._nominal_calibration_batch_counts.get(int(task_id), 0)
             )
 
         return metrics

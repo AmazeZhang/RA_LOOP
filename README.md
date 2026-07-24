@@ -110,6 +110,7 @@ RA-LOOP/
 ## 快速导航
 
 - 当前 ICLR 方法重定向 → 看 `docs/RA_LOOP_ICLR_METHOD_REDIRECT_20260723.md`
+- Counterfactual 训练前状态 → 看 `docs/RA_LOOP_COUNTERFACTUAL_TRAINING_READY_20260724.md`
 - 当前全任务训练结果 → 看 `docs/RA_LOOP_FULLTASK_LAMBDA_ABLATION_RESULT_20260723.md`
 - 正在运行的独立评测 → 看 `docs/RA_LOOP_FULLTASK_CANDIDATE_EVAL_READY_20260723.md`
 - 想立刻开始 → 看 `setup/step01_env.sh`
