@@ -3,17 +3,126 @@ import pytest
 
 from ra_loop.robustness import (
     PANDA_ARM_JOINT_NAMES,
+    CounterfactualRecoveryAdvantageResult,
     CounterfactualRecoveryMetrics,
     NamedJointLayout,
     RolloutPlanEntry,
     apply_robot_init_perturbation,
     build_robot_init_rollout_plan,
+    compute_counterfactual_recovery_advantages,
     compute_counterfactual_recovery_metrics,
     compute_recovery_rewards,
     compute_mode_stratified_rloo_advantages,
     materialize_rollout_plan,
     resolve_named_joint_layout,
 )
+
+
+def test_counterfactual_advantage_uses_only_successful_anchor_pairs() -> None:
+    result = compute_counterfactual_recovery_advantages(
+        # Pair outcomes: SS, SF, FS, FF.
+        [True, True, True, False, False, True, False, False],
+        [False, True] * 4,
+        [0, 0, 1, 1, 2, 2, 3, 3],
+    )
+
+    np.testing.assert_array_equal(
+        result.advantages,
+        [0.0, 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0],
+    )
+    np.testing.assert_array_equal(
+        result.eligible_mask,
+        [False, True, False, True, False, False, False, False],
+    )
+    assert result.eligible_pairs == 2
+    assert result.excluded_anchor_failure_pairs == 2
+    assert result.groups_with_update == 1
+    assert result.groups_without_baseline == 0
+
+
+def test_counterfactual_advantage_is_unchanged_by_excluded_perturbation() -> None:
+    common = dict(
+        perturbed_mask=[False, True] * 3,
+        pair_ids=[0, 0, 1, 1, 2, 2],
+    )
+    first = compute_counterfactual_recovery_advantages(
+        [True, True, True, False, False, False],
+        **common,
+    )
+    second = compute_counterfactual_recovery_advantages(
+        [True, True, True, False, False, True],
+        **common,
+    )
+
+    np.testing.assert_array_equal(first.advantages, second.advantages)
+    assert first.advantages[5] == 0.0
+    assert second.advantages[5] == 0.0
+
+
+def test_counterfactual_advantage_respects_rollout_groups() -> None:
+    result = compute_counterfactual_recovery_advantages(
+        [
+            True, True, True, False,
+            True, False, True, True,
+        ],
+        [False, True] * 4,
+        [0, 0, 1, 1, 0, 0, 1, 1],
+        rollout_group_ids=[0, 0, 0, 0, 1, 1, 1, 1],
+    )
+
+    np.testing.assert_array_equal(
+        result.advantages,
+        [0.0, 1.0, 0.0, -1.0, 0.0, -1.0, 0.0, 1.0],
+    )
+    assert result.groups_with_update == 2
+
+
+def test_counterfactual_advantage_audits_invalid_and_small_groups() -> None:
+    result = compute_counterfactual_recovery_advantages(
+        [True, True, True, False, True, True],
+        [False, True] * 3,
+        [0, 0, 1, 1, 2, 2],
+        valid_mask=[True, True, True, False, True, False],
+    )
+
+    np.testing.assert_array_equal(result.advantages, np.zeros(6))
+    assert result.eligible_pairs == 1
+    assert result.dropped_invalid_pairs == 2
+    assert result.groups_without_baseline == 1
+
+
+@pytest.mark.parametrize(
+    ("successes", "modes", "pair_ids", "kwargs", "message"),
+    [
+        ([1, 0], [False, True], [0, 0], {}, "boolean"),
+        ([True, False], [0, 1], [0, 0], {}, "boolean"),
+        ([True, False], [False, True], [False, False], {}, "integer"),
+        (
+            [True, False, True],
+            [False, True, False],
+            [0, 0, 0],
+            {},
+            "exactly one anchor",
+        ),
+        (
+            [True, False],
+            [False, True],
+            [0, 0],
+            {"valid_mask": [False, False]},
+            "at least one",
+        ),
+    ],
+)
+def test_counterfactual_advantage_rejects_unsafe_inputs(
+    successes, modes, pair_ids, kwargs, message
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        compute_counterfactual_recovery_advantages(
+            successes,
+            modes,
+            pair_ids,
+            **kwargs,
+        )
 
 
 def test_counterfactual_metrics_cover_all_pair_outcomes() -> None:

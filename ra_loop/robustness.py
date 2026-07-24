@@ -71,6 +71,144 @@ class CounterfactualRecoveryMetrics:
     recoverability_gap: float
 
 
+@dataclass(frozen=True)
+class CounterfactualRecoveryAdvantageResult:
+    """Pair-conditioned recovery advantages and audit counts."""
+
+    advantages: np.ndarray
+    eligible_mask: np.ndarray
+    eligible_pairs: int
+    excluded_anchor_failure_pairs: int
+    dropped_invalid_pairs: int
+    groups_with_update: int
+    groups_without_baseline: int
+
+
+def compute_counterfactual_recovery_advantages(
+    successes: Sequence[bool],
+    perturbed_mask: Sequence[bool],
+    pair_ids: Sequence[int],
+    *,
+    rollout_group_ids: Sequence[int] | None = None,
+    valid_mask: Sequence[bool] | None = None,
+) -> CounterfactualRecoveryAdvantageResult:
+    """Compute hard-pair recovery RLOO advantages.
+
+    Within each rollout group, a perturbed rollout is recovery-eligible only
+    when its identity-matched anchor succeeds. Eligible perturbed successes
+    receive a leave-one-out baseline against other eligible perturbations in
+    the same group. Anchor rollouts and perturbations paired with failed
+    anchors receive zero recovery advantage; the nominal/base objective is
+    intentionally left to a separate constrained term.
+
+    Every input pair must contain exactly one anchor and one perturbed member
+    before validity masking. A pair with either member invalid is dropped and
+    audited. Fewer than two eligible pairs cannot form a leave-one-out
+    baseline, so that group safely produces no recovery update.
+    """
+
+    success_array = np.asarray(successes)
+    if (
+        success_array.ndim != 1
+        or success_array.size == 0
+        or not np.issubdtype(success_array.dtype, np.bool_)
+    ):
+        raise ValueError("successes must be a non-empty boolean sequence")
+    count = success_array.size
+    success_array = success_array.astype(bool, copy=False)
+
+    def strict_bool_mask(values: Sequence[bool], name: str) -> np.ndarray:
+        raw = np.asarray(values)
+        if raw.shape != (count,) or not np.issubdtype(raw.dtype, np.bool_):
+            raise ValueError(f"{name} must contain one boolean per success")
+        return raw.astype(bool, copy=False)
+
+    def strict_id_array(values: Sequence[int], name: str) -> np.ndarray:
+        raw = np.asarray(values)
+        if (
+            raw.shape != (count,)
+            or np.issubdtype(raw.dtype, np.bool_)
+            or not np.issubdtype(raw.dtype, np.integer)
+        ):
+            raise ValueError(f"{name} must contain one integer per success")
+        result = raw.astype(np.int64, copy=False)
+        if (result < 0).any():
+            raise ValueError(f"{name} must be non-negative")
+        return result
+
+    perturbed = strict_bool_mask(perturbed_mask, "perturbed_mask")
+    pairs = strict_id_array(pair_ids, "pair_ids")
+    valid = (
+        np.ones(count, dtype=bool)
+        if valid_mask is None
+        else strict_bool_mask(valid_mask, "valid_mask")
+    )
+    if not valid.any():
+        raise ValueError("valid_mask must select at least one rollout")
+    groups = (
+        np.zeros(count, dtype=np.int64)
+        if rollout_group_ids is None
+        else strict_id_array(rollout_group_ids, "rollout_group_ids")
+    )
+
+    advantages = np.zeros(count, dtype=np.float64)
+    eligible = np.zeros(count, dtype=bool)
+    eligible_pairs = 0
+    excluded = 0
+    dropped = 0
+    groups_with_update = 0
+    groups_without_baseline = 0
+
+    for group_id in np.unique(groups):
+        group_eligible: list[int] = []
+        group_pair_ids = np.unique(pairs[groups == group_id])
+        for pair_id in group_pair_ids:
+            member_indices = np.flatnonzero(
+                (groups == group_id) & (pairs == pair_id)
+            )
+            if member_indices.size != 2:
+                raise ValueError(
+                    f"rollout group {group_id} pair {pair_id} must contain "
+                    "exactly one anchor and one perturbed rollout"
+                )
+            member_modes = perturbed[member_indices]
+            if int(member_modes.sum()) != 1:
+                raise ValueError(
+                    f"rollout group {group_id} pair {pair_id} must contain "
+                    "exactly one anchor and one perturbed rollout"
+                )
+            if not valid[member_indices].all():
+                dropped += 1
+                continue
+            anchor_index = int(member_indices[~member_modes][0])
+            perturbed_index = int(member_indices[member_modes][0])
+            if success_array[anchor_index]:
+                eligible[perturbed_index] = True
+                group_eligible.append(perturbed_index)
+                eligible_pairs += 1
+            else:
+                excluded += 1
+
+        if len(group_eligible) < 2:
+            groups_without_baseline += 1
+            continue
+        eligible_indices = np.asarray(group_eligible, dtype=np.int64)
+        rewards = success_array[eligible_indices].astype(np.float64)
+        baseline = (rewards.sum() - rewards) / (rewards.size - 1)
+        advantages[eligible_indices] = rewards - baseline
+        groups_with_update += 1
+
+    return CounterfactualRecoveryAdvantageResult(
+        advantages=advantages,
+        eligible_mask=eligible,
+        eligible_pairs=eligible_pairs,
+        excluded_anchor_failure_pairs=excluded,
+        dropped_invalid_pairs=dropped,
+        groups_with_update=groups_with_update,
+        groups_without_baseline=groups_without_baseline,
+    )
+
+
 def compute_counterfactual_recovery_metrics(
     successes: Sequence[bool],
     perturbed_mask: Sequence[bool],
