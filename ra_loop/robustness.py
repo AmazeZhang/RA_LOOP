@@ -85,6 +85,21 @@ class CounterfactualRecoveryAdvantageResult:
 
 
 @dataclass(frozen=True)
+class SoftCounterfactualRecoveryAdvantageResult:
+    """State-competence-weighted recovery advantages and audit counts."""
+
+    advantages: np.ndarray
+    eligible_mask: np.ndarray
+    weighted_pairs: int
+    anchor_failure_pairs: int
+    dropped_invalid_pairs: int
+    groups_with_nonzero_advantage: int
+    groups_all_anchor_failure: int
+    groups_uniform_perturbed_outcome: int
+    mean_anchor_competence: float
+
+
+@dataclass(frozen=True)
 class NominalConstraintUpdate:
     """One auditable primal-dual update for nominal performance retention."""
 
@@ -313,6 +328,146 @@ def compute_counterfactual_recovery_advantages(
         dropped_invalid_pairs=dropped,
         groups_with_update=groups_with_update,
         groups_without_baseline=groups_without_baseline,
+    )
+
+
+def compute_soft_counterfactual_recovery_advantages(
+    successes: Sequence[bool],
+    perturbed_mask: Sequence[bool],
+    pair_ids: Sequence[int],
+    *,
+    rollout_group_ids: Sequence[int] | None = None,
+    valid_mask: Sequence[bool] | None = None,
+) -> SoftCounterfactualRecoveryAdvantageResult:
+    """Compute state-competence-weighted recovery RLOO advantages.
+
+    Every rollout group represents one base simulator state. Its anchor
+    competence is the mean success over all valid anchors in that group. All
+    valid perturbations then receive their within-group leave-one-out outcome
+    advantage multiplied by that competence.
+
+    This preserves a zero-sum perturbed advantage group while avoiding a hard
+    decision from one stochastic anchor rollout. A state whose anchors all fail
+    receives no recovery update. Uniform perturbed outcomes also safely produce
+    no update because they contain no within-state ranking information.
+    """
+
+    success_array = np.asarray(successes)
+    if (
+        success_array.ndim != 1
+        or success_array.size == 0
+        or not np.issubdtype(success_array.dtype, np.bool_)
+    ):
+        raise ValueError("successes must be a non-empty boolean sequence")
+    count = success_array.size
+    success_array = success_array.astype(bool, copy=False)
+
+    def strict_bool_mask(values: Sequence[bool], name: str) -> np.ndarray:
+        raw = np.asarray(values)
+        if raw.shape != (count,) or not np.issubdtype(raw.dtype, np.bool_):
+            raise ValueError(f"{name} must contain one boolean per success")
+        return raw.astype(bool, copy=False)
+
+    def strict_id_array(values: Sequence[int], name: str) -> np.ndarray:
+        raw = np.asarray(values)
+        if (
+            raw.shape != (count,)
+            or np.issubdtype(raw.dtype, np.bool_)
+            or not np.issubdtype(raw.dtype, np.integer)
+        ):
+            raise ValueError(f"{name} must contain one integer per success")
+        result = raw.astype(np.int64, copy=False)
+        if (result < 0).any():
+            raise ValueError(f"{name} must be non-negative")
+        return result
+
+    perturbed = strict_bool_mask(perturbed_mask, "perturbed_mask")
+    pairs = strict_id_array(pair_ids, "pair_ids")
+    valid = (
+        np.ones(count, dtype=bool)
+        if valid_mask is None
+        else strict_bool_mask(valid_mask, "valid_mask")
+    )
+    if not valid.any():
+        raise ValueError("valid_mask must select at least one rollout")
+    groups = (
+        np.zeros(count, dtype=np.int64)
+        if rollout_group_ids is None
+        else strict_id_array(rollout_group_ids, "rollout_group_ids")
+    )
+
+    advantages = np.zeros(count, dtype=np.float64)
+    eligible = np.zeros(count, dtype=bool)
+    weighted_pairs = 0
+    anchor_failures = 0
+    dropped = 0
+    groups_with_nonzero = 0
+    groups_all_anchor_failure = 0
+    groups_uniform_perturbed = 0
+    competences: list[float] = []
+
+    for group_id in np.unique(groups):
+        anchor_indices: list[int] = []
+        perturbed_indices: list[int] = []
+        group_pair_ids = np.unique(pairs[groups == group_id])
+        for pair_id in group_pair_ids:
+            member_indices = np.flatnonzero(
+                (groups == group_id) & (pairs == pair_id)
+            )
+            if member_indices.size != 2:
+                raise ValueError(
+                    f"rollout group {group_id} pair {pair_id} must contain "
+                    "exactly one anchor and one perturbed rollout"
+                )
+            member_modes = perturbed[member_indices]
+            if int(member_modes.sum()) != 1:
+                raise ValueError(
+                    f"rollout group {group_id} pair {pair_id} must contain "
+                    "exactly one anchor and one perturbed rollout"
+                )
+            if not valid[member_indices].all():
+                dropped += 1
+                continue
+            anchor_index = int(member_indices[~member_modes][0])
+            perturbed_index = int(member_indices[member_modes][0])
+            anchor_indices.append(anchor_index)
+            perturbed_indices.append(perturbed_index)
+            anchor_failures += int(not success_array[anchor_index])
+
+        if not anchor_indices:
+            continue
+        competence = float(success_array[anchor_indices].mean())
+        competences.append(competence)
+        if competence == 0.0:
+            groups_all_anchor_failure += 1
+            continue
+        if len(perturbed_indices) < 2:
+            continue
+
+        eligible_indices = np.asarray(perturbed_indices, dtype=np.int64)
+        eligible[eligible_indices] = True
+        weighted_pairs += len(perturbed_indices)
+        rewards = success_array[eligible_indices].astype(np.float64)
+        baseline = (rewards.sum() - rewards) / (rewards.size - 1)
+        group_advantages = competence * (rewards - baseline)
+        advantages[eligible_indices] = group_advantages
+        if np.any(group_advantages != 0.0):
+            groups_with_nonzero += 1
+        else:
+            groups_uniform_perturbed += 1
+
+    return SoftCounterfactualRecoveryAdvantageResult(
+        advantages=advantages,
+        eligible_mask=eligible,
+        weighted_pairs=weighted_pairs,
+        anchor_failure_pairs=anchor_failures,
+        dropped_invalid_pairs=dropped,
+        groups_with_nonzero_advantage=groups_with_nonzero,
+        groups_all_anchor_failure=groups_all_anchor_failure,
+        groups_uniform_perturbed_outcome=groups_uniform_perturbed,
+        mean_anchor_competence=(
+            float(np.mean(competences)) if competences else float("nan")
+        ),
     )
 
 

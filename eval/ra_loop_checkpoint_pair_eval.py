@@ -76,6 +76,30 @@ FULLTASK_LAMBDA0_SEED20000_ROOT = PROJECT_ROOT / (
     "ten_task_100step_k8_h220_fixed_l2_0p1_stratified_lambda0_lr1e5_"
     "step5_warmstart/20000/run_000"
 )
+COUNTERFACTUAL_NPC_ROOT = PROJECT_ROOT / (
+    "outputs/ra_loop_spatial_counterfactual_gate/libero_spatial/"
+    "LIBERO_SPATIAL/openvla/RA-LOOP_spatial_counterfactual_gate/"
+    "four_task_50step_k8_h220_fixed_l2_0p1_cra_npc_cal3_step5_warmstart/"
+    "run_000"
+)
+COUNTERFACTUAL_CRA_ONLY_ROOT = PROJECT_ROOT / (
+    "outputs/ra_loop_spatial_counterfactual_cra_only_gate/libero_spatial/"
+    "LIBERO_SPATIAL/openvla/RA-LOOP_spatial_counterfactual_cra_only_gate/"
+    "four_task_50step_k8_h220_fixed_l2_0p1_cra_only_matched_cal3_"
+    "step5_warmstart/run_000"
+)
+COUNTERFACTUAL_SOFT_SEED10000_ROOT = PROJECT_ROOT / (
+    "outputs/ra_loop_spatial_counterfactual_soft_gate_seed10000/libero_spatial/"
+    "LIBERO_SPATIAL/openvla/RA-LOOP_spatial_counterfactual_soft_gate_seed10000/"
+    "four_task_51step_k8_h220_fixed_l2_0p1_soft_cra_npc_cal3_step5_warmstart/"
+    "run_000"
+)
+COUNTERFACTUAL_SOFT_SEED20000_ROOT = PROJECT_ROOT / (
+    "outputs/ra_loop_spatial_counterfactual_soft_gate_seed20000/libero_spatial/"
+    "LIBERO_SPATIAL/openvla/RA-LOOP_spatial_counterfactual_soft_gate_seed20000/"
+    "four_task_51step_k8_h220_fixed_l2_0p1_soft_cra_npc_cal3_step5_warmstart/"
+    "20000/run_000"
+)
 DEFAULT_TASK_NAME = "pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate"
 VALID_TASKS = (
     "pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate",
@@ -99,6 +123,10 @@ VALID_SOURCE_STEPS = {
     "fulltask_lambda05_seed20000": (10, 20, 30, 40, 50, 60, 70, 80, 90),
     "fulltask_lambda0_seed10000": (10, 20, 30, 40, 50, 60, 70, 80, 90),
     "fulltask_lambda0_seed20000": (10, 20, 30, 40, 50, 60, 70, 80, 90),
+    "counterfactual_npc": (20, 30, 40),
+    "counterfactual_cra_only": (20, 30, 40),
+    "counterfactual_soft_seed10000": (50,),
+    "counterfactual_soft_seed20000": (50,),
 }
 VALID_STEPS = tuple(sorted({step for steps in VALID_SOURCE_STEPS.values() for step in steps}))
 
@@ -116,6 +144,10 @@ def adapter_dir(source: str, step: int) -> Path | None:
         "fulltask_lambda05_seed20000": FULLTASK_LAMBDA05_SEED20000_ROOT,
         "fulltask_lambda0_seed10000": FULLTASK_LAMBDA0_SEED10000_ROOT,
         "fulltask_lambda0_seed20000": FULLTASK_LAMBDA0_SEED20000_ROOT,
+        "counterfactual_npc": COUNTERFACTUAL_NPC_ROOT,
+        "counterfactual_cra_only": COUNTERFACTUAL_CRA_ONLY_ROOT,
+        "counterfactual_soft_seed10000": COUNTERFACTUAL_SOFT_SEED10000_ROOT,
+        "counterfactual_soft_seed20000": COUNTERFACTUAL_SOFT_SEED20000_ROOT,
     }
     root = roots[source]
     return root / f"openvla_lora_step_{step:06d}"
@@ -156,6 +188,8 @@ def validate(args: argparse.Namespace) -> dict[str, object]:
         raise SystemExit(f"required paths missing: {missing}")
     if args.num_pairs < 1 or args.num_pairs > 50:
         raise SystemExit("num-pairs must be in [1, 50]")
+    if args.init_start < 0:
+        raise SystemExit("init-start must be non-negative")
     if args.fixed_l2 <= 0:
         raise SystemExit("fixed-l2 must be positive")
     if args.output_dir.exists():
@@ -168,7 +202,8 @@ def validate(args: argparse.Namespace) -> dict[str, object]:
         "base_model": str(BASE_MODEL),
         "base_scale_header": str(BASE_SCALE_HEADER),
         "task": args.task_name,
-        "init_indices": list(range(args.num_pairs)),
+        "init_indices": list(range(args.init_start, args.init_start + args.num_pairs)),
+        "init_start": args.init_start,
         "modes": ["anchor", "fixed_l2"],
         "fixed_l2": args.fixed_l2,
         "perturb_seed": args.perturb_seed,
@@ -230,7 +265,15 @@ def execute(args: argparse.Namespace, plan: dict[str, object]) -> None:
     vector_env, env_id, _ = created_env
     try:
         all_states = np.asarray(runner.benchmark.get_task_init_states(env_id))
-        init_indices = np.arange(args.num_pairs, dtype=np.int64)
+        init_indices = np.arange(
+            args.init_start, args.init_start + args.num_pairs, dtype=np.int64
+        )
+        if init_indices[-1] >= len(all_states):
+            raise RuntimeError(
+                "requested init range "
+                f"[{args.init_start}, {args.init_start + args.num_pairs}) exceeds "
+                f"the {len(all_states)} available task init states"
+            )
         anchors = all_states[init_indices].copy()
         layout = resolve_in_process_joint_layout(created_env)
         perturbations = []
@@ -315,6 +358,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--task-name", choices=VALID_TASKS, default=DEFAULT_TASK_NAME)
     parser.add_argument("--num-pairs", type=int, default=10)
+    parser.add_argument(
+        "--init-start",
+        type=int,
+        default=0,
+        help="first benchmark init-state index; pairs use [init-start, init-start + num-pairs)",
+    )
     parser.add_argument("--fixed-l2", type=float, default=0.1)
     parser.add_argument("--perturb-seed", type=int, default=20260720)
     parser.add_argument("--gpu-id", type=int, choices=range(8), default=0)

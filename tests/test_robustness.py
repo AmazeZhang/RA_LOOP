@@ -12,6 +12,7 @@ from ra_loop.robustness import (
     build_robot_init_rollout_plan,
     compute_counterfactual_recovery_advantages,
     compute_counterfactual_recovery_metrics,
+    compute_soft_counterfactual_recovery_advantages,
     compute_recovery_rewards,
     compute_mode_stratified_rloo_advantages,
     materialize_rollout_plan,
@@ -190,6 +191,42 @@ def test_counterfactual_advantage_audits_invalid_and_small_groups() -> None:
     assert result.eligible_pairs == 1
     assert result.dropped_invalid_pairs == 2
     assert result.groups_without_baseline == 1
+
+
+def test_soft_counterfactual_advantage_uses_group_anchor_competence() -> None:
+    result = compute_soft_counterfactual_recovery_advantages(
+        # Anchor competence is 2/4. Perturbed outcomes are S, F, S, F.
+        [True, True, True, False, False, True, False, False],
+        [False, True] * 4,
+        [0, 0, 1, 1, 2, 2, 3, 3],
+    )
+
+    np.testing.assert_allclose(
+        result.advantages,
+        [0.0, 1 / 3, 0.0, -1 / 3, 0.0, 1 / 3, 0.0, -1 / 3],
+        atol=1e-15,
+    )
+    # The perturbed rollout paired with a failed anchor remains usable because
+    # all four pairs share one base state with positive aggregate competence.
+    assert result.eligible_mask[5]
+    assert result.weighted_pairs == 4
+    assert result.anchor_failure_pairs == 2
+    assert result.groups_with_nonzero_advantage == 1
+    assert result.mean_anchor_competence == 0.5
+    assert result.advantages.sum() == pytest.approx(0.0)
+
+
+def test_soft_counterfactual_advantage_skips_incompetent_state() -> None:
+    result = compute_soft_counterfactual_recovery_advantages(
+        [False, True, False, False, False, True, False, False],
+        [False, True] * 4,
+        [0, 0, 1, 1, 2, 2, 3, 3],
+    )
+
+    np.testing.assert_array_equal(result.advantages, np.zeros(8))
+    assert not result.eligible_mask.any()
+    assert result.groups_all_anchor_failure == 1
+    assert result.groups_with_nonzero_advantage == 0
 
 
 @pytest.mark.parametrize(

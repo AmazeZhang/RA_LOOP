@@ -100,10 +100,14 @@ def main() -> None:
             raise AssertionError("misrouted rollout stats flag was not forwarded")
         if optimizer.advantage_mode not in {
             "counterfactual_constrained",
+            "counterfactual_soft_constrained",
             "mode_stratified",
         }:
             raise AssertionError("custom RA-LOOP advantage was not configured")
-        if optimizer.advantage_mode == "counterfactual_constrained":
+        if optimizer.advantage_mode in {
+            "counterfactual_constrained",
+            "counterfactual_soft_constrained",
+        }:
             if reward.lambda_recovery != 0.0:
                 raise AssertionError(
                     "counterfactual mode requires zero legacy recovery bonus"

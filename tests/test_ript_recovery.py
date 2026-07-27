@@ -506,6 +506,62 @@ def test_counterfactual_optimizer_calibrates_then_uses_exact_combined_advantage(
     assert counting_optimizer.zero_grad_calls == 2
 
 
+def test_soft_counterfactual_optimizer_densifies_recovery_signal(
+    monkeypatch,
+) -> None:
+    episodes = [
+        recovery_episode(perturbed=False, success=True, pair_id=0),
+        recovery_episode(perturbed=True, success=True, pair_id=0),
+        recovery_episode(perturbed=False, success=True, pair_id=1),
+        recovery_episode(perturbed=True, success=False, pair_id=1),
+        recovery_episode(perturbed=False, success=False, pair_id=2),
+        recovery_episode(perturbed=True, success=True, pair_id=2),
+        recovery_episode(perturbed=False, success=False, pair_id=3),
+        recovery_episode(perturbed=True, success=False, pair_id=3),
+    ]
+    generator = FakeRolloutGenerator(
+        episodes,
+        [0] * 8,
+        [True] * 8,
+        rloo_batch_size=8,
+    )
+    optimizer = make_optimizer(
+        generator,
+        lambda_recovery=0.0,
+        advantage_mode="counterfactual_soft_constrained",
+    )
+    observed = []
+    install_advantage_observing_parent(monkeypatch, observed)
+
+    calibration_metrics = optimizer.optimize(SimpleNamespace(), {}, [])
+    training_metrics = optimizer.optimize(SimpleNamespace(), {}, [])
+
+    np.testing.assert_array_equal(observed[0][1], np.zeros(8))
+    multiplier = 1.0 + 0.1 * ((0.5 - 0.02) - 0.5)
+    expected = np.asarray(
+        [
+            multiplier * 2 / 3,
+            1 / 3,
+            multiplier * 2 / 3,
+            -1 / 3,
+            -multiplier * 2 / 3,
+            1 / 3,
+            -multiplier * 2 / 3,
+            -1 / 3,
+        ]
+    )
+    np.testing.assert_allclose(observed[1][1], expected, atol=1e-15)
+    assert calibration_metrics["parameter_update_applied"] == 0.0
+    assert training_metrics[
+        "advantage_mode_counterfactual_soft_constrained"
+    ] == 1.0
+    assert training_metrics["cra_soft_weighted_pairs"] == 4.0
+    assert training_metrics["cra_anchor_failure_pairs"] == 2.0
+    assert training_metrics["cra_groups_with_nonzero_advantage"] == 1.0
+    assert training_metrics["cra_mean_anchor_competence"] == 0.5
+    assert training_metrics["parameter_update_applied"] == 1.0
+
+
 def test_counterfactual_optimizer_does_not_commit_state_after_parent_failure(
     monkeypatch,
 ) -> None:

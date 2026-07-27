@@ -21,10 +21,16 @@ from ra_loop.robustness import (
     compute_counterfactual_recovery_advantages,
     compute_mode_stratified_rloo_advantages,
     compute_recovery_rewards,
+    compute_soft_counterfactual_recovery_advantages,
     materialize_rollout_plan,
     resolve_named_joint_layout,
     update_nominal_performance_constraint,
 )
+
+COUNTERFACTUAL_ADVANTAGE_MODES = {
+    "counterfactual_constrained",
+    "counterfactual_soft_constrained",
+}
 
 
 class _OptimizerStepGate:
@@ -279,19 +285,21 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
             )
         if advantage_mode not in {
             "counterfactual_constrained",
+            "counterfactual_soft_constrained",
             "mode_stratified",
             "upstream",
         }:
             raise ValueError("unsupported recovery advantage_mode")
         if (
-            advantage_mode in {"counterfactual_constrained", "mode_stratified"}
+            advantage_mode
+            in COUNTERFACTUAL_ADVANTAGE_MODES | {"mode_stratified"}
             and self.rloo_over_all_rollouts
         ):
             raise ValueError(
                 "custom RA-LOOP advantages require per-rollout-group upstream RLOO"
             )
         if (
-            advantage_mode == "counterfactual_constrained"
+            advantage_mode in COUNTERFACTUAL_ADVANTAGE_MODES
             and self.reward_function.lambda_recovery != 0.0
         ):
             raise ValueError(
@@ -351,6 +359,7 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
             )
         custom_advantage = self.advantage_mode in {
             "counterfactual_constrained",
+            "counterfactual_soft_constrained",
             "mode_stratified",
         }
         if custom_advantage and getattr(self, "rloo_over_all_rollouts", False):
@@ -369,7 +378,9 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
         pending_nominal_state = None
         constraint_updates: dict[int, Any] = {}
         calibrating_task_ids: set[int] = set()
-        allow_parameter_update = self.advantage_mode != "counterfactual_constrained"
+        allow_parameter_update = (
+            self.advantage_mode not in COUNTERFACTUAL_ADVANTAGE_MODES
+        )
 
         def capture_once(*args, **kwargs):
             nonlocal allow_parameter_update
@@ -448,15 +459,26 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
                         rollout_group_ids=rollout_group_ids,
                         valid_mask=valid,
                     )
-                    counterfactual_result = (
-                        compute_counterfactual_recovery_advantages(
-                            successes,
-                            perturbed,
-                            pair_ids,
-                            rollout_group_ids=rollout_group_ids,
-                            valid_mask=valid,
+                    if self.advantage_mode == "counterfactual_soft_constrained":
+                        counterfactual_result = (
+                            compute_soft_counterfactual_recovery_advantages(
+                                successes,
+                                perturbed,
+                                pair_ids,
+                                rollout_group_ids=rollout_group_ids,
+                                valid_mask=valid,
+                            )
                         )
-                    )
+                    else:
+                        counterfactual_result = (
+                            compute_counterfactual_recovery_advantages(
+                                successes,
+                                perturbed,
+                                pair_ids,
+                                rollout_group_ids=rollout_group_ids,
+                                valid_mask=valid,
+                            )
+                        )
                     stratified_advantages = (
                         counterfactual_result.advantages.copy()
                     )
@@ -596,7 +618,7 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
         if custom_advantage:
             reward_function.compute_reward = reward_for_upstream
         parent_optimizers = optimizers
-        if self.advantage_mode == "counterfactual_constrained":
+        if self.advantage_mode in COUNTERFACTUAL_ADVANTAGE_MODES:
             parent_optimizers = [
                 _OptimizerStepGate(
                     optimizer,
@@ -662,7 +684,10 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
         metrics["advantage_mode_counterfactual_constrained"] = float(
             self.advantage_mode == "counterfactual_constrained"
         )
-        if self.advantage_mode == "counterfactual_constrained":
+        metrics["advantage_mode_counterfactual_soft_constrained"] = float(
+            self.advantage_mode == "counterfactual_soft_constrained"
+        )
+        if self.advantage_mode in COUNTERFACTUAL_ADVANTAGE_MODES:
             metrics["parameter_update_applied"] = float(allow_parameter_update)
         if stratified_advantages is not None:
             perturbed = np.asarray(
@@ -678,20 +703,40 @@ class RobotInitRecoveryOptimizer(RLOptimizerOpenVLAOFT):
                 stratified_advantages[perturbed_valid].mean()
             )
         if counterfactual_result is not None:
-            metrics["cra_eligible_pairs"] = float(
-                counterfactual_result.eligible_pairs
-            )
-            metrics["cra_excluded_anchor_failure_pairs"] = float(
-                counterfactual_result.excluded_anchor_failure_pairs
-            )
+            if self.advantage_mode == "counterfactual_soft_constrained":
+                metrics["cra_soft_weighted_pairs"] = float(
+                    counterfactual_result.weighted_pairs
+                )
+                metrics["cra_anchor_failure_pairs"] = float(
+                    counterfactual_result.anchor_failure_pairs
+                )
+                metrics["cra_groups_with_nonzero_advantage"] = float(
+                    counterfactual_result.groups_with_nonzero_advantage
+                )
+                metrics["cra_groups_all_anchor_failure"] = float(
+                    counterfactual_result.groups_all_anchor_failure
+                )
+                metrics["cra_groups_uniform_perturbed_outcome"] = float(
+                    counterfactual_result.groups_uniform_perturbed_outcome
+                )
+                metrics["cra_mean_anchor_competence"] = float(
+                    counterfactual_result.mean_anchor_competence
+                )
+            else:
+                metrics["cra_eligible_pairs"] = float(
+                    counterfactual_result.eligible_pairs
+                )
+                metrics["cra_excluded_anchor_failure_pairs"] = float(
+                    counterfactual_result.excluded_anchor_failure_pairs
+                )
+                metrics["cra_groups_with_update"] = float(
+                    counterfactual_result.groups_with_update
+                )
+                metrics["cra_groups_without_baseline"] = float(
+                    counterfactual_result.groups_without_baseline
+                )
             metrics["cra_dropped_invalid_pairs"] = float(
                 counterfactual_result.dropped_invalid_pairs
-            )
-            metrics["cra_groups_with_update"] = float(
-                counterfactual_result.groups_with_update
-            )
-            metrics["cra_groups_without_baseline"] = float(
-                counterfactual_result.groups_without_baseline
             )
             metrics["nominal_calibrating_tasks"] = float(
                 len(calibrating_task_ids)
