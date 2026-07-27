@@ -54,13 +54,16 @@
 
 | arXiv | 名称 | 关键事实（已核实） | 与本项目差分 |
 |-------|------|--------------------|--------------|
+| 2601.15197 | **LangForce**（ICML 2026，2026-01 投，v7 2026-05） | 提出 **"Information Collapse"**（=语言失聪）：指令可被视觉预测→I(ℓ;a|v)消失→退化成 vision-only 策略；**损失侧**解法：双分支估计 vision-only 先验 p(a|v)+语言条件后验 π(a|v,ℓ)，优化条件 PMI 惩罚视觉捷径，**无需新数据**；SimplerEnv/RoboCasa，**OOD SimplerEnv +11.3%** | **最强并发威胁 + 诊断撞车**。共享同一根因诊断（我们不能把诊断当新颖点，须显式引用）；解法族正交——它损失侧、我们奖励+数据构造侧。作为**臂 5**（适配 LIBERO 公平复现）与**臂 6**（叠加）。差异化：label-free 仿真真值奖励 + log K 组结构 + 因果行为指标 |
 | 2508.13446 | **CAST** | base=3B PaliGemma；Gemini 2.5 Pro relabel 合成动作标签（准确率 60–70%）；GNM+BridgeData v2；真机导航+操作；nav +27% / manip 2×（35/60 vs 19/60）；**Lemma IV.1 互信息形式化**；**纯 SFT，无 swap 指标** | **最强 incremental 对手**。CAST=数据侧 SFT+噪声标签+真机+无因果语言指标；本项目=奖励侧 RL+无标签+仿真+LSG/重定向率。作为**臂 3** 适配到仿真复现 |
+| 2505.23705 | Knowledge Insulation（Physical Intelligence，Driess/Levine 等） | 训练时**隔离 VLM backbone** 防 action expert 破坏预训练知识；train fast/run fast/generalize better | 相关但**非直接竞品**：讲训练动力学与知识迁移，不针对语言 grounding。仅作 VLA post-training 相关工作引用 |
 | 2307.00117 | GRIF | 语言-目标对齐表征 | 表征对齐，非 RL 对比奖励 |
 | 2211.11736 | DIAL | 指令增强数据 | 数据增强，无对比 RL |
 | 2005.07648 | LangLfP | play data 语言条件 | 早期语言条件，无对比 |
 | 2206.08522 | VLMbench | 语言引导操作基准 | 评测基准对照 |
 
-⚠️ **未证实（2026 ID，引用前必须 fetch 核实存在性）**：VLA Grounder 2607.04517。当前一律按"待核实"处理，不进正文数字。
+⚠️ **未证实（2026 ID，引用前必须 fetch 核实存在性）**：VLA Grounder 2607.04517（仍待核实，不进正文数字）。
+**已核实转正**：LangForce 2601.15197 原为 26xx 待核实 ID，经 fetch arXiv 摘要确认存在且主张属实，升级为 Tier A。
 
 ---
 
