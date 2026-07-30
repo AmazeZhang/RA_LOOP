@@ -1,0 +1,744 @@
+{
+  "baselines": [
+    {
+      "checkpoint_indices": [
+        25,
+        51
+      ],
+      "control_steps": 78,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "success": true
+    },
+    {
+      "checkpoint_indices": [
+        27,
+        54
+      ],
+      "control_steps": 83,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "success": true
+    },
+    {
+      "checkpoint_indices": [
+        27,
+        55
+      ],
+      "control_steps": 84,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "success": true
+    }
+  ],
+  "checkpoint": "/home/imc/models/ra-loop/openvla-oft-goal",
+  "checkpoint_config_sha256": "bcb688a66f3e94a42311b77d37b7e1484886701f7b2aa8e36d165dfccac92ae6",
+  "checkpoint_fractions": [
+    0.3333333333333333,
+    0.6666666666666666
+  ],
+  "checkpoints": [
+    {
+      "bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778818,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_label": "0.333",
+      "control_step": 26,
+      "exact_restore": true,
+      "goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "origin_task": "put_the_bowl_on_the_plate",
+      "restore_max_abs_delta": 0.0,
+      "state_sha256": "01460a243bba202497062936ab166f7efa2dcc210170ba77bd53adc9347bdf31"
+    },
+    {
+      "bowl_position": [
+        -0.0971309463651693,
+        -0.002735496347632985,
+        0.9308915927078868
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_label": "0.667",
+      "control_step": 52,
+      "exact_restore": true,
+      "goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "origin_task": "put_the_bowl_on_the_plate",
+      "restore_max_abs_delta": 0.0,
+      "state_sha256": "7f0410e1d2739e4bb5552caa012a96b24d5c4854060adc74e928280e7d4c3874"
+    },
+    {
+      "bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778818,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_label": "0.333",
+      "control_step": 28,
+      "exact_restore": true,
+      "goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "origin_task": "put_the_bowl_on_the_stove",
+      "restore_max_abs_delta": 0.0,
+      "state_sha256": "6aa527422fadba60d1095855bf56c72abe042056c35df21011a6a30a6e8f87a3"
+    },
+    {
+      "bowl_position": [
+        -0.10504452582013761,
+        0.007224631538565253,
+        0.9680026036200491
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_label": "0.667",
+      "control_step": 55,
+      "exact_restore": true,
+      "goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "origin_task": "put_the_bowl_on_the_stove",
+      "restore_max_abs_delta": 0.0,
+      "state_sha256": "70ff7ab59117b570f9715411d16eba88b8a2f3373d20f7ba7bb902f452e12866"
+    },
+    {
+      "bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778816,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_label": "0.333",
+      "control_step": 28,
+      "exact_restore": true,
+      "goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "restore_max_abs_delta": 0.0,
+      "state_sha256": "567acf4b283d2f50d3521a0a87655db01ad7cf1e5464fc9ddd327c0c39efdf0d"
+    },
+    {
+      "bowl_position": [
+        -0.08692545770016454,
+        -0.01510383908453025,
+        1.02820942717954
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_label": "0.667",
+      "control_step": 56,
+      "exact_restore": true,
+      "goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "restore_max_abs_delta": 0.0,
+      "state_sha256": "0fd36268885821ef46a461d65c569340b72ac31944bca9a9479cd976edd2f278"
+    }
+  ],
+  "completed_at": "2026-07-30T16:33:34.226889+08:00",
+  "continue_to_reachability_audit": false,
+  "execute": true,
+  "gpu_id": 7,
+  "gpu_peak_allocated_gib": 15.583672046661377,
+  "gpu_peak_reserved_gib": 15.818359375,
+  "init_index": 0,
+  "max_episode_length": 300,
+  "maximum_rollouts": 21,
+  "metrics": {
+    "decision": "inconclusive_control_failure",
+    "matched_control_success_rate": 0.5,
+    "n_controls": 6,
+    "n_distinct_inertia_checkpoints": 0,
+    "n_switches": 12,
+    "n_valid_controls": 3,
+    "n_valid_switches": 6,
+    "original_goal_inertia_rate": 0.0,
+    "switch_lsg": 1.0,
+    "switch_success_rate": 1.0,
+    "temporal_inertia_candidate": false
+  },
+  "output_dir": "ci_grpo/artifacts/p1_temporal_regrounding_openvla",
+  "probe": "Temporal Counterfactual Regrounding P0",
+  "rows": [
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778818,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.333",
+      "checkpoint_state_sha256": "01460a243bba202497062936ab166f7efa2dcc210170ba77bd53adc9347bdf31",
+      "control_step": 26,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_plate",
+      "is_control": true,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "policy_start_state_sha256": "05d9220949c38c0c3f88fec23cdd87f53a47bafaa2748158eadfe7f172eb6586",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": true,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778818,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.333",
+      "checkpoint_state_sha256": "01460a243bba202497062936ab166f7efa2dcc210170ba77bd53adc9347bdf31",
+      "control_step": 26,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_stove",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "policy_start_state_sha256": "05d9220949c38c0c3f88fec23cdd87f53a47bafaa2748158eadfe7f172eb6586",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": true,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778818,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.333",
+      "checkpoint_state_sha256": "01460a243bba202497062936ab166f7efa2dcc210170ba77bd53adc9347bdf31",
+      "control_step": 26,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "policy_start_state_sha256": "05d9220949c38c0c3f88fec23cdd87f53a47bafaa2748158eadfe7f172eb6586",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": true,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.0971309463651693,
+        -0.002735496347632985,
+        0.9308915927078868
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.667",
+      "checkpoint_state_sha256": "7f0410e1d2739e4bb5552caa012a96b24d5c4854060adc74e928280e7d4c3874",
+      "control_step": 52,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_plate",
+      "is_control": true,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "policy_start_state_sha256": "a7c59992c32ea141c8d3bdecf6d4bdd15b0fcdfa99d1884aff3606aaf3f54728",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": false,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.0971309463651693,
+        -0.002735496347632985,
+        0.9308915927078868
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.667",
+      "checkpoint_state_sha256": "7f0410e1d2739e4bb5552caa012a96b24d5c4854060adc74e928280e7d4c3874",
+      "control_step": 52,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_stove",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "policy_start_state_sha256": "a7c59992c32ea141c8d3bdecf6d4bdd15b0fcdfa99d1884aff3606aaf3f54728",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": false,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.0971309463651693,
+        -0.002735496347632985,
+        0.9308915927078868
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.667",
+      "checkpoint_state_sha256": "7f0410e1d2739e4bb5552caa012a96b24d5c4854060adc74e928280e7d4c3874",
+      "control_step": 52,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "policy_start_state_sha256": "a7c59992c32ea141c8d3bdecf6d4bdd15b0fcdfa99d1884aff3606aaf3f54728",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": false,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778818,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.333",
+      "checkpoint_state_sha256": "6aa527422fadba60d1095855bf56c72abe042056c35df21011a6a30a6e8f87a3",
+      "control_step": 28,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_stove",
+      "is_control": true,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "policy_start_state_sha256": "f1c20326f0ca5fa125fa0cc963a9a11dac052b08376851c5396324a5f4478743",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": true,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778818,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.333",
+      "checkpoint_state_sha256": "6aa527422fadba60d1095855bf56c72abe042056c35df21011a6a30a6e8f87a3",
+      "control_step": 28,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_plate",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "policy_start_state_sha256": "f1c20326f0ca5fa125fa0cc963a9a11dac052b08376851c5396324a5f4478743",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": true,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778818,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.333",
+      "checkpoint_state_sha256": "6aa527422fadba60d1095855bf56c72abe042056c35df21011a6a30a6e8f87a3",
+      "control_step": 28,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "policy_start_state_sha256": "f1c20326f0ca5fa125fa0cc963a9a11dac052b08376851c5396324a5f4478743",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": true,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.10504452582013761,
+        0.007224631538565253,
+        0.9680026036200491
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.667",
+      "checkpoint_state_sha256": "70ff7ab59117b570f9715411d16eba88b8a2f3373d20f7ba7bb902f452e12866",
+      "control_step": 55,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_stove",
+      "is_control": true,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "policy_start_state_sha256": "669b21190bf512f599c36b17512b421a79594cb6cba82515067f895897d2efb6",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": false,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.10504452582013761,
+        0.007224631538565253,
+        0.9680026036200491
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.667",
+      "checkpoint_state_sha256": "70ff7ab59117b570f9715411d16eba88b8a2f3373d20f7ba7bb902f452e12866",
+      "control_step": 55,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_plate",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "policy_start_state_sha256": "669b21190bf512f599c36b17512b421a79594cb6cba82515067f895897d2efb6",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": false,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.10504452582013761,
+        0.007224631538565253,
+        0.9680026036200491
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.667",
+      "checkpoint_state_sha256": "70ff7ab59117b570f9715411d16eba88b8a2f3373d20f7ba7bb902f452e12866",
+      "control_step": 55,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "policy_start_state_sha256": "669b21190bf512f599c36b17512b421a79594cb6cba82515067f895897d2efb6",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": false,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778816,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.333",
+      "checkpoint_state_sha256": "567acf4b283d2f50d3521a0a87655db01ad7cf1e5464fc9ddd327c0c39efdf0d",
+      "control_step": 28,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+      "is_control": true,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "policy_start_state_sha256": "9fd32db2e674e849647fcfe7e73db0699f024ea75ac7a7906666682a1f54c482",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": true,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778816,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.333",
+      "checkpoint_state_sha256": "567acf4b283d2f50d3521a0a87655db01ad7cf1e5464fc9ddd327c0c39efdf0d",
+      "control_step": 28,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_plate",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "policy_start_state_sha256": "9fd32db2e674e849647fcfe7e73db0699f024ea75ac7a7906666682a1f54c482",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": true,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.09762602782695819,
+        -0.008583464519778816,
+        0.898404150188853
+      ],
+      "checkpoint_fraction": 0.3333333333333333,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.333",
+      "checkpoint_state_sha256": "567acf4b283d2f50d3521a0a87655db01ad7cf1e5464fc9ddd327c0c39efdf0d",
+      "control_step": 28,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_stove",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "policy_start_state_sha256": "9fd32db2e674e849647fcfe7e73db0699f024ea75ac7a7906666682a1f54c482",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": true,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.08692545770016454,
+        -0.01510383908453025,
+        1.02820942717954
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.667",
+      "checkpoint_state_sha256": "0fd36268885821ef46a461d65c569340b72ac31944bca9a9479cd976edd2f278",
+      "control_step": 56,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+      "is_control": true,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "policy_start_state_sha256": "171c93654f7833a3a75c30ed8fd3e5c393a904bc2d6a24c99abdda77738f94ab",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": false,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.08692545770016454,
+        -0.01510383908453025,
+        1.02820942717954
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.667",
+      "checkpoint_state_sha256": "0fd36268885821ef46a461d65c569340b72ac31944bca9a9479cd976edd2f278",
+      "control_step": 56,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_plate",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "policy_start_state_sha256": "171c93654f7833a3a75c30ed8fd3e5c393a904bc2d6a24c99abdda77738f94ab",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": false,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_bowl_position": [
+        -0.08692545770016454,
+        -0.01510383908453025,
+        1.02820942717954
+      ],
+      "checkpoint_fraction": 0.6666666666666666,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_label": "0.667",
+      "checkpoint_state_sha256": "0fd36268885821ef46a461d65c569340b72ac31944bca9a9479cd976edd2f278",
+      "control_step": 56,
+      "exact_restore": true,
+      "instruction_task": "put_the_bowl_on_the_stove",
+      "is_control": false,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "policy_start_state_sha256": "171c93654f7833a3a75c30ed8fd3e5c393a904bc2d6a24c99abdda77738f94ab",
+      "restore_max_abs_delta": 0.0,
+      "same_policy_start": true,
+      "success_for_instruction_goal": false,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "total_reward": 0.0
+    }
+  ],
+  "settle_steps_excluded_from_checkpoint_timing": 10,
+  "tasks": [
+    "put_the_bowl_on_the_plate",
+    "put_the_bowl_on_the_stove",
+    "put_the_bowl_on_top_of_the_cabinet"
+  ],
+  "training_authorized": false
+}
