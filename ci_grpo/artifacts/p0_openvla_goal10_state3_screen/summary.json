@@ -1,0 +1,110 @@
+{
+  "all_tasks": {
+    "high_hit": true,
+    "hit": 1,
+    "language_deaf_candidate": false,
+    "lsg": 1,
+    "miss": 0,
+    "n_mismatch_checks": 270,
+    "n_rollouts": 30
+  },
+  "continue_training_direction": false,
+  "known_exclusive_groups": {
+    "bowl_destination_k3": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0,
+      "n_mismatch_checks": 18,
+      "n_rollouts": 9
+    },
+    "wine_destination_k2": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0,
+      "n_mismatch_checks": 6,
+      "n_rollouts": 6
+    }
+  },
+  "num_init_states": 3,
+  "num_rollouts": 30,
+  "num_tasks": 10,
+  "per_target": {
+    "open_the_middle_drawer_of_the_cabinet": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    },
+    "open_the_top_drawer_and_put_the_bowl_inside": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    },
+    "push_the_plate_to_the_front_of_the_stove": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    },
+    "put_the_bowl_on_the_plate": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    },
+    "put_the_bowl_on_the_stove": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    },
+    "put_the_bowl_on_top_of_the_cabinet": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    },
+    "put_the_cream_cheese_in_the_bowl": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    },
+    "put_the_wine_bottle_on_the_rack": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    },
+    "put_the_wine_bottle_on_top_of_the_cabinet": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    },
+    "turn_on_the_stove": {
+      "high_hit": true,
+      "hit": 1,
+      "language_deaf_candidate": false,
+      "lsg": 1,
+      "miss": 0
+    }
+  },
+  "raw_target_candidates_requiring_compatibility_review": [],
+  "source_result": "ci_grpo/artifacts/p0_openvla_goal10_state3_screen",
+  "valid_exclusive_group_candidates": []
+}

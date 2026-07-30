@@ -1,0 +1,211 @@
+{
+  "checks": {
+    "all_goals_initially_unsatisfied": true,
+    "dynamic_goal_switch_supported": true,
+    "restored_state_equal": true,
+    "single_env_pixel_equal_after_goal_switch": true,
+    "static_scene_equal": true
+  },
+  "created_at": "2026-07-27T20:08:58.095568+08:00",
+  "diagnostics": {
+    "separate_env_note": "Separate environment construction is not used for contrastive groups; renderer/model-level differences can survive identical MuJoCo data state. One live environment is the required path.",
+    "separate_env_pixel_equal": false
+  },
+  "dynamic_goal_results_on_one_live_env": {
+    "put_the_bowl_on_the_plate": false,
+    "put_the_bowl_on_the_stove": false,
+    "put_the_bowl_on_top_of_the_cabinet": false
+  },
+  "image_comparisons": {
+    "agentview_image": {
+      "put_the_bowl_on_the_plate::put_the_bowl_on_the_stove": {
+        "array_equal": false,
+        "different_values": 32341,
+        "max_abs_delta": 193
+      },
+      "put_the_bowl_on_the_plate::put_the_bowl_on_top_of_the_cabinet": {
+        "array_equal": false,
+        "different_values": 33785,
+        "max_abs_delta": 193
+      }
+    },
+    "robot0_eye_in_hand_image": {
+      "put_the_bowl_on_the_plate::put_the_bowl_on_the_stove": {
+        "array_equal": false,
+        "different_values": 45412,
+        "max_abs_delta": 188
+      },
+      "put_the_bowl_on_the_plate::put_the_bowl_on_top_of_the_cabinet": {
+        "array_equal": false,
+        "different_values": 43652,
+        "max_abs_delta": 193
+      }
+    }
+  },
+  "init_index": 0,
+  "input_state_sha256": "66b1883f351c4c374c742516714921b55bd5eca7fd6f0fa8e2e0a86abff19ccd",
+  "input_state_shape": [
+    79
+  ],
+  "libero_config": "/home/imc/yzy/RA_LOOP/.libero-official",
+  "libero_root": "/home/imc/code/LIBERO-official",
+  "p0_t0_1_pass": true,
+  "probe": "CI-GRPO P0 same-state/different-goal K=3",
+  "single_env_image_comparisons": {
+    "agentview_image": {
+      "put_the_bowl_on_the_plate::put_the_bowl_on_the_stove": {
+        "array_equal": true,
+        "different_values": 0,
+        "max_abs_delta": 0
+      },
+      "put_the_bowl_on_the_plate::put_the_bowl_on_top_of_the_cabinet": {
+        "array_equal": true,
+        "different_values": 0,
+        "max_abs_delta": 0
+      }
+    },
+    "robot0_eye_in_hand_image": {
+      "put_the_bowl_on_the_plate::put_the_bowl_on_the_stove": {
+        "array_equal": true,
+        "different_values": 0,
+        "max_abs_delta": 0
+      },
+      "put_the_bowl_on_the_plate::put_the_bowl_on_top_of_the_cabinet": {
+        "array_equal": true,
+        "different_values": 0,
+        "max_abs_delta": 0
+      }
+    }
+  },
+  "source_init_path": "/home/imc/code/LIBERO-official/libero/libero/init_files/libero_goal/put_the_bowl_on_the_plate.pruned_init",
+  "source_task": "put_the_bowl_on_the_plate",
+  "state_comparisons": {
+    "put_the_bowl_on_the_plate::put_the_bowl_on_the_stove": {
+      "array_equal": true,
+      "max_abs_delta": 0.0
+    },
+    "put_the_bowl_on_the_plate::put_the_bowl_on_top_of_the_cabinet": {
+      "array_equal": true,
+      "max_abs_delta": 0.0
+    }
+  },
+  "suite": "libero_goal",
+  "task_details": {
+    "put_the_bowl_on_the_plate": {
+      "bddl": "/home/imc/code/LIBERO-official/libero/libero/bddl_files/libero_goal/put_the_bowl_on_the_plate.bddl",
+      "cameras": {
+        "agentview_image": {
+          "path": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p0_same_state_k3/put_the_bowl_on_the_plate__agentview_image.png",
+          "sha256": "b1413f8bea774c6080b0277d92566cf5afabf89fc5913d76a3c6571beb682b3c",
+          "shape": [
+            256,
+            256,
+            3
+          ]
+        },
+        "robot0_eye_in_hand_image": {
+          "path": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p0_same_state_k3/put_the_bowl_on_the_plate__robot0_eye_in_hand_image.png",
+          "sha256": "cc76831610d345da26f3fd0545cb6d3907498ea2ed4ad1aad804397a19d3f322",
+          "shape": [
+            256,
+            256,
+            3
+          ]
+        }
+      },
+      "goal_state": [
+        [
+          "on",
+          "akita_black_bowl_1",
+          "plate_1"
+        ]
+      ],
+      "initial_success": false,
+      "language": "put the bowl on the plate",
+      "scene_signature_sha256": "8e4569180429d57f521578e3bc123a1c3820ac9228dac928c0470796e6359452",
+      "state_sha256": "66b1883f351c4c374c742516714921b55bd5eca7fd6f0fa8e2e0a86abff19ccd",
+      "state_shape": [
+        79
+      ]
+    },
+    "put_the_bowl_on_the_stove": {
+      "bddl": "/home/imc/code/LIBERO-official/libero/libero/bddl_files/libero_goal/put_the_bowl_on_the_stove.bddl",
+      "cameras": {
+        "agentview_image": {
+          "path": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p0_same_state_k3/put_the_bowl_on_the_stove__agentview_image.png",
+          "sha256": "de666c0d64cef7da7d49d75994090f4dc0aec06be77aa7f4ac633d7a156f458c",
+          "shape": [
+            256,
+            256,
+            3
+          ]
+        },
+        "robot0_eye_in_hand_image": {
+          "path": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p0_same_state_k3/put_the_bowl_on_the_stove__robot0_eye_in_hand_image.png",
+          "sha256": "e8bff3b7849d1a101e5593acd6e69fefb858a6d7abd7fcf35b83a153858f6d9b",
+          "shape": [
+            256,
+            256,
+            3
+          ]
+        }
+      },
+      "goal_state": [
+        [
+          "on",
+          "akita_black_bowl_1",
+          "flat_stove_1_cook_region"
+        ]
+      ],
+      "initial_success": false,
+      "language": "put the bowl on the stove",
+      "scene_signature_sha256": "8e4569180429d57f521578e3bc123a1c3820ac9228dac928c0470796e6359452",
+      "state_sha256": "66b1883f351c4c374c742516714921b55bd5eca7fd6f0fa8e2e0a86abff19ccd",
+      "state_shape": [
+        79
+      ]
+    },
+    "put_the_bowl_on_top_of_the_cabinet": {
+      "bddl": "/home/imc/code/LIBERO-official/libero/libero/bddl_files/libero_goal/put_the_bowl_on_top_of_the_cabinet.bddl",
+      "cameras": {
+        "agentview_image": {
+          "path": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p0_same_state_k3/put_the_bowl_on_top_of_the_cabinet__agentview_image.png",
+          "sha256": "cd15f552c540bc6e959a6c30fd4a94d523b44a10409c0e5e5c7f98edcf002dab",
+          "shape": [
+            256,
+            256,
+            3
+          ]
+        },
+        "robot0_eye_in_hand_image": {
+          "path": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p0_same_state_k3/put_the_bowl_on_top_of_the_cabinet__robot0_eye_in_hand_image.png",
+          "sha256": "f9a0ca25b32312bde8643adb9c40e20d449f9f8837af29f3c4383581888dea7c",
+          "shape": [
+            256,
+            256,
+            3
+          ]
+        }
+      },
+      "goal_state": [
+        [
+          "on",
+          "akita_black_bowl_1",
+          "wooden_cabinet_1_top_side"
+        ]
+      ],
+      "initial_success": false,
+      "language": "put the bowl on the top of the drawer",
+      "scene_signature_sha256": "8e4569180429d57f521578e3bc123a1c3820ac9228dac928c0470796e6359452",
+      "state_sha256": "66b1883f351c4c374c742516714921b55bd5eca7fd6f0fa8e2e0a86abff19ccd",
+      "state_shape": [
+        79
+      ]
+    }
+  },
+  "tasks": [
+    "put_the_bowl_on_the_plate",
+    "put_the_bowl_on_the_stove",
+    "put_the_bowl_on_top_of_the_cabinet"
+  ]
+}

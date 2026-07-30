@@ -1,0 +1,147 @@
+{
+  "checkpoint": "/home/imc/models/ra-loop/smolvla-libero",
+  "completed_at": "2026-07-30T15:14:04.405688+08:00",
+  "continue_training_direction": false,
+  "execute": true,
+  "gpu_id": 7,
+  "gpu_peak_allocated_gib": 2.1029367446899414,
+  "gpu_peak_reserved_gib": 2.126953125,
+  "groups": {
+    "bowl_destination_k3": [
+      1,
+      4,
+      8
+    ],
+    "wine_destination_k2": [
+      2,
+      9
+    ]
+  },
+  "init_index": 0,
+  "max_episode_length": 300,
+  "metrics": {
+    "bowl_destination_k3": {
+      "candidate_still_possible": false,
+      "expected_mismatch_rollouts": 6,
+      "high_hit": true,
+      "hit": 0.6666666666666666,
+      "language_deaf_candidate": false,
+      "lsg": 0.6666666666666666,
+      "max_possible_miss": 0.5,
+      "mismatch_complete": false,
+      "miss": 0.0,
+      "n_hit_rollouts": 3,
+      "n_mismatch_rollouts": 3
+    },
+    "wine_destination_k2": {
+      "candidate_still_possible": false,
+      "expected_mismatch_rollouts": 2,
+      "high_hit": true,
+      "hit": 0.5,
+      "language_deaf_candidate": false,
+      "lsg": 0.5,
+      "max_possible_miss": 0.0,
+      "mismatch_complete": true,
+      "miss": 0.0,
+      "n_hit_rollouts": 2,
+      "n_mismatch_rollouts": 2
+    }
+  },
+  "output_dir": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p0_smolvla_same_state_screen_run3",
+  "probe": "CI-GRPO bounded SmolVLA same-state language screen",
+  "rows": [
+    {
+      "group": "bowl_destination_k3",
+      "instruction_language": "put the bowl on the stove",
+      "instruction_task_id": 1,
+      "scored_goal_language": "put the bowl on the stove",
+      "scored_goal_task_id": 1,
+      "success": false,
+      "sum_reward": 0.0
+    },
+    {
+      "group": "bowl_destination_k3",
+      "instruction_language": "put the bowl on top of the cabinet",
+      "instruction_task_id": 4,
+      "scored_goal_language": "put the bowl on top of the cabinet",
+      "scored_goal_task_id": 4,
+      "success": true,
+      "sum_reward": 1.0
+    },
+    {
+      "group": "bowl_destination_k3",
+      "instruction_language": "put the bowl on the plate",
+      "instruction_task_id": 8,
+      "scored_goal_language": "put the bowl on the plate",
+      "scored_goal_task_id": 8,
+      "success": true,
+      "sum_reward": 1.0
+    },
+    {
+      "group": "bowl_destination_k3",
+      "instruction_language": "put the bowl on top of the cabinet",
+      "instruction_task_id": 4,
+      "scored_goal_language": "put the bowl on the stove",
+      "scored_goal_task_id": 1,
+      "success": false,
+      "sum_reward": 0.0
+    },
+    {
+      "group": "bowl_destination_k3",
+      "instruction_language": "put the bowl on the plate",
+      "instruction_task_id": 8,
+      "scored_goal_language": "put the bowl on the stove",
+      "scored_goal_task_id": 1,
+      "success": false,
+      "sum_reward": 0.0
+    },
+    {
+      "group": "bowl_destination_k3",
+      "instruction_language": "put the bowl on the stove",
+      "instruction_task_id": 1,
+      "scored_goal_language": "put the bowl on top of the cabinet",
+      "scored_goal_task_id": 4,
+      "success": false,
+      "sum_reward": 0.0
+    },
+    {
+      "group": "wine_destination_k2",
+      "instruction_language": "put the wine bottle on top of the cabinet",
+      "instruction_task_id": 2,
+      "scored_goal_language": "put the wine bottle on top of the cabinet",
+      "scored_goal_task_id": 2,
+      "success": true,
+      "sum_reward": 1.0
+    },
+    {
+      "group": "wine_destination_k2",
+      "instruction_language": "put the wine bottle on the rack",
+      "instruction_task_id": 9,
+      "scored_goal_language": "put the wine bottle on the rack",
+      "scored_goal_task_id": 9,
+      "success": false,
+      "sum_reward": 0.0
+    },
+    {
+      "group": "wine_destination_k2",
+      "instruction_language": "put the wine bottle on the rack",
+      "instruction_task_id": 9,
+      "scored_goal_language": "put the wine bottle on top of the cabinet",
+      "scored_goal_task_id": 2,
+      "success": false,
+      "sum_reward": 0.0
+    },
+    {
+      "group": "wine_destination_k2",
+      "instruction_language": "put the wine bottle on top of the cabinet",
+      "instruction_task_id": 2,
+      "scored_goal_language": "put the wine bottle on the rack",
+      "scored_goal_task_id": 9,
+      "success": false,
+      "sum_reward": 0.0
+    }
+  ],
+  "seed": 1000,
+  "source_task_id": 8,
+  "valid_exclusive_group_candidates": []
+}

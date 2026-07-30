@@ -22,6 +22,9 @@ env/
 outputs/
 logs/*
 !logs/.gitkeep
+*.log
+*.incomplete
+ci_grpo/artifacts/**/videos/
 wandb/
 *.pt
 *.pth

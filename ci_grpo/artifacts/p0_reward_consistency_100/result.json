@@ -1,0 +1,2125 @@
+{
+  "agreement_rate": 1.0,
+  "agreements": 300,
+  "completed_at": "2026-07-27T20:55:07.274587+08:00",
+  "disagreements": 0,
+  "goal_evaluations": 300,
+  "p0_t0_3_pass": true,
+  "positive_counts": {
+    "put_the_bowl_on_the_plate": 25,
+    "put_the_bowl_on_the_stove": 25,
+    "put_the_bowl_on_top_of_the_cabinet": 24
+  },
+  "probe": "CI-GRPO P0 reward consistency",
+  "rollout_result": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p0_openvla_k3_rollout/result.json",
+  "rows": [
+    {
+      "custom": false,
+      "local_step": 0,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 0,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 0,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 2,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 2,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 2,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 3,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 3,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 3,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 4,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 4,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 4,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 5,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 5,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 5,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 6,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 6,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 6,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 7,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 7,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 7,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 8,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 8,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 8,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 9,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 9,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 9,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 10,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 10,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 10,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 11,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 11,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 11,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 12,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 12,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 12,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 13,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 13,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 13,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 14,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 14,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 14,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 15,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 15,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 15,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 16,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 16,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 16,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 17,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 17,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 17,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 18,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 18,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 18,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 19,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 19,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 19,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 20,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 20,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 20,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 21,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 21,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 21,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 22,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 22,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 22,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 23,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 23,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 23,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 24,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 24,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "initial"
+    },
+    {
+      "custom": false,
+      "local_step": 24,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "initial"
+    },
+    {
+      "custom": true,
+      "local_step": 0,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 0,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 0,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 1,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 2,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 2,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 2,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 3,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 3,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 3,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 4,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 4,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 4,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 5,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 5,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 5,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 6,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 6,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 6,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 7,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 7,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 7,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 8,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 8,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 8,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 9,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 9,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 9,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 10,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 10,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 10,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 11,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 11,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 11,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 12,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 12,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 12,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 13,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 13,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 13,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 14,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 14,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 14,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 15,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 15,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 15,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 16,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 16,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 16,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 17,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 17,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 17,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 18,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 18,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 18,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 19,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 19,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 19,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 20,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 20,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 20,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 21,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 21,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 21,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 22,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 22,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 22,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 23,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 23,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 23,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": true,
+      "local_step": 24,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 24,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 24,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_plate"
+    },
+    {
+      "custom": false,
+      "local_step": 0,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 0,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 0,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 1,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 2,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 2,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 2,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 3,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 3,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 3,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 4,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 4,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 4,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 5,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 5,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 5,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 6,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 6,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 6,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 7,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 7,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 7,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 8,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 8,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 8,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 9,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 9,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 9,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 10,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 10,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 10,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 11,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 11,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 11,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 12,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 12,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 12,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 13,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 13,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 13,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 14,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 14,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 14,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 15,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 15,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 15,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 16,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 16,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 16,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 17,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 17,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 17,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 18,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 18,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 18,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 19,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 19,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 19,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 20,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 20,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 20,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 21,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 21,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 21,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 22,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 22,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 22,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 23,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 23,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 23,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 24,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": true,
+      "local_step": 24,
+      "official": true,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 24,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_the_stove"
+    },
+    {
+      "custom": false,
+      "local_step": 0,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 0,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 0,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 1,
+      "official": false,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 2,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 2,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 2,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 3,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 3,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 3,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 4,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 4,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 4,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 5,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 5,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 5,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 6,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 6,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 6,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 7,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 7,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 7,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 8,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 8,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 8,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 9,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 9,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 9,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 10,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 10,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 10,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 11,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 11,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 11,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 12,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 12,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 12,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 13,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 13,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 13,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 14,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 14,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 14,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 15,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 15,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 15,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 16,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 16,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 16,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 17,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 17,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 17,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 18,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 18,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 18,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 19,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 19,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 19,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 20,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 20,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 20,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 21,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 21,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 21,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 22,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 22,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 22,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 23,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 23,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 23,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 24,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_plate",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": false,
+      "local_step": 24,
+      "official": false,
+      "scored_task": "put_the_bowl_on_the_stove",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    },
+    {
+      "custom": true,
+      "local_step": 24,
+      "official": true,
+      "scored_task": "put_the_bowl_on_top_of_the_cabinet",
+      "source": "put_the_bowl_on_top_of_the_cabinet"
+    }
+  ],
+  "sampled_states": 100,
+  "state_sources": [
+    "initial",
+    "put_the_bowl_on_the_plate",
+    "put_the_bowl_on_the_stove",
+    "put_the_bowl_on_top_of_the_cabinet"
+  ],
+  "states_per_source": 25
+}
