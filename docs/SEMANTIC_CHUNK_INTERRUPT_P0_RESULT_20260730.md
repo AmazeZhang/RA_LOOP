@@ -6,7 +6,7 @@ Preregistration:
 `docs/SEMANTIC_CHUNK_INTERRUPT_P0_PREREG_20260730.md`
 
 Machine-readable result:
-`ci_grpo/artifacts/p2_semantic_chunk_interrupt_openvla_run2/result.json`
+`ci_grpo/artifacts/p2_semantic_chunk_interrupt_openvla_run3/result.json`
 
 ## Outcome
 
@@ -17,7 +17,8 @@ post-revision branches. All nine stale/flush pairs passed the preregistered
 validity checks:
 
 - no destination goal was true at any switch state;
-- all MuJoCo state restorations were exact;
+- exact processed-action prefix replay reproduced every switch-state MuJoCo
+  vector byte-for-byte while preserving gripper and OSC controller history;
 - all three original continuous baselines succeeded;
 - terminal goal truth remained mutually exclusive.
 
@@ -26,7 +27,7 @@ Primary results:
 | Metric | Stale queue | Immediate flush |
 |---|---:|---:|
 | Revised-goal success | 0/9 (0%) | 0/9 (0%) |
-| Original-goal terminal rate | 7/9 (77.8%) | 7/9 (77.8%) |
+| Original-goal terminal rate | 9/9 (100%) | 9/9 (100%) |
 | Mean response latency | 4.0 actions | 0 actions |
 | Mean switch-action jerk L2 | 0.1249 | 0.2828 |
 
@@ -35,18 +36,10 @@ failed the required `flush >= 6/9` ability gate, and more than doubled the mean
 action discontinuity. It is therefore not a viable intervention on this
 setting.
 
-Per directed revision:
-
-- plate → stove: both methods failed the revised goal at offsets 1, 4, and 7;
-  all six branches completed the original plate goal;
-- stove → cabinet: both methods failed all revised goals; stale completed the
-  old goal in 2/3 cases and flush in 3/3;
-- cabinet → plate: both methods failed all revised goals; stale completed the
-  old goal in 2/3 cases and flush in 1/3.
-
-Seven of nine paired cases had identical stale/flush terminal truth. The two
-differences changed only whether the terminal state was old-goal or all-false;
-neither produced the revised goal.
+For plate → stove, stove → cabinet, and cabinet → plate, both methods failed
+the revised goal at offsets 1, 4, and 7. Every one of the 18 branches completed
+the original goal. All nine stale/flush pairs therefore had identical terminal
+truth.
 
 ## Interpretation
 
@@ -61,11 +54,18 @@ The experiment exposes a stronger, separate diagnostic pattern:
 - at a mechanically selected penultimate action chunk, revised-goal success is
   0%, while the original goal remains the dominant terminal outcome.
 
-This is consistent with late-trajectory goal commitment or visual-state
-inertia, but it is not yet proof of linguistic blindness. At these late states,
-independent physical reachability of the revised destination has not been
-established by an oracle controller. A model failure cannot serve as its own
-reachability test.
+The separate scripted reachability audit then reached the revised official
+goal from all 9/9 exact switch states. The valid combined result is therefore:
+
+- original instruction from the initial state: 100% redirection in the prior
+  all-Goal screen;
+- revised instruction at the penultimate chunk: 0/9 revised-goal success and
+  9/9 original-goal completion for both stale and flush;
+- fixed non-VLA scripted controller: 9/9 revised-goal success.
+
+This establishes a late-trajectory policy grounding/control failure on the
+tested backbone/group. It is not explained by stale queued actions, physical
+unreachability, or incomplete controller-state restoration.
 
 ## Literature position and next gate
 
@@ -75,14 +75,15 @@ cross-chunk smoothing. The potentially distinct contribution here is not
 generic chunk correction; it is controlled evaluation of instruction revision
 after a task has become visually and dynamically committed.
 
-No training or additional policy sweep follows this P0. Before treating the
-late-state pattern as a research direction, the next required gate is a
-non-policy physical-reachability audit from the exact nine switch states. Only
-if an oracle can reach the revised goals from those states does a temporal
-language-grounding treatment become scientifically justified.
+The physical-reachability gate has passed. A temporal language-grounding
+treatment is now scientifically justified for a subsequent, separately
+authorized experiment. Immediate queue flushing is not that treatment.
+Training remains outside this P0.
 
 The first launch terminated after three branch rows because robosuite's
-internal episode counter was not reset between restored branches. No complete
-matrix was produced. The one allowed technical repair added `env.reset()`
-before each exact state restoration; run 2 then completed the identical
-pre-registered matrix.
+internal episode counter was not reset between restored branches. Run 2
+completed, but the reachability audit later showed that state-only restoration
+omitted `PandaGripper.current_action`; it is retained only as an operational
+diagnostic. Final run 3 replaced state-only branching with exact original
+action-prefix replay. It preserved all controller history, reproduced all nine
+switch states exactly, and is the only run used for the final result.

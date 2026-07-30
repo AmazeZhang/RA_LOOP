@@ -25,6 +25,7 @@ logs/*
 *.log
 *.incomplete
 ci_grpo/artifacts/**/videos/
+ci_grpo/artifacts/p3_scripted_reachability_audit/result.json
 wandb/
 *.pt
 *.pth

@@ -424,6 +424,12 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
                         "last_prefix_action": baseline["processed_actions"][
                             state_index
                         ].copy(),
+                        "prefix_processed_actions": [
+                            action.copy()
+                            for action in baseline["processed_actions"][
+                                : state_index + 1
+                            ]
+                        ],
                         "baseline_success": baseline["success"],
                     }
                 )
@@ -431,10 +437,14 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
 
         for case in switch_cases:
             for method in ("stale", "flush"):
+                obs = reset_initial(case["origin_task"])
+                for prefix_action in case["prefix_processed_actions"]:
+                    obs, _, _, _ = env.step(prefix_action)
+                replayed = np.asarray(env.get_sim_state()).copy()
                 set_goal(case["revised_task"])
-                env.reset()
-                obs = env.set_init_state(case["state"])
-                restored = np.asarray(env.get_sim_state()).copy()
+                gripper_current_action_at_switch = np.asarray(
+                    env.env.robots[0].gripper.current_action
+                ).copy()
                 queue = (
                     [action.copy() for action in case["remaining_raw_actions"]]
                     if method == "stale"
@@ -478,10 +488,14 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
                             case["checkpoint_goal_truth"].values()
                         ),
                         "exact_restore": bool(
-                            np.array_equal(case["state"], restored)
+                            np.array_equal(case["state"], replayed)
                         ),
                         "restore_max_abs_delta": float(
-                            np.max(np.abs(case["state"] - restored))
+                            np.max(np.abs(case["state"] - replayed))
+                        ),
+                        "switch_state_construction": "exact action-prefix replay",
+                        "gripper_current_action_at_switch": (
+                            gripper_current_action_at_switch.tolist()
                         ),
                         "stale_tail_actions": len(
                             case["remaining_raw_actions"]

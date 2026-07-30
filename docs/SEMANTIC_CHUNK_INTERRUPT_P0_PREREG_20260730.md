@@ -78,3 +78,21 @@ move the efficacy threshold after execution.
 If the harness fails before producing branch outcomes, one technical repair is
 allowed and the identical matrix is rerun. No timing, task-pair, seed, horizon,
 or threshold sweep follows a completed matrix.
+
+## Controller-state restoration amendment
+
+The completed scripted reachability audit exposed a hidden-state confound in
+the original branch implementation. MuJoCo's flattened state omits the Panda
+gripper's internal `current_action`; `env.reset()` clears that command even
+when `set_init_state` restores closed finger qpos. Thus a branch can begin from
+the correct physical vector while receiving an incorrect opening actuator
+command.
+
+The scientifically valid semantic-interrupt run reconstructs every branch by
+resetting to the official initial state and replaying the exact processed
+original-policy action prefix through the switch offset. Stale and flush then
+branch from this live replay state. This preserves gripper and OSC controller
+history without adding an intervention parameter. Exact equality between the
+original captured MuJoCo state and replayed switch state is still required.
+Earlier state-only branch runs remain operational diagnostics and are not used
+for the final language result.
