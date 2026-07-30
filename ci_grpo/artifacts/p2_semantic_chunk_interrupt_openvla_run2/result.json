@@ -1,0 +1,660 @@
+{
+  "baselines": [
+    {
+      "generated_chunks": 10,
+      "intervention_chunk_index": 8,
+      "intervention_chunk_start_step": 64,
+      "steps": 78,
+      "success": true,
+      "task": "put_the_bowl_on_the_plate"
+    },
+    {
+      "generated_chunks": 11,
+      "intervention_chunk_index": 9,
+      "intervention_chunk_start_step": 72,
+      "steps": 83,
+      "success": true,
+      "task": "put_the_bowl_on_the_stove"
+    },
+    {
+      "generated_chunks": 11,
+      "intervention_chunk_index": 9,
+      "intervention_chunk_start_step": 72,
+      "steps": 84,
+      "success": true,
+      "task": "put_the_bowl_on_top_of_the_cabinet"
+    }
+  ],
+  "checkpoint": "/home/imc/models/ra-loop/openvla-oft-goal",
+  "checkpoint_config_sha256": "bcb688a66f3e94a42311b77d37b7e1484886701f7b2aa8e36d165dfccac92ae6",
+  "chunk_size": 8,
+  "completed_at": "2026-07-30T17:55:47.263131+08:00",
+  "continue_method_direction": false,
+  "execute": true,
+  "gpu_id": 7,
+  "gpu_peak_allocated_gib": 15.58367109298706,
+  "gpu_peak_reserved_gib": 15.818359375,
+  "init_index": 0,
+  "intervention_chunk_rule": "penultimate generated baseline chunk",
+  "max_episode_length": 300,
+  "maximum_rollouts": 21,
+  "methods": [
+    "stale",
+    "flush"
+  ],
+  "metrics": {
+    "decision": "no_go",
+    "flush_original_goal_rate": 0.7777777777777778,
+    "flush_revised_goal_success_rate": 0.0,
+    "flush_success_improvement": 0.0,
+    "mean_flush_action_jerk_l2": 0.2828091889001554,
+    "mean_stale_action_jerk_l2": 0.12485950042300109,
+    "mean_stale_response_latency_actions": 4.0,
+    "n_complete_pairs": 9,
+    "n_rows": 18,
+    "n_valid_pairs": 9,
+    "semantic_interrupt_candidate": false,
+    "stale_original_goal_rate": 0.7777777777777778,
+    "stale_revised_goal_success_rate": 0.0
+  },
+  "offsets": [
+    1,
+    4,
+    7
+  ],
+  "output_dir": "ci_grpo/artifacts/p2_semantic_chunk_interrupt_openvla_run2",
+  "probe": "Semantic Action-Chunk Interrupt P0",
+  "rows": [
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.01750419212598988,
+        -0.0011432261071631679,
+        -0.09366345991686964
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "4d5a61d19b2a43454a7e29030c8e6fbed995dde74dc148e308d41eb37ee7399b",
+      "exact_restore": true,
+      "method": "stale",
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "response_latency_actions": 7,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "stale_tail_actions": 7,
+      "steps_after_switch": 235,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.2241104096692301,
+      "switch_control_step": 65,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.016218964089708257,
+        -0.0009646007701317356,
+        -0.09351127605979015
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "4d5a61d19b2a43454a7e29030c8e6fbed995dde74dc148e308d41eb37ee7399b",
+      "exact_restore": true,
+      "method": "flush",
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "response_latency_actions": 0,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "stale_tail_actions": 7,
+      "steps_after_switch": 235,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.6511825883914109,
+      "switch_control_step": 65,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.004430594440996964,
+        0.0011149357700224113,
+        -0.07570177304637304
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "aedfb12a97603d54950f40106a9037cbcfa5591dad10d33143a615cbb4589740",
+      "exact_restore": true,
+      "method": "stale",
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "response_latency_actions": 4,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "stale_tail_actions": 4,
+      "steps_after_switch": 232,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.17291595427896989,
+      "switch_control_step": 68,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.004273893920096583,
+        0.0012487174264326772,
+        -0.0756989041887065
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "aedfb12a97603d54950f40106a9037cbcfa5591dad10d33143a615cbb4589740",
+      "exact_restore": true,
+      "method": "flush",
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "response_latency_actions": 0,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "stale_tail_actions": 4,
+      "steps_after_switch": 232,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.34044701378953657,
+      "switch_control_step": 68,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        -0.0015011982341118918,
+        0.0019815819329572076,
+        -0.019485633083637044
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "cbf718c39ff77f4844dbb81bc11cce95dead6109777577309223418acd69219b",
+      "exact_restore": true,
+      "method": "stale",
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "response_latency_actions": 1,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "stale_tail_actions": 1,
+      "steps_after_switch": 229,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.13427950260405305,
+      "switch_control_step": 71,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        -0.001566305461176587,
+        0.0019000498991566441,
+        -0.019549631735774398
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "cbf718c39ff77f4844dbb81bc11cce95dead6109777577309223418acd69219b",
+      "exact_restore": true,
+      "method": "flush",
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "response_latency_actions": 0,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "stale_tail_actions": 1,
+      "steps_after_switch": 229,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.2162826507529096,
+      "switch_control_step": 71,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.00035139011264748166,
+        -0.022498348307091576,
+        -0.09731264827301689
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "0938e36a11b57a2979e25da0edc66b16fac34a16ff6d65c9fee03c0fe35e24ef",
+      "exact_restore": true,
+      "method": "stale",
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "response_latency_actions": 7,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "stale_tail_actions": 7,
+      "steps_after_switch": 227,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.10702047517849131,
+      "switch_control_step": 73,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.0018881744810101964,
+        -0.022616334149788114,
+        -0.09731035407553745
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "0938e36a11b57a2979e25da0edc66b16fac34a16ff6d65c9fee03c0fe35e24ef",
+      "exact_restore": true,
+      "method": "flush",
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "response_latency_actions": 0,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "stale_tail_actions": 7,
+      "steps_after_switch": 227,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.16394641242697505,
+      "switch_control_step": 73,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.007111671138687464,
+        -0.023369138185598076,
+        -0.06813101342267924
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "147093f179f9a23896b77c03cae0caeb2e406fb279ada97d6801487ce8addcc0",
+      "exact_restore": true,
+      "method": "stale",
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "response_latency_actions": 4,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "stale_tail_actions": 4,
+      "steps_after_switch": 224,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.05841375018748872,
+      "switch_control_step": 76,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.008368789015728961,
+        -0.023213530437311947,
+        -0.06878476766277553
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "147093f179f9a23896b77c03cae0caeb2e406fb279ada97d6801487ce8addcc0",
+      "exact_restore": true,
+      "method": "flush",
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "response_latency_actions": 0,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "stale_tail_actions": 4,
+      "steps_after_switch": 224,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.13121986103778843,
+      "switch_control_step": 76,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.0009262289240897503,
+        -0.004978228814796148,
+        -0.01280761307730871
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "3c3a6a6c4315c67dbd79ce415fb17f9a98d184028f94e6cf7cbf26f9b24633dc",
+      "exact_restore": true,
+      "method": "stale",
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "response_latency_actions": 1,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "stale_tail_actions": 1,
+      "steps_after_switch": 221,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.04740246892497278,
+      "switch_control_step": 79,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        0.001168674870998726,
+        -0.005040132545022391,
+        -0.012694895989764032
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "3c3a6a6c4315c67dbd79ce415fb17f9a98d184028f94e6cf7cbf26f9b24633dc",
+      "exact_restore": true,
+      "method": "flush",
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "response_latency_actions": 0,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "stale_tail_actions": 1,
+      "steps_after_switch": 221,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.19887857230181216,
+      "switch_control_step": 79,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        -0.029499252886162584,
+        0.0168120001476752,
+        -0.06725838067268919
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "e70008d9332143e98d2f82df8f73a43576c42505c74f4b674f66abadcc777930",
+      "exact_restore": true,
+      "method": "stale",
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "response_latency_actions": 7,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "stale_tail_actions": 7,
+      "steps_after_switch": 227,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.07573468997908964,
+      "switch_control_step": 73,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        -0.027310668246793852,
+        0.019003296687992582,
+        -0.07368151783209465
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "e70008d9332143e98d2f82df8f73a43576c42505c74f4b674f66abadcc777930",
+      "exact_restore": true,
+      "method": "flush",
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "response_latency_actions": 0,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "stale_tail_actions": 7,
+      "steps_after_switch": 227,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.30843373788882134,
+      "switch_control_step": 73,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        -0.03601630047106155,
+        -0.009847250767260951,
+        -0.041740008714715504
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "186ea9c59068df1ba5d88e8d68ab7bff96fcdaf0fa265f1039ce5e8707546f3a",
+      "exact_restore": true,
+      "method": "stale",
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "response_latency_actions": 4,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "stale_tail_actions": 4,
+      "steps_after_switch": 224,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.12337531709106846,
+      "switch_control_step": 76,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        -0.030462819950073605,
+        -0.0035743024845724947,
+        -0.04448311555391671
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "186ea9c59068df1ba5d88e8d68ab7bff96fcdaf0fa265f1039ce5e8707546f3a",
+      "exact_restore": true,
+      "method": "flush",
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "response_latency_actions": 0,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "stale_tail_actions": 4,
+      "steps_after_switch": 224,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.2891904606064009,
+      "switch_control_step": 76,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        -0.005360199902422938,
+        0.005848759936691539,
+        -0.0151744911264875
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "3a1c2f47043148e01228298889595ec57774dd9c804515063c45ea3f240e7b5b",
+      "exact_restore": true,
+      "method": "stale",
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "response_latency_actions": 1,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "stale_tail_actions": 1,
+      "steps_after_switch": 221,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.18048293589364578,
+      "switch_control_step": 79,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      }
+    },
+    {
+      "baseline_success": true,
+      "bowl_displacement_during_comparison_horizon": [
+        -0.005070165084277552,
+        0.005827137564919593,
+        -0.014932307065454342
+      ],
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "3a1c2f47043148e01228298889595ec57774dd9c804515063c45ea3f240e7b5b",
+      "exact_restore": true,
+      "method": "flush",
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "response_latency_actions": 0,
+      "restore_max_abs_delta": 0.0,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "stale_tail_actions": 1,
+      "steps_after_switch": 221,
+      "success_for_revised_goal": false,
+      "switch_action_jerk_l2": 0.24570140290574352,
+      "switch_control_step": 79,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      }
+    }
+  ],
+  "task_pairs": [
+    [
+      "put_the_bowl_on_the_plate",
+      "put_the_bowl_on_the_stove"
+    ],
+    [
+      "put_the_bowl_on_the_stove",
+      "put_the_bowl_on_top_of_the_cabinet"
+    ],
+    [
+      "put_the_bowl_on_top_of_the_cabinet",
+      "put_the_bowl_on_the_plate"
+    ]
+  ],
+  "training_authorized": false
+}
