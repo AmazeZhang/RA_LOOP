@@ -1,0 +1,66 @@
+{
+  "audit_skill": "experiment-audit",
+  "verdict": "WARN",
+  "reason_code": "disclosed_state_provenance_mismatch_and_minor_claim_fidelity_error",
+  "summary": "Final negative SFT counts are faithful, but P3 training states match 0/9 corrected P2 evaluation states, limiting causal interpretation.",
+  "audited_input_hashes": {
+    "ci_grpo/artifacts/p4_oracle_recovery_sft/result.json": "sha256:09e5d812763f9d5021b81dc4bff41f199938a0d7897ffa519cd278d08c5d4c63",
+    "ci_grpo/artifacts/p4_oracle_recovery_eval_step25_run2/result.json": "sha256:de7e57ee93948224774f3f0eb3760dc63dfc04396daa80aeefa28e6b3cf88f24",
+    "ci_grpo/artifacts/p4_oracle_recovery_eval_step50/result.json": "sha256:c8803f6c4a78f9dd8d59a841fcbf1a32100377dd092a803ca440e183febe723e",
+    "ci_grpo/artifacts/p4_oracle_recovery_eval_step100/result.json": "sha256:5fc23c42a2514c53afe24c0b172f959f7d85cc20a4d0815117fe91d329ac781a",
+    "ci_grpo/artifacts/p4_oracle_recovery_eval_step200/result.json": "sha256:9f831079963644feec3c29ac2f910c80d0ec17ca231843ff625fcd1e3ded0a45",
+    "ci_grpo/artifacts/p4_p2_p3_state_provenance/result.json": "sha256:33847df1d9d0763ee9f25e243f6a47e6ca5e93c75c283a14175a926932559114"
+  },
+  "trace_path": ".aris/traces/experiment-audit/2026-07-31_run01/",
+  "agent_id": "/root/experiment_audit_p4",
+  "verdict_id": "/root/experiment_audit_p4",
+  "executor_model": "codex-gpt-5",
+  "executor_family": "openai",
+  "reviewer_model": "same-family Codex reviewer",
+  "reviewer_family": "openai",
+  "reviewer_reasoning": "deep-audit route",
+  "review_independence": "same-family",
+  "acceptance_status": "provisional",
+  "generated_at": "2026-07-31T15:02:00+08:00",
+  "date": "2026-07-31",
+  "auditor": "same-family-codex",
+  "overall_verdict": "warn",
+  "integrity_status": "warn",
+  "checks": {
+    "gt_provenance": {
+      "status": "warn",
+      "details": "Official simulation predicates; disclosed scripted/model-derived supervision; P2/P3 state mismatch."
+    },
+    "score_normalization": {
+      "status": "pass",
+      "details": "Raw rollout counts and immutable checkpoint normalization."
+    },
+    "result_existence": {
+      "status": "warn",
+      "details": "Primary numbers match; one corrected jerk rounding typo."
+    },
+    "dead_code": {
+      "status": "pass",
+      "details": "Metric and preprocessing helpers are called and tested."
+    },
+    "scope": {
+      "status": "warn",
+      "details": "One seed/init state and three directed revisions."
+    },
+    "eval_type": "simulation_only_with_official_predicate_gt"
+  },
+  "claims": [
+    {
+      "id": "fixed_sft_gate",
+      "impact": "supported"
+    },
+    {
+      "id": "exact_p2_reachability",
+      "impact": "unsupported"
+    },
+    {
+      "id": "general_sft_impossibility",
+      "impact": "unsupported"
+    }
+  ]
+}

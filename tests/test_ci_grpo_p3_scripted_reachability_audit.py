@@ -1,10 +1,22 @@
 import numpy as np
 
 from ci_grpo.p3_scripted_reachability_audit import (
+    libero_env_action_to_training_action,
     position_action,
     summarize_oracle_rows,
     transport_waypoints,
 )
+
+
+def test_libero_action_conversion_matches_openvla_gripper_convention():
+    closed = libero_env_action_to_training_action(
+        np.array([0.1, 0, 0, 0, 0, 0, 1.0])
+    )
+    opened = libero_env_action_to_training_action(
+        np.array([0.1, 0, 0, 0, 0, 0, -1.0])
+    )
+    np.testing.assert_allclose(closed, [0.1, 0, 0, 0, 0, 0, 0.0])
+    np.testing.assert_allclose(opened, [0.1, 0, 0, 0, 0, 0, 1.0])
 
 
 def test_position_action_clips_and_preserves_rotation():

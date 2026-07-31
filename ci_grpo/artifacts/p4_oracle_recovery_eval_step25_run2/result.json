@@ -1,0 +1,288 @@
+{
+  "adapter": "checkpoints/p4_oracle_recovery_sft/openvla_lora_step_000025",
+  "adapter_sha256": "5520357b989aa5e8192b2fd5be100c18cda6bac88326fb3004870e2e75d6c815",
+  "completed_at": "2026-07-31T14:41:10.197226+08:00",
+  "data_manifest": "/home/imc/yzy/RA_LOOP/data/p4_oracle_recovery_sft/manifest.json",
+  "data_manifest_sha256": "c5bcbd2b2273c38596845808535b5d2c4c6a167ae63f5da6143bbc02494c202e",
+  "eval_cases_manifest": "/home/imc/yzy/RA_LOOP/data/p4_eval_cases/manifest.json",
+  "eval_cases_manifest_sha256": "67bf04cd9a6e8fc15d26c1d602f458cba6077785a08dbffde30d57cebe6d9075",
+  "execute": true,
+  "experiment": "Late-state oracle recovery SFT evaluation",
+  "gpu_id": 6,
+  "gpu_peak_allocated_gib": 15.58367109298706,
+  "gpu_peak_reserved_gib": 15.818359375,
+  "headers_sha256": "667c66a6e993a1e37f87f0dd2d8f128f54bea7aa11eef86ff82f6dd27aec7a4a",
+  "max_episode_length": 300,
+  "maximum_rollouts": 12,
+  "metrics": {
+    "all_directed_pairs_have_success": false,
+    "decision": "fail",
+    "n_exact_checkpoint_replays": 9,
+    "n_recovery_rollouts": 9,
+    "n_retention_rollouts": 3,
+    "n_retention_successes": 3,
+    "n_revised_goal_successes": 0,
+    "recovery_sft_gate_pass": false,
+    "retention_success_rate": 1.0,
+    "revised_goal_success_rate": 0.0
+  },
+  "offsets": [
+    1,
+    4,
+    7
+  ],
+  "output_dir": "ci_grpo/artifacts/p4_oracle_recovery_eval_step25_run2",
+  "recovery_rows": [
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "exact_checkpoint_replay": true,
+      "expected_checkpoint_state_sha256": "4d5a61d19b2a43454a7e29030c8e6fbed995dde74dc148e308d41eb37ee7399b",
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "replayed_checkpoint_state_sha256": "4d5a61d19b2a43454a7e29030c8e6fbed995dde74dc148e308d41eb37ee7399b",
+      "revised_goal_success": false,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "steps_after_switch": 235,
+      "switch_control_step": 65,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "exact_checkpoint_replay": true,
+      "expected_checkpoint_state_sha256": "aedfb12a97603d54950f40106a9037cbcfa5591dad10d33143a615cbb4589740",
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "replayed_checkpoint_state_sha256": "aedfb12a97603d54950f40106a9037cbcfa5591dad10d33143a615cbb4589740",
+      "revised_goal_success": false,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "steps_after_switch": 232,
+      "switch_control_step": 68,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "exact_checkpoint_replay": true,
+      "expected_checkpoint_state_sha256": "cbf718c39ff77f4844dbb81bc11cce95dead6109777577309223418acd69219b",
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "replayed_checkpoint_state_sha256": "cbf718c39ff77f4844dbb81bc11cce95dead6109777577309223418acd69219b",
+      "revised_goal_success": false,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "steps_after_switch": 229,
+      "switch_control_step": 71,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "exact_checkpoint_replay": true,
+      "expected_checkpoint_state_sha256": "0938e36a11b57a2979e25da0edc66b16fac34a16ff6d65c9fee03c0fe35e24ef",
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "replayed_checkpoint_state_sha256": "0938e36a11b57a2979e25da0edc66b16fac34a16ff6d65c9fee03c0fe35e24ef",
+      "revised_goal_success": false,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "steps_after_switch": 227,
+      "switch_control_step": 73,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "exact_checkpoint_replay": true,
+      "expected_checkpoint_state_sha256": "147093f179f9a23896b77c03cae0caeb2e406fb279ada97d6801487ce8addcc0",
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "replayed_checkpoint_state_sha256": "147093f179f9a23896b77c03cae0caeb2e406fb279ada97d6801487ce8addcc0",
+      "revised_goal_success": false,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "steps_after_switch": 224,
+      "switch_control_step": 76,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "exact_checkpoint_replay": true,
+      "expected_checkpoint_state_sha256": "3c3a6a6c4315c67dbd79ce415fb17f9a98d184028f94e6cf7cbf26f9b24633dc",
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "replayed_checkpoint_state_sha256": "3c3a6a6c4315c67dbd79ce415fb17f9a98d184028f94e6cf7cbf26f9b24633dc",
+      "revised_goal_success": false,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "steps_after_switch": 221,
+      "switch_control_step": 79,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "exact_checkpoint_replay": true,
+      "expected_checkpoint_state_sha256": "e70008d9332143e98d2f82df8f73a43576c42505c74f4b674f66abadcc777930",
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "replayed_checkpoint_state_sha256": "e70008d9332143e98d2f82df8f73a43576c42505c74f4b674f66abadcc777930",
+      "revised_goal_success": false,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "steps_after_switch": 227,
+      "switch_control_step": 73,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      }
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "exact_checkpoint_replay": true,
+      "expected_checkpoint_state_sha256": "186ea9c59068df1ba5d88e8d68ab7bff96fcdaf0fa265f1039ce5e8707546f3a",
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "replayed_checkpoint_state_sha256": "186ea9c59068df1ba5d88e8d68ab7bff96fcdaf0fa265f1039ce5e8707546f3a",
+      "revised_goal_success": false,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "steps_after_switch": 224,
+      "switch_control_step": 76,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      }
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "exact_checkpoint_replay": true,
+      "expected_checkpoint_state_sha256": "3a1c2f47043148e01228298889595ec57774dd9c804515063c45ea3f240e7b5b",
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "replayed_checkpoint_state_sha256": "3a1c2f47043148e01228298889595ec57774dd9c804515063c45ea3f240e7b5b",
+      "revised_goal_success": false,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "steps_after_switch": 221,
+      "switch_control_step": 79,
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      }
+    }
+  ],
+  "reference_interrupt": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p2_semantic_chunk_interrupt_openvla_run3/result.json",
+  "reference_interrupt_sha256": "3ee269ed1fd87fde5de03572d7a58b371930b7f9644b4c54f31856458e02126b",
+  "retention_rows": [
+    {
+      "original_goal_success": true,
+      "steps": 79,
+      "task": "put_the_bowl_on_the_plate",
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "original_goal_success": true,
+      "steps": 85,
+      "task": "put_the_bowl_on_the_stove",
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      }
+    },
+    {
+      "original_goal_success": true,
+      "steps": 86,
+      "task": "put_the_bowl_on_top_of_the_cabinet",
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      }
+    }
+  ],
+  "retention_tasks": [
+    "put_the_bowl_on_the_plate",
+    "put_the_bowl_on_the_stove",
+    "put_the_bowl_on_top_of_the_cabinet"
+  ],
+  "task_pairs": [
+    [
+      "put_the_bowl_on_the_plate",
+      "put_the_bowl_on_the_stove"
+    ],
+    [
+      "put_the_bowl_on_the_stove",
+      "put_the_bowl_on_top_of_the_cabinet"
+    ],
+    [
+      "put_the_bowl_on_top_of_the_cabinet",
+      "put_the_bowl_on_the_plate"
+    ]
+  ]
+}

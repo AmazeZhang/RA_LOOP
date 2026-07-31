@@ -1,0 +1,82 @@
+{
+  "audit": "P2 versus P3 switch-state provenance",
+  "p2_result": "ci_grpo/artifacts/p2_semantic_chunk_interrupt_openvla_run3/result.json",
+  "p3_result": "ci_grpo/artifacts/p3_scripted_reachability_audit_run3/result.json",
+  "n_states": 9,
+  "n_byte_exact_matches": 0,
+  "all_states_differ": true,
+  "rows": [
+    {
+      "origin_task": "put_the_bowl_on_the_plate",
+      "revised_task": "put_the_bowl_on_the_stove",
+      "offset": 1,
+      "p2_sha256": "4d5a61d19b2a43454a7e29030c8e6fbed995dde74dc148e308d41eb37ee7399b",
+      "p3_sha256": "b44081ab41bb1df4c4924a7b92478d1241bea36f7edddad3d27b49089ae3e20b",
+      "byte_exact_match": false
+    },
+    {
+      "origin_task": "put_the_bowl_on_the_plate",
+      "revised_task": "put_the_bowl_on_the_stove",
+      "offset": 4,
+      "p2_sha256": "aedfb12a97603d54950f40106a9037cbcfa5591dad10d33143a615cbb4589740",
+      "p3_sha256": "1c8649d6f7fe5629cc20c4a5817f97a1df55afca6e19b47ea3402e8c1ad3f881",
+      "byte_exact_match": false
+    },
+    {
+      "origin_task": "put_the_bowl_on_the_plate",
+      "revised_task": "put_the_bowl_on_the_stove",
+      "offset": 7,
+      "p2_sha256": "cbf718c39ff77f4844dbb81bc11cce95dead6109777577309223418acd69219b",
+      "p3_sha256": "97867eedae0fa63d2f11fa6a0dd63c164d64914c179a477b54a0e51d7d7af6e1",
+      "byte_exact_match": false
+    },
+    {
+      "origin_task": "put_the_bowl_on_the_stove",
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "offset": 1,
+      "p2_sha256": "0938e36a11b57a2979e25da0edc66b16fac34a16ff6d65c9fee03c0fe35e24ef",
+      "p3_sha256": "334c581c1322b3b29d4e47aadeb3539873717a614d6137643e3050d9aa747e20",
+      "byte_exact_match": false
+    },
+    {
+      "origin_task": "put_the_bowl_on_the_stove",
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "offset": 4,
+      "p2_sha256": "147093f179f9a23896b77c03cae0caeb2e406fb279ada97d6801487ce8addcc0",
+      "p3_sha256": "7ecc06828554760f3935edca5725dbb106a89a93fd3acb79ab76eaf9fe7ea60a",
+      "byte_exact_match": false
+    },
+    {
+      "origin_task": "put_the_bowl_on_the_stove",
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "offset": 7,
+      "p2_sha256": "3c3a6a6c4315c67dbd79ce415fb17f9a98d184028f94e6cf7cbf26f9b24633dc",
+      "p3_sha256": "38b0e76b5590f2461303dafc53cafe2ccec2d220bb034d51cd6f55c08cdb0dec",
+      "byte_exact_match": false
+    },
+    {
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "revised_task": "put_the_bowl_on_the_plate",
+      "offset": 1,
+      "p2_sha256": "e70008d9332143e98d2f82df8f73a43576c42505c74f4b674f66abadcc777930",
+      "p3_sha256": "4d6873aeb47bc6bec65c41ab64272e66840f00edf1c585fefbac74ea36455f9b",
+      "byte_exact_match": false
+    },
+    {
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "revised_task": "put_the_bowl_on_the_plate",
+      "offset": 4,
+      "p2_sha256": "186ea9c59068df1ba5d88e8d68ab7bff96fcdaf0fa265f1039ce5e8707546f3a",
+      "p3_sha256": "6d15a20caa067bed8ff582bb1494ab39cbcc003e0bb10ed526ac2ccbe4799fe8",
+      "byte_exact_match": false
+    },
+    {
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "revised_task": "put_the_bowl_on_the_plate",
+      "offset": 7,
+      "p2_sha256": "3a1c2f47043148e01228298889595ec57774dd9c804515063c45ea3f240e7b5b",
+      "p3_sha256": "7877b99e15ce94fd47b33c0c82e49b17c47df7e3bf3f761a58ed8396cda2185e",
+      "byte_exact_match": false
+    }
+  ]
+}

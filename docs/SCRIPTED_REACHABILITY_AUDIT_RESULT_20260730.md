@@ -8,6 +8,19 @@ Preregistration:
 Machine-readable result:
 `ci_grpo/artifacts/p3_scripted_reachability_audit_run3/result.json`
 
+## Integrity amendment (2026-07-31)
+
+Later byte-exact recovery-SFT evaluation found that the P3 reconstructed state
+hashes do not match the corrected P2 prefix-replay hashes. For example, the
+first P3 state begins `b44081...`, whereas the corresponding corrected P2 state
+begins `4d5a61...`; baseline episode lengths also differ.
+
+Therefore P3 establishes 9/9 reachability for its own reconstructed states,
+which use the same checkpoint, tasks, offsets, and penultimate-chunk rule, but
+not for the exact nine P2 states. Statements below that say “the same nine late
+states” are superseded by this amendment. Exact P2-state scripted reachability
+remains unverified.
+
 ## Outcome
 
 Decision: **reachable; temporal training gate passes.**
@@ -45,13 +58,13 @@ MuJoCo state alone.
 
 ## Combined scientific implication
 
-From the same nine late states:
+From two mechanically matched but not byte-identical sets of late states:
 
 - corrected OpenVLA stale queue: revised goal 0/9, original goal 9/9;
 - corrected OpenVLA immediate flush: revised goal 0/9, original goal 9/9;
 - fixed scripted controller: revised goal 9/9.
 
-The revised goals are physically reachable. The OpenVLA failure is therefore a
-policy conditioning/control failure rather than an impossible late revision.
-This supplies the missing feasibility gate for designing a temporal
-counterfactual grounding treatment. It does not authorize training by itself.
+The revised goals are physically reachable from the P3 reconstructed states.
+Because P2 and P3 state hashes differ, this does not exclude exact P2-state
+unreachability or state-provenance effects. The stronger combined policy-failure
+claim is withdrawn pending an oracle audit on the byte-exact P2 prefixes.

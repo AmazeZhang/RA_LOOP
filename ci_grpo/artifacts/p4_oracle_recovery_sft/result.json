@@ -1,0 +1,33 @@
+{
+  "balanced_split_per_optimizer_step": true,
+  "checkpoint": "/home/imc/models/ra-loop/openvla-oft-goal",
+  "checkpoint_config_sha256": "bcb688a66f3e94a42311b77d37b7e1484886701f7b2aa8e36d165dfccac92ae6",
+  "checkpoint_statistics_sha256": "22e0549a346b2ec8a109904d017a57c50f12769b91653939aefb72b119725d47",
+  "checkpoint_steps": [
+    25,
+    50,
+    100,
+    200
+  ],
+  "completed_at": "2026-07-31T14:19:12.003392+08:00",
+  "completed_optimizer_steps": 200,
+  "data_manifest": "/home/imc/yzy/RA_LOOP/data/p4_oracle_recovery_sft/manifest.json",
+  "data_manifest_sha256": "c5bcbd2b2273c38596845808535b5d2c4c6a167ae63f5da6143bbc02494c202e",
+  "effective_batch_size": 8,
+  "execute": true,
+  "experiment": "Late-state oracle recovery SFT",
+  "final_mean_microbatch_l1": 0.07988926721736789,
+  "gpu_id": 7,
+  "gpu_peak_allocated_gib": 17.16739797592163,
+  "gpu_peak_reserved_gib": 17.544921875,
+  "grad_accumulation_steps": 8,
+  "learning_rate": 1e-05,
+  "lora_rank": 32,
+  "max_optimizer_steps": 200,
+  "n_recovery_trajectories": 9,
+  "n_retention_trajectories": 3,
+  "n_trainable_parameters": 261946119,
+  "output_dir": "checkpoints/p4_oracle_recovery_sft",
+  "seed": 7,
+  "smoke_only": false
+}

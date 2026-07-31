@@ -36,6 +36,7 @@ wandb/
 # ---- Data / model artifacts (should never be committed) ----
 data/
 checkpoints/
+.aris/
 assets.zip
 runtime/
 .libero*/

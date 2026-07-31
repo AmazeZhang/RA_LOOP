@@ -1,0 +1,933 @@
+{
+  "baselines": [
+    {
+      "chunk_index": 8,
+      "chunk_start": 64,
+      "demonstration": {
+        "instruction": "put the bowl on the plate",
+        "instruction_task": "put_the_bowl_on_the_plate",
+        "name": "put_the_bowl_on_the_plate",
+        "num_transitions": 77,
+        "official_init_index": 0,
+        "path": "data/p4_oracle_recovery_sft/retention__put_the_bowl_on_the_plate.npz",
+        "sha256": "fc741436eab4e7150d85c3fe1fcb405b3a4d6581187624c3afe9c07de39ad5ef",
+        "source": "frozen OpenVLA deterministic rollout",
+        "split": "retention",
+        "terminal_success": true
+      },
+      "generated_chunks": 10,
+      "steps": 77,
+      "task": "put_the_bowl_on_the_plate"
+    },
+    {
+      "chunk_index": 9,
+      "chunk_start": 72,
+      "demonstration": {
+        "instruction": "put the bowl on the stove",
+        "instruction_task": "put_the_bowl_on_the_stove",
+        "name": "put_the_bowl_on_the_stove",
+        "num_transitions": 86,
+        "official_init_index": 0,
+        "path": "data/p4_oracle_recovery_sft/retention__put_the_bowl_on_the_stove.npz",
+        "sha256": "373b057a575297b7f1fadac049acafdb41c9f3076cf3fd1574ac9b9774df50f9",
+        "source": "frozen OpenVLA deterministic rollout",
+        "split": "retention",
+        "terminal_success": true
+      },
+      "generated_chunks": 11,
+      "steps": 86,
+      "task": "put_the_bowl_on_the_stove"
+    },
+    {
+      "chunk_index": 9,
+      "chunk_start": 72,
+      "demonstration": {
+        "instruction": "put the bowl on top of the cabinet",
+        "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+        "name": "put_the_bowl_on_top_of_the_cabinet",
+        "num_transitions": 88,
+        "official_init_index": 0,
+        "path": "data/p4_oracle_recovery_sft/retention__put_the_bowl_on_top_of_the_cabinet.npz",
+        "sha256": "d409a31650a96a92ebd3b0dee1c2d55c07a70a00b7f3c4beca9e7f880f242146",
+        "source": "frozen OpenVLA deterministic rollout",
+        "split": "retention",
+        "terminal_success": true
+      },
+      "generated_chunks": 11,
+      "steps": 88,
+      "task": "put_the_bowl_on_top_of_the_cabinet"
+    }
+  ],
+  "checkpoint": "/home/imc/models/ra-loop/openvla-oft-goal",
+  "checkpoint_config_sha256": "bcb688a66f3e94a42311b77d37b7e1484886701f7b2aa8e36d165dfccac92ae6",
+  "chunk_size": 8,
+  "completed_at": "2026-07-31T14:01:57.739144+08:00",
+  "demonstration_dir": "data/p4_oracle_recovery_sft",
+  "demonstration_manifest": {
+    "n_recovery": 9,
+    "n_retention": 3,
+    "n_trajectories": 12,
+    "n_transitions": 1243,
+    "path": "data/p4_oracle_recovery_sft/manifest.json",
+    "sha256": "c5bcbd2b2273c38596845808535b5d2c4c6a167ae63f5da6143bbc02494c202e"
+  },
+  "execute": true,
+  "gpu_id": 7,
+  "gpu_peak_allocated_gib": 15.58367109298706,
+  "gpu_peak_reserved_gib": 15.818359375,
+  "init_index": 0,
+  "max_waypoint_steps": 80,
+  "maximum_states": 9,
+  "metrics": {
+    "all_directed_pairs_have_success": true,
+    "decision": "reachable",
+    "eligible_success_rate": 1.0,
+    "n_eligible": 9,
+    "n_pairs_with_success": 3,
+    "n_revised_goal_success": 9,
+    "n_rows": 9,
+    "reachability_pass": true
+  },
+  "offsets": [
+    1,
+    4,
+    7
+  ],
+  "output_dir": "ci_grpo/artifacts/p4_oracle_recovery_data",
+  "position_scale": 0.05,
+  "post_switch_policy": "fixed Cartesian scripted controller",
+  "probe": "Late-state scripted reachability audit",
+  "release_steps": 15,
+  "rows": [
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "b44081ab41bb1df4c4924a7b92478d1241bea36f7edddad3d27b49089ae3e20b",
+      "current_bowl_position": [
+        0.03946159955159151,
+        -0.008149735364064424,
+        1.0062016748882863
+      ],
+      "demonstration": {
+        "eligible": true,
+        "instruction": "put the bowl on the stove",
+        "instruction_task": "put_the_bowl_on_the_stove",
+        "name": "put_the_bowl_on_the_plate__to__put_the_bowl_on_the_stove__offset_1",
+        "num_transitions": 86,
+        "offset": 1,
+        "origin_task": "put_the_bowl_on_the_plate",
+        "path": "data/p4_oracle_recovery_sft/recovery__put_the_bowl_on_the_plate__to__put_the_bowl_on_the_stove__offset_1.npz",
+        "revised_task": "put_the_bowl_on_the_stove",
+        "sha256": "f510e2b36a13aa0164b2e583f1debe62dd4c014a1d908e1b5f56773ab92d7b22",
+        "source": "fixed Cartesian scripted controller",
+        "split": "recovery",
+        "terminal_success": true
+      },
+      "eligible": true,
+      "exact_restore": true,
+      "grasped_at_checkpoint": true,
+      "gripper_current_action": [
+        -1.0,
+        1.0
+      ],
+      "lost_grasp": false,
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "revised_goal_success": true,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "target_bowl_position": [
+        -0.23146361167361051,
+        0.2034500606165487,
+        0.9342969676779362
+      ],
+      "terminal_bowl_position": [
+        -0.2352189211938344,
+        0.208100109160919,
+        0.9289041501888531
+      ],
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "waypoints": [
+        {
+          "final_error": 0.010784159527056828,
+          "reached": true,
+          "steps": 14,
+          "target": [
+            0.036956457601567586,
+            0.03166937452363062,
+            1.1847264873775418
+          ]
+        },
+        {
+          "final_error": 0.012177524061365214,
+          "reached": true,
+          "steps": 23,
+          "target": [
+            -0.23396875362363445,
+            0.24326917050424374,
+            1.1847264873775418
+          ]
+        },
+        {
+          "final_error": 0.012431803820743582,
+          "reached": true,
+          "steps": 17,
+          "target": [
+            -0.23396875362363445,
+            0.24326917050424374,
+            0.9628217801671919
+          ]
+        }
+      ]
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "1c8649d6f7fe5629cc20c4a5817f97a1df55afca6e19b47ea3402e8c1ad3f881",
+      "current_bowl_position": [
+        0.05931433102882754,
+        -0.009105583336168907,
+        0.9828202326628136
+      ],
+      "demonstration": {
+        "eligible": true,
+        "instruction": "put the bowl on the stove",
+        "instruction_task": "put_the_bowl_on_the_stove",
+        "name": "put_the_bowl_on_the_plate__to__put_the_bowl_on_the_stove__offset_4",
+        "num_transitions": 86,
+        "offset": 4,
+        "origin_task": "put_the_bowl_on_the_plate",
+        "path": "data/p4_oracle_recovery_sft/recovery__put_the_bowl_on_the_plate__to__put_the_bowl_on_the_stove__offset_4.npz",
+        "revised_task": "put_the_bowl_on_the_stove",
+        "sha256": "9917de002a08a792b60175d712b4ef2a3b9dbd7d56f9cb950d0fd43aa268e9d9",
+        "source": "fixed Cartesian scripted controller",
+        "split": "recovery",
+        "terminal_success": true
+      },
+      "eligible": true,
+      "exact_restore": true,
+      "grasped_at_checkpoint": true,
+      "gripper_current_action": [
+        -1.0,
+        1.0
+      ],
+      "lost_grasp": false,
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "revised_goal_success": true,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "target_bowl_position": [
+        -0.23146361167361051,
+        0.2034500606165487,
+        0.9342969676779362
+      ],
+      "terminal_bowl_position": [
+        -0.23595674921298285,
+        0.20746263898162617,
+        0.9289041501888531
+      ],
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "waypoints": [
+        {
+          "final_error": 0.011857829368772742,
+          "reached": true,
+          "steps": 14,
+          "target": [
+            0.05691180921494633,
+            0.030303221946789673,
+            1.1618801594558041
+          ]
+        },
+        {
+          "final_error": 0.009778018862792946,
+          "reached": true,
+          "steps": 25,
+          "target": [
+            -0.23386613348749172,
+            0.24285886589950728,
+            1.1618801594558041
+          ]
+        },
+        {
+          "final_error": 0.01440349459529078,
+          "reached": true,
+          "steps": 15,
+          "target": [
+            -0.23386613348749172,
+            0.24285886589950728,
+            0.9633568944709269
+          ]
+        }
+      ]
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "97867eedae0fa63d2f11fa6a0dd63c164d64914c179a477b54a0e51d7d7af6e1",
+      "current_bowl_position": [
+        0.06832361466340862,
+        -0.008492263881886829,
+        0.9539020902096137
+      ],
+      "demonstration": {
+        "eligible": true,
+        "instruction": "put the bowl on the stove",
+        "instruction_task": "put_the_bowl_on_the_stove",
+        "name": "put_the_bowl_on_the_plate__to__put_the_bowl_on_the_stove__offset_7",
+        "num_transitions": 84,
+        "offset": 7,
+        "origin_task": "put_the_bowl_on_the_plate",
+        "path": "data/p4_oracle_recovery_sft/recovery__put_the_bowl_on_the_plate__to__put_the_bowl_on_the_stove__offset_7.npz",
+        "revised_task": "put_the_bowl_on_the_stove",
+        "sha256": "ee4e20ef7f1fb35b3e13d703920b304bc2959ba2f70db9d882d07bd60fb87fbc",
+        "source": "fixed Cartesian scripted controller",
+        "split": "recovery",
+        "terminal_success": true
+      },
+      "eligible": true,
+      "exact_restore": true,
+      "grasped_at_checkpoint": true,
+      "gripper_current_action": [
+        -1.0,
+        1.0
+      ],
+      "lost_grasp": false,
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_the_plate",
+      "revised_goal_success": true,
+      "revised_task": "put_the_bowl_on_the_stove",
+      "target_bowl_position": [
+        -0.23146361167361051,
+        0.2034500606165487,
+        0.9342969676779362
+      ],
+      "terminal_bowl_position": [
+        -0.23717356555525848,
+        0.20556567568265377,
+        0.9289041501888531
+      ],
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": true,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "waypoints": [
+        {
+          "final_error": 0.012552688423469573,
+          "reached": true,
+          "steps": 14,
+          "target": [
+            0.06619289474374455,
+            0.03058883963088988,
+            1.1334097031540002
+          ]
+        },
+        {
+          "final_error": 0.013669815223527972,
+          "reached": true,
+          "steps": 25,
+          "target": [
+            -0.23359433159327458,
+            0.2425311641293254,
+            1.1334097031540002
+          ]
+        },
+        {
+          "final_error": 0.014942865603281081,
+          "reached": true,
+          "steps": 13,
+          "target": [
+            -0.23359433159327458,
+            0.2425311641293254,
+            0.9638045806223227
+          ]
+        }
+      ]
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "334c581c1322b3b29d4e47aadeb3539873717a614d6137643e3050d9aa747e20",
+      "current_bowl_position": [
+        -0.18378433198489164,
+        0.1512287061082527,
+        1.0412715379278554
+      ],
+      "demonstration": {
+        "eligible": true,
+        "instruction": "put the bowl on top of the cabinet",
+        "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+        "name": "put_the_bowl_on_the_stove__to__put_the_bowl_on_top_of_the_cabinet__offset_1",
+        "num_transitions": 98,
+        "offset": 1,
+        "origin_task": "put_the_bowl_on_the_stove",
+        "path": "data/p4_oracle_recovery_sft/recovery__put_the_bowl_on_the_stove__to__put_the_bowl_on_top_of_the_cabinet__offset_1.npz",
+        "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+        "sha256": "a11fda93b0a36dad70f3782520b22f009c4b860e9e44853ade59f8175d6ab156",
+        "source": "fixed Cartesian scripted controller",
+        "split": "recovery",
+        "terminal_success": true
+      },
+      "eligible": true,
+      "exact_restore": true,
+      "grasped_at_checkpoint": true,
+      "gripper_current_action": [
+        -1.0,
+        1.0
+      ],
+      "lost_grasp": true,
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "revised_goal_success": true,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "target_bowl_position": [
+        -0.032085694625500975,
+        -0.23656282390614303,
+        1.1291834311532234
+      ],
+      "terminal_bowl_position": [
+        -0.04032442853230077,
+        -0.23318040126729542,
+        1.1263999683946322
+      ],
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      },
+      "waypoints": [
+        {
+          "final_error": 0.011638822756540192,
+          "reached": true,
+          "steps": 21,
+          "target": [
+            -0.1930030770779117,
+            0.1939274440815925,
+            1.3020879354422115
+          ]
+        },
+        {
+          "final_error": 0.00955947317426789,
+          "reached": true,
+          "steps": 31,
+          "target": [
+            -0.04130443971852104,
+            -0.19386408593280324,
+            1.3020879354422115
+          ]
+        },
+        {
+          "final_error": 0.010365196016722986,
+          "reached": true,
+          "steps": 14,
+          "target": [
+            -0.04130443971852104,
+            -0.19386408593280324,
+            1.1520879354422116
+          ]
+        }
+      ]
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "7ecc06828554760f3935edca5725dbb106a89a93fd3acb79ab76eaf9fe7ea60a",
+      "current_bowl_position": [
+        -0.1995987682588518,
+        0.17649165878689804,
+        1.023354018080678
+      ],
+      "demonstration": {
+        "eligible": true,
+        "instruction": "put the bowl on top of the cabinet",
+        "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+        "name": "put_the_bowl_on_the_stove__to__put_the_bowl_on_top_of_the_cabinet__offset_4",
+        "num_transitions": 102,
+        "offset": 4,
+        "origin_task": "put_the_bowl_on_the_stove",
+        "path": "data/p4_oracle_recovery_sft/recovery__put_the_bowl_on_the_stove__to__put_the_bowl_on_top_of_the_cabinet__offset_4.npz",
+        "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+        "sha256": "115cc02462893944951a1a54d2d0373910477f19ce00d84c9d4292c7de7fc61b",
+        "source": "fixed Cartesian scripted controller",
+        "split": "recovery",
+        "terminal_success": true
+      },
+      "eligible": true,
+      "exact_restore": true,
+      "grasped_at_checkpoint": true,
+      "gripper_current_action": [
+        -1.0,
+        1.0
+      ],
+      "lost_grasp": true,
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "revised_goal_success": true,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "target_bowl_position": [
+        -0.032085694625500975,
+        -0.23656282390614303,
+        1.1291834311532234
+      ],
+      "terminal_bowl_position": [
+        -0.03951058122295895,
+        -0.23288373918469205,
+        1.1263999683946322
+      ],
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      },
+      "waypoints": [
+        {
+          "final_error": 0.010505663112045134,
+          "reached": true,
+          "steps": 23,
+          "target": [
+            -0.2084477823057208,
+            0.21931738939665962,
+            1.3021378283179235
+          ]
+        },
+        {
+          "final_error": 0.009604391881536773,
+          "reached": true,
+          "steps": 33,
+          "target": [
+            -0.04093470867236997,
+            -0.19373709329638145,
+            1.3021378283179235
+          ]
+        },
+        {
+          "final_error": 0.010310982481482262,
+          "reached": true,
+          "steps": 14,
+          "target": [
+            -0.04093470867236997,
+            -0.19373709329638145,
+            1.1521378283179236
+          ]
+        }
+      ]
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "38b0e76b5590f2461303dafc53cafe2ccec2d220bb034d51cd6f55c08cdb0dec",
+      "current_bowl_position": [
+        -0.2126468663374187,
+        0.1934749527509738,
+        0.9962245363190794
+      ],
+      "demonstration": {
+        "eligible": true,
+        "instruction": "put the bowl on top of the cabinet",
+        "instruction_task": "put_the_bowl_on_top_of_the_cabinet",
+        "name": "put_the_bowl_on_the_stove__to__put_the_bowl_on_top_of_the_cabinet__offset_7",
+        "num_transitions": 105,
+        "offset": 7,
+        "origin_task": "put_the_bowl_on_the_stove",
+        "path": "data/p4_oracle_recovery_sft/recovery__put_the_bowl_on_the_stove__to__put_the_bowl_on_top_of_the_cabinet__offset_7.npz",
+        "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+        "sha256": "6afcabe4e6dbc39e51452293e1a13c92ee6f9832929329096f272ef2ebbd2b86",
+        "source": "fixed Cartesian scripted controller",
+        "split": "recovery",
+        "terminal_success": true
+      },
+      "eligible": true,
+      "exact_restore": true,
+      "grasped_at_checkpoint": true,
+      "gripper_current_action": [
+        -1.0,
+        1.0
+      ],
+      "lost_grasp": true,
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_the_stove",
+      "revised_goal_success": true,
+      "revised_task": "put_the_bowl_on_top_of_the_cabinet",
+      "target_bowl_position": [
+        -0.032085694625500975,
+        -0.23656282390614303,
+        1.1291834311532234
+      ],
+      "terminal_bowl_position": [
+        -0.03853643706721981,
+        -0.23283967958578844,
+        1.1263999683946324
+      ],
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": true
+      },
+      "waypoints": [
+        {
+          "final_error": 0.01135698879571868,
+          "reached": true,
+          "steps": 25,
+          "target": [
+            -0.2208960566749657,
+            0.2362828350772017,
+            1.302470379148443
+          ]
+        },
+        {
+          "final_error": 0.011620166781684918,
+          "reached": true,
+          "steps": 34,
+          "target": [
+            -0.04033488496304798,
+            -0.1937549415799151,
+            1.302470379148443
+          ]
+        },
+        {
+          "final_error": 0.010290043523469376,
+          "reached": true,
+          "steps": 14,
+          "target": [
+            -0.04033488496304798,
+            -0.1937549415799151,
+            1.1524703791484432
+          ]
+        }
+      ]
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "4d6873aeb47bc6bec65c41ab64272e66840f00edf1c585fefbac74ea36455f9b",
+      "current_bowl_position": [
+        -0.04574901666159743,
+        -0.11577909286844253,
+        1.2047500051586968
+      ],
+      "demonstration": {
+        "eligible": true,
+        "instruction": "put the bowl on the plate",
+        "instruction_task": "put_the_bowl_on_the_plate",
+        "name": "put_the_bowl_on_top_of_the_cabinet__to__put_the_bowl_on_the_plate__offset_1",
+        "num_transitions": 142,
+        "offset": 1,
+        "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+        "path": "data/p4_oracle_recovery_sft/recovery__put_the_bowl_on_top_of_the_cabinet__to__put_the_bowl_on_the_plate__offset_1.npz",
+        "revised_task": "put_the_bowl_on_the_plate",
+        "sha256": "cc7bfad856e8c3497253bb2c096bb7d8f2327a2c9d411499ade52391af9deffe",
+        "source": "fixed Cartesian scripted controller",
+        "split": "recovery",
+        "terminal_success": true
+      },
+      "eligible": true,
+      "exact_restore": true,
+      "grasped_at_checkpoint": true,
+      "gripper_current_action": [
+        -1.0,
+        1.0
+      ],
+      "lost_grasp": false,
+      "offset": 1,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "revised_goal_success": true,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "target_bowl_position": [
+        0.054427378444109116,
+        -0.014000289998095015,
+        0.9051452350565138
+      ],
+      "terminal_bowl_position": [
+        0.09020214130053963,
+        -0.008923551785334046,
+        0.9092061508029441
+      ],
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "waypoints": [
+        {
+          "final_error": 0.011326709390232729,
+          "reached": true,
+          "steps": 16,
+          "target": [
+            -0.03801461549647073,
+            -0.07684643120683925,
+            1.385221379458802
+          ]
+        },
+        {
+          "final_error": 0.014185530016203008,
+          "reached": true,
+          "steps": 13,
+          "target": [
+            0.06216177960923582,
+            0.024932371663508264,
+            1.385221379458802
+          ]
+        },
+        {
+          "final_error": 0.030937892833407196,
+          "reached": false,
+          "steps": 80,
+          "target": [
+            0.06216177960923582,
+            0.024932371663508264,
+            0.9356166093566191
+          ]
+        }
+      ]
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "6d15a20caa067bed8ff582bb1494ab39cbcc003e0bb10ed526ac2ccbe4799fe8",
+      "current_bowl_position": [
+        -0.040934757372185264,
+        -0.14455065157429145,
+        1.211463117593017
+      ],
+      "demonstration": {
+        "eligible": true,
+        "instruction": "put the bowl on the plate",
+        "instruction_task": "put_the_bowl_on_the_plate",
+        "name": "put_the_bowl_on_top_of_the_cabinet__to__put_the_bowl_on_the_plate__offset_4",
+        "num_transitions": 143,
+        "offset": 4,
+        "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+        "path": "data/p4_oracle_recovery_sft/recovery__put_the_bowl_on_top_of_the_cabinet__to__put_the_bowl_on_the_plate__offset_4.npz",
+        "revised_task": "put_the_bowl_on_the_plate",
+        "sha256": "64281eca77e23720419d8285030b4f96e331d7811bf698da3156a95663040b67",
+        "source": "fixed Cartesian scripted controller",
+        "split": "recovery",
+        "terminal_success": true
+      },
+      "eligible": true,
+      "exact_restore": true,
+      "grasped_at_checkpoint": true,
+      "gripper_current_action": [
+        -1.0,
+        1.0
+      ],
+      "lost_grasp": false,
+      "offset": 4,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "revised_goal_success": true,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "target_bowl_position": [
+        0.054427378444109116,
+        -0.014000289998095015,
+        0.9051452350565138
+      ],
+      "terminal_bowl_position": [
+        0.09038230544430285,
+        -0.009151963724134949,
+        0.9092361339827908
+      ],
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "waypoints": [
+        {
+          "final_error": 0.011712205966276068,
+          "reached": true,
+          "steps": 17,
+          "target": [
+            -0.03324779363678759,
+            -0.10585611308885005,
+            1.3922718959997606
+          ]
+        },
+        {
+          "final_error": 0.014878401543845756,
+          "reached": true,
+          "steps": 13,
+          "target": [
+            0.06211434217950679,
+            0.02469424848734638,
+            1.3922718959997606
+          ]
+        },
+        {
+          "final_error": 0.03098876127423959,
+          "reached": false,
+          "steps": 80,
+          "target": [
+            0.06211434217950679,
+            0.02469424848734638,
+            0.9359540134632575
+          ]
+        }
+      ]
+    },
+    {
+      "checkpoint_all_goals_false": true,
+      "checkpoint_goal_truth": {
+        "put_the_bowl_on_the_plate": false,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "checkpoint_state_sha256": "7877b99e15ce94fd47b33c0c82e49b17c47df7e3bf3f761a58ed8396cda2185e",
+      "current_bowl_position": [
+        -0.034898494713521494,
+        -0.17412338212466563,
+        1.204850511304686
+      ],
+      "demonstration": {
+        "eligible": true,
+        "instruction": "put the bowl on the plate",
+        "instruction_task": "put_the_bowl_on_the_plate",
+        "name": "put_the_bowl_on_top_of_the_cabinet__to__put_the_bowl_on_the_plate__offset_7",
+        "num_transitions": 146,
+        "offset": 7,
+        "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+        "path": "data/p4_oracle_recovery_sft/recovery__put_the_bowl_on_top_of_the_cabinet__to__put_the_bowl_on_the_plate__offset_7.npz",
+        "revised_task": "put_the_bowl_on_the_plate",
+        "sha256": "d75ea2139a3c53446c5825ffc178e101185df1baddd9b90d1cba827b2f7c7929",
+        "source": "fixed Cartesian scripted controller",
+        "split": "recovery",
+        "terminal_success": true
+      },
+      "eligible": true,
+      "exact_restore": true,
+      "grasped_at_checkpoint": true,
+      "gripper_current_action": [
+        -1.0,
+        1.0
+      ],
+      "lost_grasp": false,
+      "offset": 7,
+      "origin_task": "put_the_bowl_on_top_of_the_cabinet",
+      "revised_goal_success": true,
+      "revised_task": "put_the_bowl_on_the_plate",
+      "target_bowl_position": [
+        0.054427378444109116,
+        -0.014000289998095015,
+        0.9051452350565138
+      ],
+      "terminal_bowl_position": [
+        0.09063060191900514,
+        -0.00953557325792234,
+        0.9092824102475704
+      ],
+      "terminal_goal_truth": {
+        "put_the_bowl_on_the_plate": true,
+        "put_the_bowl_on_the_stove": false,
+        "put_the_bowl_on_top_of_the_cabinet": false
+      },
+      "waypoints": [
+        {
+          "final_error": 0.01109374724093203,
+          "reached": true,
+          "steps": 18,
+          "target": [
+            -0.027177730490330596,
+            -0.13579830515999236,
+            1.3861308897137326
+          ]
+        },
+        {
+          "final_error": 0.011904950197676373,
+          "reached": true,
+          "steps": 15,
+          "target": [
+            0.06214814266730001,
+            0.024324786966578256,
+            1.3861308897137326
+          ]
+        },
+        {
+          "final_error": 0.03100578608238255,
+          "reached": false,
+          "steps": 80,
+          "target": [
+            0.06214814266730001,
+            0.024324786966578256,
+            0.9364256134655605
+          ]
+        }
+      ]
+    }
+  ],
+  "safe_clearance": 0.15,
+  "save_demonstrations": true,
+  "settle_steps": 20,
+  "target_bowl_positions": {
+    "put_the_bowl_on_the_plate": [
+      0.054427378444109116,
+      -0.014000289998095015,
+      0.9051452350565138
+    ],
+    "put_the_bowl_on_the_stove": [
+      -0.23146361167361051,
+      0.2034500606165487,
+      0.9342969676779362
+    ],
+    "put_the_bowl_on_top_of_the_cabinet": [
+      -0.032085694625500975,
+      -0.23656282390614303,
+      1.1291834311532234
+    ]
+  },
+  "task_pairs": [
+    [
+      "put_the_bowl_on_the_plate",
+      "put_the_bowl_on_the_stove"
+    ],
+    [
+      "put_the_bowl_on_the_stove",
+      "put_the_bowl_on_top_of_the_cabinet"
+    ],
+    [
+      "put_the_bowl_on_top_of_the_cabinet",
+      "put_the_bowl_on_the_plate"
+    ]
+  ],
+  "temporal_training_gate_pass": true,
+  "terminal_target_result": "/home/imc/yzy/RA_LOOP/ci_grpo/artifacts/p0_openvla_k3_rollout/result.json",
+  "training_authorized": false,
+  "waypoint_tolerance": 0.015
+}

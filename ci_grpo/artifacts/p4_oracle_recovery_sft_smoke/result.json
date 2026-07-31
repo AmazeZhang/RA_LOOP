@@ -1,0 +1,12 @@
+{
+  "backward_passed": true,
+  "completed_at": "2026-07-31T14:04:07.151963+08:00",
+  "experiment": "Late-state oracle recovery SFT",
+  "gpu_id": 7,
+  "gpu_peak_allocated_gib": 15.995834827423096,
+  "gpu_peak_reserved_gib": 16.42578125,
+  "loss": 0.1551036834716797,
+  "n_trainable_parameters": 261946119,
+  "optimizer_step_executed": false,
+  "smoke_only": true
+}

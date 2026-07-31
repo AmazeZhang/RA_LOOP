@@ -29,7 +29,7 @@ Primary results:
 | Revised-goal success | 0/9 (0%) | 0/9 (0%) |
 | Original-goal terminal rate | 9/9 (100%) | 9/9 (100%) |
 | Mean response latency | 4.0 actions | 0 actions |
-| Mean switch-action jerk L2 | 0.1249 | 0.2828 |
+| Mean switch-action jerk L2 | 0.1249 | 0.2829 |
 
 Immediate queue invalidation produced zero additional revised-goal successes,
 failed the required `flush >= 6/9` ability gate, and more than doubled the mean
@@ -54,18 +54,22 @@ The experiment exposes a stronger, separate diagnostic pattern:
 - at a mechanically selected penultimate action chunk, revised-goal success is
   0%, while the original goal remains the dominant terminal outcome.
 
-The separate scripted reachability audit then reached the revised official
-goal from all 9/9 exact switch states. The valid combined result is therefore:
+The separate scripted reachability audit reached the revised official goal
+from 9/9 mechanically matched P3 reconstructions. A 2026-07-31 provenance audit
+found that their hashes differ from the corrected P2 states, so they must not be
+described as the same byte-exact switch states. The valid combined result is:
 
 - original instruction from the initial state: 100% redirection in the prior
   all-Goal screen;
 - revised instruction at the penultimate chunk: 0/9 revised-goal success and
   9/9 original-goal completion for both stale and flush;
-- fixed non-VLA scripted controller: 9/9 revised-goal success.
+- fixed non-VLA scripted controller: 9/9 revised-goal success on the analogous
+  P3 reconstruction set.
 
-This establishes a late-trajectory policy grounding/control failure on the
-tested backbone/group. It is not explained by stale queued actions, physical
-unreachability, or incomplete controller-state restoration.
+This establishes that stale queued actions do not explain the tested P2
+failure. It does not yet distinguish policy grounding/control failure from
+exact-state reachability or state-provenance effects, because scripted
+reachability has not been verified on the byte-exact P2 states.
 
 ## Literature position and next gate
 
@@ -75,10 +79,8 @@ cross-chunk smoothing. The potentially distinct contribution here is not
 generic chunk correction; it is controlled evaluation of instruction revision
 after a task has become visually and dynamically committed.
 
-The physical-reachability gate has passed. A temporal language-grounding
-treatment is now scientifically justified for a subsequent, separately
-authorized experiment. Immediate queue flushing is not that treatment.
-Training remains outside this P0.
+The analogous-state physical-reachability gate passed, but the exact P2-state
+gate remains open. Immediate queue flushing is not a viable treatment.
 
 The first launch terminated after three branch rows because robosuite's
 internal episode counter was not reset between restored branches. Run 2

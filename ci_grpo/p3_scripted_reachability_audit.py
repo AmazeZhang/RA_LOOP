@@ -54,8 +54,27 @@ def parse_args() -> argparse.Namespace:
         default=PROJECT_ROOT
         / "ci_grpo/artifacts/p3_scripted_reachability_audit",
     )
+    parser.add_argument(
+        "--save-demonstrations",
+        action="store_true",
+        help="Save exact oracle and retention trajectories for recovery SFT.",
+    )
+    parser.add_argument(
+        "--demonstration-dir",
+        type=Path,
+        default=PROJECT_ROOT / "data/p4_oracle_recovery_sft",
+    )
     parser.add_argument("--execute", action="store_true")
     return parser.parse_args()
+
+
+def libero_env_action_to_training_action(action: Any) -> Any:
+    """Convert a LIBERO action to the OpenVLA training gripper convention."""
+    import numpy as np
+
+    converted = np.asarray(action, dtype=np.float64).copy()
+    converted[-1] = 1.0 - np.clip(converted[-1], 0.0, 1.0)
+    return converted
 
 
 def position_action(
@@ -153,6 +172,11 @@ def validate(args: argparse.Namespace) -> dict[str, Any]:
         raise SystemExit("--execute requires a nonzero --gpu-id")
     if args.output_dir.exists():
         raise SystemExit(f"refusing existing output directory: {args.output_dir}")
+    if args.save_demonstrations and args.demonstration_dir.exists():
+        raise SystemExit(
+            "refusing existing demonstration directory: "
+            f"{args.demonstration_dir}"
+        )
     return {
         "probe": "Late-state scripted reachability audit",
         "task_pairs": [list(pair) for pair in TASK_PAIRS],
@@ -174,6 +198,12 @@ def validate(args: argparse.Namespace) -> dict[str, Any]:
         "execute": args.execute,
         "post_switch_policy": "fixed Cartesian scripted controller",
         "training_authorized": False,
+        "save_demonstrations": args.save_demonstrations,
+        "demonstration_dir": (
+            str(args.demonstration_dir)
+            if args.save_demonstrations
+            else None
+        ),
     }
 
 
@@ -308,6 +338,54 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
             )
         return [np.asarray(action).copy() for action in actions[0]]
 
+    demonstration_rows = []
+    if args.save_demonstrations:
+        args.demonstration_dir.mkdir(parents=True, exist_ok=False)
+
+    def save_demonstration(
+        *,
+        split: str,
+        name: str,
+        instruction_task: str,
+        observations: list[Any],
+        actions: list[Any],
+        metadata: dict[str, Any],
+    ) -> dict[str, Any] | None:
+        if not args.save_demonstrations:
+            return None
+        if not observations or len(observations) != len(actions):
+            raise RuntimeError(
+                f"invalid demonstration {name}: "
+                f"{len(observations)} observations, {len(actions)} actions"
+            )
+        path = args.demonstration_dir / f"{split}__{name}.npz"
+        np.savez_compressed(
+            path,
+            full_image=np.stack(
+                [record["full_image"] for record in observations]
+            ).astype(np.uint8),
+            wrist_image=np.stack(
+                [record["wrist_image"] for record in observations]
+            ).astype(np.uint8),
+            proprio=np.stack(
+                [record["state"] for record in observations]
+            ).astype(np.float32),
+            action=np.stack(actions).astype(np.float32),
+            instruction=np.asarray(descriptions[instruction_task]),
+        )
+        row = {
+            "split": split,
+            "name": name,
+            "instruction_task": instruction_task,
+            "instruction": descriptions[instruction_task],
+            "num_transitions": len(actions),
+            "path": str(path),
+            "sha256": sha256(path),
+            **metadata,
+        }
+        demonstration_rows.append(row)
+        return row
+
     def reconstruct_baseline(task: str) -> dict[str, Any]:
         set_goal(task)
         env.reset()
@@ -319,11 +397,23 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
         raw_chunks = []
         queue = []
         steps = 0
+        demonstration_observations = []
+        demonstration_actions = []
         while steps < 300:
             if not queue:
                 queue = infer_chunk(obs, task)
                 raw_chunks.append([action.copy() for action in queue])
-            action = process_action(queue.pop(0), "openvla")
+            raw_action = queue.pop(0)
+            if args.save_demonstrations:
+                prepared, _ = prepare_observation(obs, 224)
+                demonstration_observations.append(
+                    {
+                        key: np.asarray(value).copy()
+                        for key, value in prepared.items()
+                    }
+                )
+                demonstration_actions.append(raw_action.copy())
+            action = process_action(raw_action, "openvla")
             obs, _, _, _ = env.step(action)
             states_after.append(np.asarray(env.get_sim_state()).copy())
             gripper_actions_after.append(
@@ -336,12 +426,25 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
             raise RuntimeError(f"checkpoint baseline failed for {task}")
         chunk_index = penultimate_chunk_index(len(raw_chunks))
         chunk_start = chunk_index * CHUNK_SIZE
+        demonstration = save_demonstration(
+            split="retention",
+            name=task,
+            instruction_task=task,
+            observations=demonstration_observations,
+            actions=demonstration_actions,
+            metadata={
+                "source": "frozen OpenVLA deterministic rollout",
+                "official_init_index": args.init_index,
+                "terminal_success": True,
+            },
+        )
         return {
             "task": task,
             "steps": steps,
             "generated_chunks": len(raw_chunks),
             "chunk_index": chunk_index,
             "chunk_start": chunk_start,
+            "demonstration": demonstration,
             "states": {
                 offset: {
                     "sim_state": states_after[
@@ -406,6 +509,24 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
                 target_bowl = target_bowl_positions[revised_task]
                 waypoint_rows = []
                 lost_grasp = False
+                demonstration_observations = []
+                demonstration_actions = []
+
+                def oracle_step(action: Any) -> None:
+                    nonlocal obs
+                    if args.save_demonstrations:
+                        prepared, _ = prepare_observation(obs, 224)
+                        demonstration_observations.append(
+                            {
+                                key: np.asarray(value).copy()
+                                for key, value in prepared.items()
+                            }
+                        )
+                        demonstration_actions.append(
+                            libero_env_action_to_training_action(action)
+                        )
+                    obs, _, _, _ = env.step(action)
+
                 if eligible:
                     waypoints = transport_waypoints(
                         current_bowl, target_bowl, start_eef - current_bowl
@@ -418,7 +539,7 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
                             if error <= WAYPOINT_TOLERANCE:
                                 reached = True
                                 break
-                            obs, _, _, _ = env.step(
+                            oracle_step(
                                 position_action(
                                     current_eef, waypoint, gripper=1.0
                                 )
@@ -441,7 +562,7 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
                             }
                         )
                     for _ in range(RELEASE_STEPS):
-                        obs, _, _, _ = env.step(
+                        oracle_step(
                             position_action(
                                 np.asarray(obs["robot0_eef_pos"]),
                                 np.asarray(obs["robot0_eef_pos"]),
@@ -449,7 +570,7 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
                             )
                         )
                     for _ in range(SETTLE_STEPS):
-                        obs, _, _, _ = env.step(
+                        oracle_step(
                             position_action(
                                 np.asarray(obs["robot0_eef_pos"]),
                                 np.asarray(obs["robot0_eef_pos"]),
@@ -457,6 +578,23 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
                             )
                         )
                 terminal_truth = goal_truth()
+                demonstration = save_demonstration(
+                    split="recovery",
+                    name=f"{origin_task}__to__{revised_task}__offset_{offset}",
+                    instruction_task=revised_task,
+                    observations=demonstration_observations,
+                    actions=demonstration_actions,
+                    metadata={
+                        "source": "fixed Cartesian scripted controller",
+                        "origin_task": origin_task,
+                        "revised_task": revised_task,
+                        "offset": offset,
+                        "eligible": eligible,
+                        "terminal_success": bool(
+                            terminal_truth[revised_task]
+                        ),
+                    },
+                )
                 row = {
                     "origin_task": origin_task,
                     "revised_task": revised_task,
@@ -483,6 +621,7 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
                     "revised_goal_success": bool(
                         terminal_truth[revised_task]
                     ),
+                    "demonstration": demonstration,
                 }
                 rows.append(row)
                 incomplete.write_text(
@@ -498,6 +637,47 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
         vector_env.close()
 
     metrics = summarize_oracle_rows(rows)
+    demonstration_manifest = None
+    if args.save_demonstrations:
+        demonstration_manifest = {
+            "format": "RA_LOOP oracle recovery SFT v1",
+            "checkpoint_statistics": str(
+                GOAL_CHECKPOINT / "dataset_statistics.json"
+            ),
+            "checkpoint_statistics_sha256": sha256(
+                GOAL_CHECKPOINT / "dataset_statistics.json"
+            ),
+            "action_convention": (
+                "OpenVLA pre-normalization: xyz+axis-angle unchanged, "
+                "gripper 0=close and 1=open"
+            ),
+            "image_size": [224, 224],
+            "num_images": 2,
+            "proprio_dim": 8,
+            "action_dim": 7,
+            "action_chunk_size": CHUNK_SIZE,
+            "trajectories": demonstration_rows,
+        }
+        manifest_path = args.demonstration_dir / "manifest.json"
+        manifest_path.write_text(
+            json.dumps(demonstration_manifest, indent=2, sort_keys=True)
+            + "\n",
+            encoding="utf-8",
+        )
+        demonstration_manifest = {
+            "path": str(manifest_path),
+            "sha256": sha256(manifest_path),
+            "n_trajectories": len(demonstration_rows),
+            "n_recovery": sum(
+                row["split"] == "recovery" for row in demonstration_rows
+            ),
+            "n_retention": sum(
+                row["split"] == "retention" for row in demonstration_rows
+            ),
+            "n_transitions": sum(
+                row["num_transitions"] for row in demonstration_rows
+            ),
+        }
     result = {
         **plan,
         "completed_at": datetime.now().astimezone().isoformat(),
@@ -516,6 +696,7 @@ def execute(args: argparse.Namespace, plan: dict[str, Any]) -> None:
         "rows": rows,
         "metrics": metrics,
         "temporal_training_gate_pass": metrics["reachability_pass"],
+        "demonstration_manifest": demonstration_manifest,
         "gpu_peak_allocated_gib": torch.cuda.max_memory_allocated() / 1024**3,
         "gpu_peak_reserved_gib": torch.cuda.max_memory_reserved() / 1024**3,
     }
